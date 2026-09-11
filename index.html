@@ -6,325 +6,177 @@
 <title>Hız Göstergesi</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  
   body {
     background: #0a0a0f;
     color: #fff;
     font-family: 'Segoe UI', Arial, sans-serif;
     min-height: 100vh;
-    overflow: hidden;
-    touch-action: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    touch-action: manipulation;
   }
 
-  /* ========== WELCOME SCREEN ========== */
+  /* ========== WELCOME ========== */
   .welcome {
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: radial-gradient(ellipse at 50% 40%, #1a1a2e 0%, #0a0a0f 70%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    transition: opacity 0.8s, transform 0.8s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 1000; transition: opacity 0.8s, transform 0.8s;
   }
-  .welcome.hide {
-    opacity: 0;
-    transform: scale(1.1);
-    pointer-events: none;
-  }
-  .welcome-gauge {
-    width: 200px; height: 200px;
-    position: relative;
-  }
+  .welcome.hide { opacity: 0; transform: scale(1.1); pointer-events: none; }
+  .welcome-gauge { width: 200px; height: 200px; position: relative; }
   .welcome-gauge canvas { width: 200px; height: 200px; }
-  .welcome-title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-top: 20px;
-    letter-spacing: 1px;
-    text-shadow: 0 0 20px rgba(0,200,255,0.4);
-  }
-  .welcome-sub {
-    font-size: 13px;
-    color: rgba(255,255,255,0.4);
-    margin-top: 8px;
-    letter-spacing: 2px;
-  }
+  .welcome-title { font-size: 30px; font-weight: 700; margin-top: 24px; letter-spacing: 1px; text-shadow: 0 0 20px rgba(0,200,255,0.4); }
+  .welcome-sub { font-size: 15px; color: rgba(255,255,255,0.45); margin-top: 8px; letter-spacing: 3px; }
   .welcome-start {
-    margin-top: 30px;
-    background: linear-gradient(135deg, #00c8ff, #0060dd);
-    border: none;
-    color: #fff;
-    padding: 14px 44px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 30px;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: transform 0.2s, box-shadow 0.3s;
+    margin-top: 32px; background: linear-gradient(135deg, #00c8ff, #0060dd); border: none; color: #fff;
+    padding: 16px 52px; font-size: 18px; font-weight: 600; border-radius: 30px; cursor: pointer;
   }
-  .welcome-start:hover {
-    transform: scale(1.04);
-    box-shadow: 0 0 30px rgba(0,200,255,0.5);
-  }
-  .welcome-anim {
-    animation: welcomeFade 1.5s ease;
-  }
-  @keyframes welcomeFade {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  .welcome-start:hover { transform: scale(1.04); box-shadow: 0 0 30px rgba(0,200,255,0.5); }
+  .welcome-anim { animation: welcomeFade 1.5s ease; }
+  @keyframes welcomeFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ========== ALERT SYSTEM ========== */
-  body.alert-flash {
-    animation: flashRed 0.4s ease infinite;
-  }
-  @keyframes flashRed {
-    0%, 100% { background: #0a0a0f; }
-    50% { background: rgba(255,23,68,0.2); }
-  }
+  /* ========== ALERTS ========== */
+  body.alert-flash { animation: flashRed 0.4s ease infinite; }
+  @keyframes flashRed { 0%, 100% { background: #0a0a0f; } 50% { background: rgba(255,23,68,0.2); } }
 
   .alert-pill {
-    display: none;
-    position: fixed;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255,23,68,0.9);
-    color: #fff;
-    padding: 8px 22px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    border-radius: 20px;
-    z-index: 100;
-    animation: pillPop 0.3s ease;
-    box-shadow: 0 2px 20px rgba(255,23,68,0.6);
-    white-space: nowrap;
+    display: none; position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+    background: rgba(255,23,68,0.92); color: #fff; padding: 12px 28px; font-size: 15px;
+    font-weight: 700; letter-spacing: 2px; border-radius: 24px; z-index: 100;
+    animation: pillPop 0.3s ease; box-shadow: 0 4px 24px rgba(255,23,68,0.6); white-space: nowrap;
   }
-  .alert-pill.visible { display: flex; align-items: center; gap: 6px; }
-  @keyframes pillPop {
-    from { transform: translateX(-50%) scale(0.8); opacity: 0; }
-    to { transform: translateX(-50%) scale(1); opacity: 1; }
-  }
+  .alert-pill.visible { display: flex; align-items: center; gap: 8px; }
+  @keyframes pillPop { from { transform: translateX(-50%) scale(0.8); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
 
-  /* ========== MAIN LAYOUT ========== */
-  .main {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 8px 12px 16px;
+  /* ========== CAMERA WARNING BANNER ========== */
+  .camera-banner {
+    display: none; position: fixed; top: 52px; left: 50%; transform: translateX(-50%);
+    background: rgba(255,152,0,0.92); color: #fff; padding: 10px 24px; font-size: 14px;
+    font-weight: 700; letter-spacing: 1px; border-radius: 24px; z-index: 99;
+    animation: pillPop 0.3s ease; box-shadow: 0 4px 24px rgba(255,152,0,0.5); white-space: nowrap;
   }
+  .camera-banner.visible { display: flex; align-items: center; gap: 8px; }
+  .camera-banner.danger {
+    background: rgba(255,23,68,0.92); box-shadow: 0 4px 24px rgba(255,23,68,0.6);
+    animation: pillPop 0.3s ease, camPulse 0.6s ease infinite;
+  }
+  @keyframes camPulse { 0%,100%{ opacity:1; } 50%{ opacity:0.6; } }
+
+  /* ========== MAIN ========== */
+  .main { display: none; flex-direction: column; align-items: center; padding: 10px 16px 24px; min-height: 100vh; }
   .main.show { display: flex; }
 
-  /* ========== COMPACT LIMIT PANEL ========== */
+  /* ========== LIMIT BAR ========== */
   .limit-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 24px;
-    padding: 6px 10px;
-    margin-bottom: 4px;
-    max-width: 320px;
-    width: 100%;
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px; padding: 10px 16px; margin-bottom: 8px; max-width: 400px; width: 100%;
   }
-  .limit-icon {
-    font-size: 16px;
-    opacity: 0.6;
-  }
+  .limit-icon { font-size: 22px; opacity: 0.7; }
   .limit-input {
-    background: transparent;
-    border: none;
-    color: #ffc400;
-    font-size: 18px;
-    font-weight: 700;
-    width: 48px;
-    text-align: center;
-    padding: 0;
-    outline: none;
-    -moz-appearance: textfield;
+    background: rgba(255,255,255,0.06); border: 2px solid rgba(255,196,0,0.3); border-radius: 12px;
+    color: #ffc400; font-size: 26px; font-weight: 700; width: 72px; text-align: center;
+    padding: 6px 4px; outline: none; -moz-appearance: textfield;
   }
-  .limit-input::-webkit-outer-spin-button,
-  .limit-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-  .limit-unit-label {
-    font-size: 11px;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 1px;
-  }
+  .limit-input:focus { border-color: #ffc400; }
+  .limit-input::-webkit-outer-spin-button, .limit-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .limit-unit-label { font-size: 16px; font-weight: 600; color: rgba(255,255,255,0.45); letter-spacing: 1px; }
   .limit-auto-tag {
-    font-size: 9px;
-    background: rgba(0,200,255,0.15);
-    color: #00c8ff;
-    padding: 2px 8px;
-    border-radius: 8px;
-    letter-spacing: 0.5px;
+    font-size: 12px; font-weight: 600; background: rgba(0,200,255,0.15); color: #00c8ff;
+    padding: 4px 12px; border-radius: 12px;
   }
   .limit-toggle-btn {
-    background: rgba(255,255,255,0.06);
-    border: none;
-    color: rgba(255,255,255,0.4);
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-left: auto;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 600; padding: 8px 16px;
+    border-radius: 14px; cursor: pointer; margin-left: auto;
   }
-  .limit-toggle-btn.off {
-    color: rgba(255,255,255,0.2);
-    text-decoration: line-through;
+  .limit-toggle-btn.off { color: rgba(255,255,255,0.2); text-decoration: line-through; opacity: 0.5; }
+
+  /* ========== CAMERA PANEL ========== */
+  .cam-panel {
+    width: 100%; max-width: 400px; margin-bottom: 6px;
+  }
+  .cam-header {
+    display: flex; align-items: center; gap: 8px; padding: 8px 0;
+  }
+  .cam-header .cam-title { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 1px; }
+  .cam-header .cam-count { font-size: 12px; font-weight: 700; background: rgba(255,152,0,0.2); color: #ff9800; padding: 2px 10px; border-radius: 10px; }
+  .cam-header .cam-count.danger { background: rgba(255,23,68,0.2); color: #ff1744; }
+  .cam-header .cam-count.safe { background: rgba(0,230,118,0.15); color: #00e676; }
+
+  .cam-list {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .cam-item {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 10px 14px;
+  }
+  .cam-item.near { border-color: rgba(255,152,0,0.3); background: rgba(255,152,0,0.06); }
+  .cam-item.very-near { border-color: rgba(255,23,68,0.4); background: rgba(255,23,68,0.06); animation: camItemPulse 1s ease infinite; }
+  @keyframes camItemPulse { 0%,100%{ border-color: rgba(255,23,68,0.4); } 50%{ border-color: rgba(255,23,68,0.8); } }
+
+  .cam-icon { font-size: 24px; flex-shrink: 0; }
+  .cam-info { flex: 1; }
+  .cam-type { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.6); }
+  .cam-road { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+  .cam-dist {
+    font-size: 18px; font-weight: 700; min-width: 60px; text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .cam-dist.near { color: #ff9800; }
+  .cam-dist.very-near { color: #ff1744; }
+  .cam-dist.far { color: rgba(255,255,255,0.4); }
+  .cam-dist-unit { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.3); }
+
+  .cam-empty {
+    text-align: center; padding: 12px; color: rgba(255,255,255,0.3); font-size: 13px;
   }
 
   /* ========== GAUGE ========== */
-  .gauge-area {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    width: 100%;
-  }
+  .gauge-area { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; flex-shrink: 0; }
+  .speedo-wrap { position: relative; }
+  canvas#gauge { display: block; }
+  .speed-digital { position: absolute; bottom: 18%; left: 50%; transform: translateX(-50%); text-align: center; pointer-events: none; }
+  .speed-value { font-size: 56px; font-weight: 700; letter-spacing: -1px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .speed-value.alerting { animation: pulseText 0.4s ease infinite; }
+  @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .speed-unit { font-size: 16px; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 4px; margin-top: 4px; }
 
-  .speedo-wrap {
-    position: relative;
+  /* ========== BOTTOM CARDS ========== */
+  .bottom-bar { display: flex; gap: 10px; width: 100%; max-width: 420px; margin-top: 12px; }
+  .info-card {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 14px 8px; text-align: center; flex: 1;
   }
+  .info-card .lab { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+  .info-card .num { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .info-card .unit-sm { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 2px; }
 
-  canvas#gauge {
-    display: block;
-  }
-
-  .speed-digital {
-    position: absolute;
-    bottom: 18%;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    pointer-events: none;
-  }
-
-  .speed-value {
-    font-size: 44px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-  .speed-value.alerting {
-    animation: pulseText 0.4s ease infinite;
-  }
-  @keyframes pulseText {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .speed-unit {
-    font-size: 11px;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 3px;
-    margin-top: 2px;
-  }
-
-  /* ========== BOTTOM BAR ========== */
-  .bottom-bar {
-    display: flex;
-    gap: 6px;
-    width: 100%;
-    max-width: 360px;
-    justify-content: space-between;
-    margin-top: 4px;
-  }
-
-  .mini-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 10px;
-    padding: 8px 10px;
-    text-align: center;
-    flex: 1;
-  }
-  .mini-card .lab {
-    font-size: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: rgba(255,255,255,0.3);
-  }
-  .mini-card .num {
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 2px;
-  }
-
-  .ctrl-row {
-    display: flex;
-    gap: 6px;
-    margin-top: 6px;
-    max-width: 360px;
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+  .ctrl-row { display: flex; gap: 10px; margin-top: 12px; max-width: 420px; width: 100%; justify-content: center; flex-wrap: wrap; }
   .ctrl-btn {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.4);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.2s;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.55); border-radius: 14px; padding: 12px 20px;
+    font-size: 15px; font-weight: 600; cursor: pointer; min-width: 72px; text-align: center;
   }
-  .ctrl-btn:hover {
-    background: rgba(0,200,255,0.1);
-    color: #00c8ff;
-  }
-  .ctrl-btn.active {
-    background: rgba(0,200,255,0.12);
-    border-color: rgba(0,200,255,0.3);
-    color: #00c8ff;
-  }
+  .ctrl-btn:hover { background: rgba(0,200,255,0.1); color: #00c8ff; }
+  .ctrl-btn.active { background: rgba(0,200,255,0.15); border-color: rgba(0,200,255,0.4); color: #00c8ff; }
 
-  .status-dot {
-    font-size: 10px;
-    color: rgba(255,255,255,0.25);
-    text-align: center;
-    margin-top: 4px;
-  }
-  .status-dot .dot {
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    margin-right: 4px;
-    vertical-align: middle;
-  }
-  .dot.green { background: #00e676; box-shadow: 0 0 6px #00e676; }
-  .dot.yellow { background: #ffc400; box-shadow: 0 0 6px #ffc400; }
-  .dot.red { background: #ff1744; box-shadow: 0 0 6px #ff1744; }
+  .status-line { font-size: 14px; color: rgba(255,255,255,0.35); text-align: center; margin-top: 10px; }
+  .status-line .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .dot.green { background: #00e676; box-shadow: 0 0 8px #00e676; }
+  .dot.yellow { background: #ffc400; box-shadow: 0 0 8px #ffc400; }
+  .dot.red { background: #ff1744; box-shadow: 0 0 8px #ff1744; }
 
-  .warn-box {
-    background: rgba(255,23,68,0.08);
-    border: 1px solid rgba(255,23,68,0.2);
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    text-align: center;
-    display: none;
-  }
+  .warn-box { background: rgba(255,23,68,0.08); border: 1px solid rgba(255,23,68,0.2); border-radius: 10px; padding: 10px 18px; font-size: 14px; color: rgba(255,255,255,0.6); text-align: center; display: none; margin-top: 8px; }
 </style>
 </head>
 <body>
 
-<!-- ===== WELCOME SCREEN ===== -->
+<!-- WELCOME -->
 <div class="welcome" id="welcomeScreen">
-  <div class="welcome-gauge">
-    <canvas id="welcomeCanvas" width="400" height="400"></canvas>
-  </div>
+  <div class="welcome-gauge"><canvas id="welcomeCanvas" width="400" height="400"></canvas></div>
   <div class="welcome-anim">
     <div class="welcome-title">Merhaba! 👋</div>
     <div class="welcome-sub">ARAÇ HIZ GÖSTERGESİ</div>
@@ -332,12 +184,12 @@
   </div>
 </div>
 
-<!-- ===== ALERT PILL ===== -->
+<!-- ALERTS -->
 <div class="alert-pill" id="alertPill">⚠️ HIZ SINIRI AŞILDI</div>
+<div class="camera-banner" id="camBanner">📸 YAKIN KAMERA</div>
 
-<!-- ===== MAIN ===== -->
+<!-- MAIN -->
 <div class="main" id="mainUI">
-  <!-- Kompakt hız sınırı -->
   <div class="limit-bar">
     <span class="limit-icon">🚧</span>
     <input type="number" class="limit-input" id="limitInput" value="90" min="10" max="300" inputmode="numeric">
@@ -346,7 +198,17 @@
     <button class="limit-toggle-btn" id="limitTglBtn" onclick="toggleLimit()">AÇIK</button>
   </div>
 
-  <!-- Gauge -->
+  <!-- KAMERA PANELİ -->
+  <div class="cam-panel" id="camPanel">
+    <div class="cam-header">
+      <span class="cam-title">📸 Yakındaki Kameralar (2km)</span>
+      <span class="cam-count safe" id="camCount">0</span>
+    </div>
+    <div class="cam-list" id="camList">
+      <div class="cam-empty">Konum alınıyor...</div>
+    </div>
+  </div>
+
   <div class="gauge-area">
     <div class="speedo-wrap" id="speedoWrap">
       <canvas id="gauge" width="700" height="700"></canvas>
@@ -357,579 +219,555 @@
     </div>
   </div>
 
-  <!-- Alt bilgi -->
   <div class="bottom-bar">
-    <div class="mini-card">
-      <div class="lab">Maks</div>
-      <div class="num" id="maxSpeed">0</div>
-    </div>
-    <div class="mini-card">
-      <div class="lab">Ort</div>
-      <div class="num" id="avgSpeed">0</div>
-    </div>
-    <div class="mini-card">
-      <div class="lab">Mesafe</div>
-      <div class="num" id="distance">0</div>
-    </div>
+    <div class="info-card"><div class="lab">Maks</div><div class="num" id="maxSpeed">0</div><div class="unit-sm" id="maxUnit">km/s</div></div>
+    <div class="info-card"><div class="lab">Ortalama</div><div class="num" id="avgSpeed">0</div><div class="unit-sm" id="avgUnit">km/s</div></div>
+    <div class="info-card"><div class="lab">Mesafe</div><div class="num" id="distance">0</div><div class="unit-sm" id="distUnit">km</div></div>
   </div>
 
   <div class="ctrl-row">
-    <button class="ctrl-btn" id="btnKmh" onclick="setUnit('kmh')" style="font-weight:600">KM/S</button>
+    <button class="ctrl-btn active" id="btnKmh" onclick="setUnit('kmh')">KM/S</button>
     <button class="ctrl-btn" id="btnMph" onclick="setUnit('mph')">MPH</button>
-    <button class="ctrl-btn" onclick="testSound()">🔊</button>
+    <button class="ctrl-btn" onclick="testSound()">🔊 Ses</button>
     <button class="ctrl-btn" onclick="resetMax()">Sıfırla</button>
   </div>
 
-  <div class="status-dot" id="status">
-    <span class="dot yellow"></span> GPS bekleniyor
-  </div>
-
+  <div class="status-line" id="status"><span class="dot yellow"></span> GPS bekleniyor</div>
   <div class="warn-box" id="warnBox">GPS desteklenmiyor – simülasyon modu</div>
 </div>
 
 <script>
-// ============== WELCOME ANIMATION ==============
-const wCvs = document.getElementById('welcomeCanvas');
-const wCtx = wCvs.getContext('2d');
-let wAngle = 0;
-let wDir = 1;
-
-function drawWelcomeGauge() {
-  const w = wCvs.width, h = wCvs.height;
-  const c = w/2, r = 150;
-  const start = 0.75*Math.PI, end = 2.25*Math.PI, sweep = end-start;
-  const na = start + wAngle * sweep;
-
+// ============== WELCOME ==============
+const wCvs=document.getElementById('welcomeCanvas'),wCtx=wCvs.getContext('2d');
+let wAngle=0,wDir=1;
+function drawWelcomeGauge(){
+  const w=wCvs.width,h=wCvs.height,c=w/2,r=150;
+  const start=0.75*Math.PI,end=2.25*Math.PI,sweep=end-start,na=start+wAngle*sweep;
   wCtx.clearRect(0,0,w,h);
-
-  // Dış krom halka
-  wCtx.beginPath();
-  wCtx.arc(c,c,r+6,0,Math.PI*2);
-  let grd = wCtx.createRadialGradient(c,c,r-10,c,c,r+12);
-  grd.addColorStop(0,'rgba(60,60,70,0.6)');
-  grd.addColorStop(0.5,'rgba(180,180,190,0.3)');
-  grd.addColorStop(1,'rgba(40,40,50,0.8)');
-  wCtx.strokeStyle = grd;
-  wCtx.lineWidth = 10;
-  wCtx.stroke();
-
-  // Arka plan
-  wCtx.beginPath();
-  wCtx.arc(c,c,r,start,end);
-  wCtx.strokeStyle = 'rgba(255,255,255,0.06)';
-  wCtx.lineWidth = 8;
-  wCtx.stroke();
-
-  // Renkli doluluk
-  const ratio = wAngle;
-  const segs = 60;
+  wCtx.beginPath();wCtx.arc(c,c,r+6,0,Math.PI*2);
+  let grd=wCtx.createRadialGradient(c,c,r-10,c,c,r+12);
+  grd.addColorStop(0,'rgba(60,60,70,0.6)');grd.addColorStop(0.5,'rgba(180,180,190,0.3)');grd.addColorStop(1,'rgba(40,40,50,0.8)');
+  wCtx.strokeStyle=grd;wCtx.lineWidth=10;wCtx.stroke();
+  wCtx.beginPath();wCtx.arc(c,c,r,start,end);wCtx.strokeStyle='rgba(255,255,255,0.06)';wCtx.lineWidth=8;wCtx.stroke();
+  const ratio=wAngle,segs=60;
   for(let i=0;i<=Math.floor(ratio*segs);i++){
-    const t=i/segs;
-    const a1=start+t*sweep, a2=start+(t+1/segs)*sweep;
+    const t=i/segs,a1=start+t*sweep,a2=start+(t+1/segs)*sweep;
     const rc=t<0.5?{r:0,g:200,b:255}:t<0.75?{r:255,g:196,b:0}:{r:255,g:23,b:68};
-    wCtx.beginPath();
-    wCtx.arc(c,c,r,a1,a2+0.01);
-    wCtx.strokeStyle=`rgb(${rc.r},${rc.g},${rc.b})`;
-    wCtx.lineWidth=8;
-    wCtx.lineCap='round';
-    wCtx.stroke();
+    wCtx.beginPath();wCtx.arc(c,c,r,a1,a2+0.01);wCtx.strokeStyle=`rgb(${rc.r},${rc.g},${rc.b})`;wCtx.lineWidth=8;wCtx.lineCap='round';wCtx.stroke();
   }
-
-  // İbre
-  const nl=r-20;
-  const nx=c+Math.cos(na)*nl, ny=c+Math.sin(na)*nl;
+  const nl=r-20,nx=c+Math.cos(na)*nl,ny=c+Math.sin(na)*nl;
   const rc2=ratio<0.5?{r:0,g:200,b:255}:ratio<0.75?{r:255,g:196,b:0}:{r:255,g:23,b:68};
-  wCtx.beginPath();wCtx.moveTo(c,c);wCtx.lineTo(nx,ny);
-  wCtx.strokeStyle=`rgba(${rc2.r},${rc2.g},${rc2.b},0.3)`;wCtx.lineWidth=6;wCtx.lineCap='round';wCtx.stroke();
-  wCtx.beginPath();wCtx.moveTo(c,c);wCtx.lineTo(nx,ny);
-  wCtx.strokeStyle=`rgb(${rc2.r},${rc2.g},${rc2.b})`;wCtx.lineWidth=2.5;wCtx.lineCap='round';wCtx.stroke();
-
-  // Merkez
-  wCtx.beginPath();wCtx.arc(c,c,6,0,Math.PI*2);wCtx.fillStyle='#1a1a2e';wCtx.fill();
-  wCtx.strokeStyle=`rgb(${rc2.r},${rc2.g},${rc2.b})`;wCtx.lineWidth=2;wCtx.stroke();
-
-  wAngle += 0.008 * wDir;
-  if(wAngle>=1) wDir=-1;
-  if(wAngle<=0) wDir=1;
+  wCtx.beginPath();wCtx.moveTo(c,c);wCtx.lineTo(nx,ny);wCtx.strokeStyle=`rgba(${rc2.r},${rc2.g},${rc2.b},0.3)`;wCtx.lineWidth=6;wCtx.lineCap='round';wCtx.stroke();
+  wCtx.beginPath();wCtx.moveTo(c,c);wCtx.lineTo(nx,ny);wCtx.strokeStyle=`rgb(${rc2.r},${rc2.g},${rc2.b})`;wCtx.lineWidth=2.5;wCtx.lineCap='round';wCtx.stroke();
+  wCtx.beginPath();wCtx.arc(c,c,6,0,Math.PI*2);wCtx.fillStyle='#1a1a2e';wCtx.fill();wCtx.strokeStyle=`rgb(${rc2.r},${rc2.g},${rc2.b})`;wCtx.lineWidth=2;wCtx.stroke();
+  wAngle+=0.008*wDir;if(wAngle>=1)wDir=-1;if(wAngle<=0)wDir=1;
 }
-
-let welcomeAnim = setInterval(drawWelcomeGauge, 30);
-
-function dismissWelcome() {
+let welcomeAnim=setInterval(drawWelcomeGauge,30);
+function dismissWelcome(){
   clearInterval(welcomeAnim);
   document.getElementById('welcomeScreen').classList.add('hide');
-  setTimeout(() => {
-    document.getElementById('welcomeScreen').style.display='none';
-    document.getElementById('mainUI').classList.add('show');
-    initAudio();
-    startGPS();
-    resizeGauge();
-  }, 800);
+  setTimeout(()=>{document.getElementById('welcomeScreen').style.display='none';document.getElementById('mainUI').classList.add('show');initAudio();startGPS();resizeGauge();},800);
 }
 
 // ============== STATE ==============
-const canvas = document.getElementById('gauge');
-const ctx = canvas.getContext('2d');
-let CW = 700, CH = 700;
+const canvas=document.getElementById('gauge'),ctx=canvas.getContext('2d');
+let CW=700,CH=700;
+let currentSpeed=0,displaySpeed=0,maxSpeedVal=0,speedSum=0,speedCount=0;
+let totalDist=0,lastPos=null,lastTime=null;
+let unit='kmh',maxGaugeKmh=260;
+let gpsActive=false,simMode=false,watchId=null;
+let limitEnabled=true,speedLimit=90,isAlerting=false,lastAlertTime=0;
+let audioCtx=null,audioSupported=true;
+let limitCheckTimeout=null;
 
-let currentSpeed = 0, displaySpeed = 0;
-let maxSpeedVal = 0, speedSum = 0, speedCount = 0;
-let totalDist = 0, lastPos = null, lastTime = null;
-let unit = 'kmh', maxGaugeKmh = 260;
-let gpsActive = false, simMode = false, watchId = null;
-let limitEnabled = true, speedLimit = 90;
-let isAlerting = false, lastAlertTime = 0;
-let audioCtx = null, audioSupported = true;
-let lastKnownPos = null;
+// Kamera durumu
+let cameras=[];
+let myLat=null,myLon=null,myHeading=null;
+let camFetchInterval=null;
+let lastCamWarnTime=0;
+let camWarningActive=false;
 
 // ============== RESIZE ==============
-function resizeGauge() {
-  const area = document.querySelector('.gauge-area');
-  const maxH = area.clientHeight;
-  const maxW = area.clientWidth;
-  const sz = Math.min(maxW, maxH, 500);
-  const dpr = window.devicePixelRatio || 1;
-  canvas.style.width = sz + 'px';
-  canvas.style.height = sz + 'px';
-  canvas.width = sz * dpr;
-  canvas.height = sz * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  CW = sz; CH = sz;
+function resizeGauge(){
+  const vw=window.innerWidth,vh=window.innerHeight;
+  const otherH=300;
+  const availH=vh-otherH-50;
+  const availW=vw-32;
+  const sz=Math.min(availW,availH,420);
+  const dpr=window.devicePixelRatio||1;
+  canvas.style.width=sz+'px';canvas.style.height=sz+'px';
+  canvas.width=sz*dpr;canvas.height=sz*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);CW=sz;CH=sz;
 }
-window.addEventListener('resize', resizeGauge);
+window.addEventListener('resize',resizeGauge);
 
 // ============== AUDIO ==============
-function initAudio() {
-  try {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if(audioCtx.state==='suspended') audioCtx.resume();
-  } catch(e) { audioSupported = false; }
+function initAudio(){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();}catch(e){audioSupported=false;}}
+function playBeep(freq,dur,vol){
+  if(!audioCtx)initAudio();if(!audioSupported||!audioCtx)return false;
+  try{if(audioCtx.state==='suspended')audioCtx.resume();
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='square';o.frequency.value=freq||880;g.gain.value=vol||0.3;
+    g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+(dur||0.2));o.connect(g);g.connect(audioCtx.destination);
+    o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+(dur||0.2));return true;
+  }catch(e){return false;}
 }
+function playAlertSound(){const now=Date.now();if(now-lastAlertTime<1500)return;lastAlertTime=now;playBeep(900,0.15,0.4);setTimeout(()=>playBeep(1100,0.2,0.5),180);}
+function playCamSound(){const now=Date.now();if(now-lastCamWarnTime<5000)return;lastCamWarnTime=now;playBeep(1200,0.1,0.3);setTimeout(()=>playBeep(1400,0.15,0.4),130);setTimeout(()=>playBeep(1600,0.2,0.5),280);}
+function testSound(){initAudio();playBeep(660,0.3,0.3);setTimeout(()=>playBeep(880,0.3,0.3),350);if(navigator.vibrate)navigator.vibrate([100,50,100]);}
 
-function playBeep(freq, dur, vol) {
-  if(!audioCtx) initAudio();
-  if(!audioSupported||!audioCtx) return false;
-  try {
-    if(audioCtx.state==='suspended') audioCtx.resume();
-    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-    o.type='square'; o.frequency.value=freq||880;
-    g.gain.value=vol||0.3;
-    g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+(dur||0.2));
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(audioCtx.currentTime); o.stop(audioCtx.currentTime+(dur||0.2));
-    return true;
-  } catch(e) { return false; }
+// ============== SPEED LIMIT ALERT ==============
+function checkAlert(){
+  if(!limitEnabled){stopAlert();return;}
+  const eff=unit==='mph'?speedLimit*1.60934:speedLimit;
+  if(displaySpeed>eff){if(!isAlerting){isAlerting=true;startAlert();}playAlertSound();}
+  else if(isAlerting){stopAlert();}
 }
-
-function playAlertSound() {
-  const now=Date.now();
-  if(now-lastAlertTime<1500) return;
-  lastAlertTime=now;
-  const s1=playBeep(900,0.15,0.4);
-  setTimeout(()=>{const s2=playBeep(1100,0.2,0.5);if(!s1&&!s2)visualFallback();},180);
-}
-
-function testSound() {
-  initAudio();
-  playBeep(660,0.3,0.3);
-  setTimeout(()=>playBeep(880,0.3,0.3),350);
-  if(navigator.vibrate) navigator.vibrate([100,50,100]);
-}
-
-// ============== ALERT ==============
-function checkAlert() {
-  if(!limitEnabled) { stopAlert(); return; }
-  const eff = unit==='mph' ? speedLimit*1.60934 : speedLimit;
-  if(displaySpeed > eff) {
-    if(!isAlerting) { isAlerting=true; startAlert(); }
-    playAlertSound();
-  } else if(isAlerting) { stopAlert(); }
-}
-
-function startAlert() {
-  document.body.classList.add('alert-flash');
-  document.getElementById('alertPill').classList.add('visible');
+function startAlert(){
+  document.body.classList.add('alert-flash');document.getElementById('alertPill').classList.add('visible');
   document.getElementById('speedVal').classList.add('alerting');
-  if(navigator.vibrate) navigator.vibrate([200,100,200,100,200]);
+  if(navigator.vibrate)navigator.vibrate([200,100,200,100,200]);
   playAlertSound();
-  if(!window._ai) window._ai=setInterval(()=>{if(isAlerting){playAlertSound();if(navigator.vibrate)navigator.vibrate([200,100,200]);}},2000);
+  if(!window._ai)window._ai=setInterval(()=>{if(isAlerting){playAlertSound();if(navigator.vibrate)navigator.vibrate([200,100,200]);}},2000);
 }
-
-function stopAlert() {
-  isAlerting=false;
-  document.body.classList.remove('alert-flash');
-  document.getElementById('alertPill').classList.remove('visible');
-  document.getElementById('speedVal').classList.remove('alerting');
-  if(navigator.vibrate) navigator.vibrate(0);
+function stopAlert(){
+  isAlerting=false;document.body.classList.remove('alert-flash');
+  document.getElementById('alertPill').classList.remove('visible');document.getElementById('speedVal').classList.remove('alerting');
+  if(navigator.vibrate)navigator.vibrate(0);
   if(window._ai){clearInterval(window._ai);window._ai=null;}
 }
 
-function visualFallback() {
-  const p=document.getElementById('alertPill');
-  p.style.background='rgba(255,100,0,0.9)';
-  p.textContent='⚠️ HIZ AŞIMI (sessiz)';
-  setTimeout(()=>{p.style.background='';p.textContent='⚠️ HIZ SINIRI AŞILDI';},5000);
+// ============== CAMERA SYSTEM ==============
+async function fetchCameras(lat, lon) {
+  try {
+    // Overpass: 2km yarıçapında hız kameraları
+    const query = `[out:json][timeout:10];
+(
+  node["highway"="speed_camera"](around:2000,${lat},${lon});
+  node["enforcement"="maxspeed"](around:2000,${lat},${lon});
+  node["enforcement"="traffic_signals"](around:2000,${lat},${lon});
+  node["highway"="speed_camera"]["camera_type"="fixed"](around:2000,${lat},${lon});
+  node["highway"="speed_camera"]["camera_type"="mobile"](around:2000,${lat},${lon});
+  node["man_made"="surveillance"]["surveillance:type"="camera"](around:2000,${lat},${lon});
+  node["highway"="speed_camera"]["camera_type"="red_light"](around:2000,${lat},${lon});
+);
+out body qt;`;
+
+    const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('API');
+    const data = await resp.json();
+
+    cameras = [];
+    if (data.elements) {
+      for (const el of data.elements) {
+        const dist = haversine(lat, lon, el.lat, el.lon) * 1000; // metre
+        const bearing = getBearing(lat, lon, el.lat, el.lon);
+        
+        let camType = 'Sabit Kamera';
+        let camIcon = '📸';
+        
+        if (el.tags) {
+          const ct = el.tags.camera_type || el.tags.enforcement || '';
+          if (ct === 'mobile' || ct === 'mobile_camera') { camType = 'Seyyar Kamera'; camIcon = '🚔'; }
+          else if (ct === 'red_light' || ct === 'traffic_signals') { camType = 'Kırmızı Işık'; camIcon = '🚦'; }
+          else if (ct === 'maxspeed') { camType = 'Hız Kamera'; camIcon = '📸'; }
+          else if (ct === 'fixed') { camType = 'Sabit Kamera'; camIcon = '📸'; }
+          else if (el.tags.man_made === 'surveillance') { camType = 'Gözlem Kamera'; camIcon = '👁️'; }
+        }
+
+        const road = el.tags ? (el.tags.name || el.tags.ref || el.tags.road || '') : '';
+        const maxSpd = el.tags ? (el.tags.maxspeed || '') : '';
+
+        cameras.push({
+          lat: el.lat, lon: el.lon, dist, bearing, type: camType, icon: camIcon,
+          road, maxspeed: maxSpd, direction: bearingToDir(bearing)
+        });
+      }
+    }
+
+    // Mesafeye göre sırala
+    cameras.sort((a, b) => a.dist - b.dist);
+    renderCamList();
+    checkCameraWarning();
+
+  } catch (e) {
+    console.warn('Kamera sorgu hatası:', e);
+    document.getElementById('camList').innerHTML = '<div class="cam-empty">Kamera verisi alınamadı</div>';
+  }
+}
+
+function getBearing(lat1, lon1, lat2, lon2) {
+  const dL = (lon2 - lon1) * Math.PI / 180;
+  const y = Math.sin(dL) * Math.cos(lat2 * Math.PI / 180);
+  const x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
+    Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos(dL);
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+
+function bearingToDir(b) {
+  const dirs = ['K', 'KD', 'D', 'GD', 'G', 'GB', 'B', 'KB'];
+  return dirs[Math.round(b / 45) % 8];
+}
+
+function renderCamList() {
+  const list = document.getElementById('camList');
+  const countEl = document.getElementById('camCount');
+  
+  countEl.textContent = cameras.length;
+  
+  if (cameras.length === 0) {
+    list.innerHTML = '<div class="cam-empty">✅ 2km içinde kamera bulunamadı</div>';
+    countEl.className = 'cam-count safe';
+    return;
+  }
+
+  // En yakın kamera mesafesine göre renk
+  const nearest = cameras[0].dist;
+  if (nearest < 500) countEl.className = 'cam-count danger';
+  else if (nearest < 1000) countEl.className = 'cam-count';
+  else countEl.className = 'cam-count safe';
+
+  let html = '';
+  // En fazla 6 kamera göster
+  const shown = cameras.slice(0, 6);
+  for (const cam of shown) {
+    const distClass = cam.dist < 300 ? 'very-near' : cam.dist < 800 ? 'near' : '';
+    const distColor = cam.dist < 300 ? 'very-near' : cam.dist < 800 ? 'near' : 'far';
+    
+    let distStr;
+    if (cam.dist < 1000) {
+      distStr = Math.round(cam.dist);
+      distUnit = 'm';
+    } else {
+      distStr = (cam.dist / 1000).toFixed(1);
+      distUnit = 'km';
+    }
+
+    let extra = '';
+    if (cam.maxspeed) extra = ` – ${cam.maxspeed}`;
+
+    html += `<div class="cam-item ${distClass}">
+      <span class="cam-icon">${cam.icon}</span>
+      <div class="cam-info">
+        <div class="cam-type">${cam.type}${extra}</div>
+        <div class="cam-road">${cam.road ? cam.road + ' • ' : ''}${cam.direction} yön${cam.road ? '' : ''}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="cam-dist ${distColor}">${distStr}</div>
+        <div class="cam-dist-unit">${distUnit}</div>
+      </div>
+    </div>`;
+  }
+
+  if (cameras.length > 6) {
+    html += `<div class="cam-empty">+${cameras.length - 6} kamera daha</div>`;
+  }
+
+  list.innerHTML = html;
+}
+
+function checkCameraWarning() {
+  if (cameras.length === 0) {
+    stopCamWarning();
+    return;
+  }
+
+  const nearest = cameras[0];
+  const banner = document.getElementById('camBanner');
+
+  if (nearest.dist < 300) {
+    // ÇOK YAKIN – kırmızı tehlike
+    if (!camWarningActive) {
+      camWarningActive = true;
+      banner.classList.add('visible', 'danger');
+      banner.innerHTML = `🚨 KAMERA ${Math.round(nearest.dist)}m — ${nearest.type}`;
+      playCamSound();
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
+    }
+    // Periyodik uyarı
+    if (!window._camInt) {
+      window._camInt = setInterval(() => {
+        if (camWarningActive) {
+          playCamSound();
+          if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        }
+      }, 4000);
+    }
+  } else if (nearest.dist < 800) {
+    // YAKIN – turuncu uyarı
+    banner.classList.add('visible');
+    banner.classList.remove('danger');
+    banner.innerHTML = `📸 Yakın Kamera ${Math.round(nearest.dist)}m — ${nearest.type}`;
+    if (!camWarningActive) {
+      camWarningActive = true;
+      playBeep(800, 0.1, 0.2);
+    }
+    if (window._camInt) { clearInterval(window._camInt); window._camInt = null; }
+  } else {
+    stopCamWarning();
+  }
+}
+
+function stopCamWarning() {
+  camWarningActive = false;
+  const banner = document.getElementById('camBanner');
+  banner.classList.remove('visible', 'danger');
+  if (window._camInt) { clearInterval(window._camInt); window._camInt = null; }
 }
 
 // ============== LIMIT ==============
-function toggleLimit() {
+function toggleLimit(){
   limitEnabled=!limitEnabled;
-  const b=document.getElementById('limitTglBtn');
-  b.textContent=limitEnabled?'AÇIK':'KAPALI';
-  b.classList.toggle('off',!limitEnabled);
-  if(!limitEnabled) stopAlert();
+  const b=document.getElementById('limitTglBtn');b.textContent=limitEnabled?'AÇIK':'KAPALI';b.classList.toggle('off',!limitEnabled);
+  if(!limitEnabled)stopAlert();
 }
-
 document.getElementById('limitInput').addEventListener('input',function(){
-  let v=parseInt(this.value);
-  if(!isNaN(v)&&v>=10&&v<=300){speedLimit=v;document.getElementById('autoTag').style.display='none';}
+  let v=parseInt(this.value);if(!isNaN(v)&&v>=10&&v<=300){speedLimit=v;document.getElementById('autoTag').style.display='none';}
 });
 document.getElementById('limitInput').addEventListener('change',function(){
   let v=parseInt(this.value);if(isNaN(v)||v<10)v=10;if(v>300)v=300;this.value=v;speedLimit=v;
 });
 
 // ============== UNIT ==============
-function setUnit(u) {
+function setUnit(u){
   unit=u;
   document.getElementById('btnKmh').classList.toggle('active',u==='kmh');
   document.getElementById('btnMph').classList.toggle('active',u==='mph');
   document.getElementById('speedUnit').textContent=u==='kmh'?'KM/S':'MPH';
   document.getElementById('limitUnitLabel').textContent=u==='kmh'?'km/s':'mph';
-  if(u==='mph'){
-    const cv=Math.round(speedLimit*0.621371);
-    document.getElementById('limitInput').value=cv;speedLimit=cv;
-    maxGaugeKmh=260;
-  } else {
-    const cv=Math.round(speedLimit/0.621371);
-    document.getElementById('limitInput').value=cv;speedLimit=cv;
-    maxGaugeKmh=260;
-  }
+  document.getElementById('maxUnit').textContent=u==='kmh'?'km/s':'mph';
+  document.getElementById('avgUnit').textContent=u==='kmh'?'km/s':'mph';
+  document.getElementById('distUnit').textContent=u==='kmh'?'km':'mi';
+  if(u==='mph'){const cv=Math.round(speedLimit*0.621371);document.getElementById('limitInput').value=cv;speedLimit=cv;}
+  else{const cv=Math.round(speedLimit/0.621371);document.getElementById('limitInput').value=cv;speedLimit=cv;}
 }
 
 // ============== LOCATION-BASED SPEED LIMIT ==============
-let limitCheckTimeout = null;
-
-async function fetchSpeedLimit(lat, lon) {
-  try {
-    // Overpass API: en yakın yolu ve maxspeed bilgisini bul
-    const query = `[out:json];way(around:80,${lat},${lon})["maxspeed"];out tags;`;
-    const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
-    
-    document.getElementById('autoTag').style.display = 'inline';
-    document.getElementById('autoTag').textContent = '...';
-    
-    const resp = await fetch(url);
-    if(!resp.ok) throw new Error('API hatası');
-    const data = await resp.json();
-    
-    if(data.elements && data.elements.length > 0) {
-      // En yakın yoldaki maxspeed'i al
-      for(const el of data.elements) {
-        if(el.tags && el.tags.maxspeed) {
-          let ms = el.tags.maxspeed;
-          // Bazı maxspeed değerleri "30", "50 mph", "TR:urban" gibi olabilir
-          if(ms.includes('mph')) {
-            ms = parseInt(ms);
-            if(!isNaN(ms)) ms = Math.round(ms * 1.60934); // mph -> kmh
-          } else if(ms === 'TR:urban' || ms === 'urban') {
-            ms = 50; // Türkiye şehir içi
-          } else if(ms === 'TR:rural' || ms === 'rural') {
-            ms = 90; // Türkiye şehir dışı
-          } else if(ms === 'TR:motorway' || ms === 'motorway') {
-            ms = 120; // Türkiye otoyol
-          } else if(ms === 'TR:trunk' || ms === 'trunk') {
-            ms = 110;
-          } else if(ms === 'TR:living_street' || ms === 'living_street') {
-            ms = 20;
-          } else {
-            ms = parseInt(ms);
-          }
-          
-          if(!isNaN(ms) && ms > 0) {
-            const finalVal = unit === 'mph' ? Math.round(ms * 0.621371) : ms;
-            speedLimit = finalVal;
-            document.getElementById('limitInput').value = finalVal;
-            document.getElementById('autoTag').textContent = 'OTO ✓';
-            document.getElementById('autoTag').style.background = 'rgba(0,230,118,0.15)';
-            document.getElementById('autoTag').style.color = '#00e676';
-            return;
+async function fetchSpeedLimit(lat,lon){
+  try{
+    const query=`[out:json];way(around:80,${lat},${lon})["maxspeed"];out tags;`;
+    const url='https://overpass-api.de/api/interpreter?data='+encodeURIComponent(query);
+    document.getElementById('autoTag').style.display='inline';document.getElementById('autoTag').textContent='...';
+    const resp=await fetch(url);if(!resp.ok)throw new Error('API');
+    const data=await resp.json();
+    if(data.elements&&data.elements.length>0){
+      for(const el of data.elements){
+        if(el.tags&&el.tags.maxspeed){
+          let ms=el.tags.maxspeed;
+          if(ms.includes('mph')){ms=parseInt(ms);if(!isNaN(ms))ms=Math.round(ms*1.60934);}
+          else if(ms==='TR:urban'||ms==='urban')ms=50;
+          else if(ms==='TR:rural'||ms==='rural')ms=90;
+          else if(ms==='TR:motorway'||ms==='motorway')ms=120;
+          else if(ms==='TR:trunk'||ms==='trunk')ms=110;
+          else if(ms==='TR:living_street'||ms==='living_street')ms=20;
+          else ms=parseInt(ms);
+          if(!isNaN(ms)&&ms>0){
+            speedLimit=unit==='mph'?Math.round(ms*0.621371):ms;
+            document.getElementById('limitInput').value=speedLimit;
+            document.getElementById('autoTag').textContent='OTO ✓';
+            document.getElementById('autoTag').style.background='rgba(0,230,118,0.15)';
+            document.getElementById('autoTag').style.color='#00e676';return;
           }
         }
       }
     }
-    // Speed limit bulunamadı
-    document.getElementById('autoTag').textContent = 'OTO –';
-    document.getElementById('autoTag').style.background = 'rgba(255,196,0,0.12)';
-    document.getElementById('autoTag').style.color = '#ffc400';
-  } catch(e) {
-    console.warn('Hız sınırı alınamadı:', e);
-    document.getElementById('autoTag').textContent = 'OTO ✗';
-    document.getElementById('autoTag').style.background = 'rgba(255,23,68,0.1)';
-    document.getElementById('autoTag').style.color = '#ff5252';
+    document.getElementById('autoTag').textContent='OTO –';
+    document.getElementById('autoTag').style.background='rgba(255,196,0,0.12)';document.getElementById('autoTag').style.color='#ffc400';
+  }catch(e){
+    document.getElementById('autoTag').textContent='OTO ✗';
+    document.getElementById('autoTag').style.background='rgba(255,23,68,0.1)';document.getElementById('autoTag').style.color='#ff5252';
   }
 }
 
-// ============== REALISTIC GAUGE ==============
-function drawGauge(speed) {
-  const w=CW, h=CH;
-  const cX=w/2, cY=h*0.48, R=w*0.37;
-  const start=0.8*Math.PI, end=2.2*Math.PI, sweep=end-start;
-  const maxV = unit==='mph' ? 160 : 260;
+// ============== GAUGE ==============
+function drawGauge(speed){
+  const w=CW,h=CH,cX=w/2,cY=h*0.46,R=w*0.37;
+  const start=0.8*Math.PI,end=2.2*Math.PI,sweep=end-start;
+  const maxV=unit==='mph'?160:260;
   const ratio=Math.min(speed/maxV,1);
   const na=start+ratio*sweep;
-
-  // Hız sınırı oranı
   const eff=unit==='mph'?speedLimit*1.60934:speedLimit;
   const lRatio=Math.min(eff/maxV,1);
   const lAngle=start+lRatio*sweep;
 
   ctx.clearRect(0,0,w,h);
 
-  // ---- DIŞ KROM HALKA ----
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cX,cY,R+12,0,Math.PI*2);
+  // DIŞ KROM
+  ctx.save();ctx.beginPath();ctx.arc(cX,cY,R+12,0,Math.PI*2);
   let chrGrd=ctx.createLinearGradient(cX-R,cY-R,cX+R,cY+R);
-  chrGrd.addColorStop(0,'#3a3a44');
-  chrGrd.addColorStop(0.3,'#8a8a95');
-  chrGrd.addColorStop(0.5,'#c8c8d0');
-  chrGrd.addColorStop(0.7,'#8a8a95');
-  chrGrd.addColorStop(1,'#3a3a44');
-  ctx.strokeStyle=chrGrd;
-  ctx.lineWidth=8;
-  ctx.stroke();
-
-  // İç krom halka
-  ctx.beginPath();
-  ctx.arc(cX,cY,R+4,0,Math.PI*2);
+  chrGrd.addColorStop(0,'#3a3a44');chrGrd.addColorStop(0.3,'#8a8a95');chrGrd.addColorStop(0.5,'#c8c8d0');chrGrd.addColorStop(0.7,'#8a8a95');chrGrd.addColorStop(1,'#3a3a44');
+  ctx.strokeStyle=chrGrd;ctx.lineWidth=8;ctx.stroke();
+  ctx.beginPath();ctx.arc(cX,cY,R+4,0,Math.PI*2);
   chrGrd=ctx.createLinearGradient(cX-R,cY-R,cX+R,cY+R);
-  chrGrd.addColorStop(0,'#2a2a30');
-  chrGrd.addColorStop(0.4,'#555560');
-  chrGrd.addColorStop(0.6,'#555560');
-  chrGrd.addColorStop(1,'#2a2a30');
-  ctx.strokeStyle=chrGrd;
-  ctx.lineWidth=4;
-  ctx.stroke();
-  ctx.restore();
+  chrGrd.addColorStop(0,'#2a2a30');chrGrd.addColorStop(0.4,'#555560');chrGrd.addColorStop(0.6,'#555560');chrGrd.addColorStop(1,'#2a2a30');
+  ctx.strokeStyle=chrGrd;ctx.lineWidth=4;ctx.stroke();ctx.restore();
 
-  // ---- KADRAN YÜZEY ----
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cX,cY,R,0,Math.PI*2);
-  let faceGrd=ctx.createRadialGradient(cX,cY-R*0.3,0,cX,cY,R);
-  faceGrd.addColorStop(0,'#1e1e28');
-  faceGrd.addColorStop(0.7,'#121218');
-  faceGrd.addColorStop(1,'#0a0a10');
-  ctx.fillStyle=faceGrd;
-  ctx.fill();
-  ctx.restore();
+  // YÜZEY
+  ctx.save();ctx.beginPath();ctx.arc(cX,cY,R,0,Math.PI*2);
+  let fGrd=ctx.createRadialGradient(cX,cY-R*0.3,0,cX,cY,R);
+  fGrd.addColorStop(0,'#1e1e28');fGrd.addColorStop(0.7,'#121218');fGrd.addColorStop(1,'#0a0a10');
+  ctx.fillStyle=fGrd;ctx.fill();ctx.restore();
 
-  // ---- KIRMIZI ZON (yüksek hız bölgesi) ----
-  const redStart = 0.75;
-  ctx.beginPath();
-  ctx.arc(cX,cY,R,start+redStart*sweep,end);
-  ctx.strokeStyle='rgba(255,23,68,0.08)';
-  ctx.lineWidth=R*0.35;
-  ctx.stroke();
+  // KIRMIZI ZON
+  ctx.beginPath();ctx.arc(cX,cY,R,start+0.75*sweep,end);
+  ctx.strokeStyle='rgba(255,23,68,0.08)';ctx.lineWidth=R*0.35;ctx.stroke();
 
-  // ---- ARKA PLAN ARC ----
-  ctx.beginPath();
-  ctx.arc(cX,cY,R,start,end);
-  ctx.strokeStyle='rgba(255,255,255,0.05)';
-  ctx.lineWidth=6;
-  ctx.lineCap='butt';
-  ctx.stroke();
+  // ARKA ARC
+  ctx.beginPath();ctx.arc(cX,cY,R,start,end);ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=6;ctx.lineCap='butt';ctx.stroke();
 
-  // ---- RENKLİ ARC ----
-  const segs=120;
-  const filled=Math.floor(ratio*segs);
+  // RENKLİ ARC
+  const segs=120,filled=Math.floor(ratio*segs);
   for(let i=0;i<=filled;i++){
-    const t=i/segs;
-    const a1=start+t*sweep, a2=start+(t+1/segs)*sweep;
-    let rc;
-    if(t<0.35) rc={r:0,g:180,b:255};
-    else if(t<0.6) rc={r:0,g:220,b:100};
-    else if(t<0.75) rc={r:255,g:196,b:0};
-    else rc={r:255,g:23,b:68};
-    ctx.beginPath();
-    ctx.arc(cX,cY,R,a1,a2+0.005);
-    ctx.strokeStyle=`rgb(${rc.r},${rc.g},${rc.b})`;
-    ctx.lineWidth=6;
-    ctx.lineCap='butt';
-    ctx.stroke();
+    const t=i/segs,a1=start+t*sweep,a2=start+(t+1/segs)*sweep;
+    let rc;if(t<0.35)rc={r:0,g:180,b:255};else if(t<0.6)rc={r:0,g:220,b:100};else if(t<0.75)rc={r:255,g:196,b:0};else rc={r:255,g:23,b:68};
+    ctx.beginPath();ctx.arc(cX,cY,R,a1,a2+0.005);ctx.strokeStyle=`rgb(${rc.r},${rc.g},${rc.b})`;ctx.lineWidth=6;ctx.lineCap='butt';ctx.stroke();
   }
 
-  // ---- HIZ SINIR ÇİZGİSİ ----
+  // HIZ SINIR ÇİZGİSİ
   if(limitEnabled){
-    const lx1=cX+Math.cos(lAngle)*(R-22);
-    const ly1=cY+Math.sin(lAngle)*(R-22);
-    const lx2=cX+Math.cos(lAngle)*(R+8);
-    const ly2=cY+Math.sin(lAngle)*(R+8);
+    const lx1=cX+Math.cos(lAngle)*(R-24),ly1=cY+Math.sin(lAngle)*(R-24);
+    const lx2=cX+Math.cos(lAngle)*(R+10),ly2=cY+Math.sin(lAngle)*(R+10);
     ctx.beginPath();ctx.moveTo(lx1,ly1);ctx.lineTo(lx2,ly2);
-    if(isAlerting){
-      ctx.strokeStyle='rgba(255,23,68,0.9)';ctx.lineWidth=3;
-      ctx.shadowColor='#ff1744';ctx.shadowBlur=12;
-    } else {
-      ctx.strokeStyle='rgba(255,196,0,0.5)';ctx.lineWidth=2;
-      ctx.shadowColor='#ffc400';ctx.shadowBlur=6;
-    }
+    if(isAlerting){ctx.strokeStyle='rgba(255,23,68,0.9)';ctx.lineWidth=3;ctx.shadowColor='#ff1744';ctx.shadowBlur=12;}
+    else{ctx.strokeStyle='rgba(255,196,0,0.5)';ctx.lineWidth=2;ctx.shadowColor='#ffc400';ctx.shadowBlur=6;}
     ctx.stroke();ctx.shadowBlur=0;
   }
 
-  // ---- TICK MARKS ----
-  const totalTicks = unit==='mph' ? 32 : 52;
-  const majorEvery = unit==='mph' ? 4 : 4;
+  // KAMERA İKON (kadran üzerinde)
+  if(camWarningActive && cameras.length > 0) {
+    const nearest = cameras[0];
+    const camAngle = start + (nearest.dist < 300 ? 0.92 : 0.85) * sweep;
+    const camR = R + 22;
+    const camX = cX + Math.cos(camAngle) * camR;
+    const camY = cY + Math.sin(camAngle) * camR;
+    
+    ctx.save();
+    ctx.font = `bold ${w*0.06}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    if(nearest.dist < 300) {
+      ctx.shadowColor = '#ff1744'; ctx.shadowBlur = 15;
+      ctx.fillStyle = Math.floor(Date.now()/300)%2 ? '#ff1744' : 'rgba(255,23,68,0.4)';
+    } else {
+      ctx.shadowColor = '#ff9800'; ctx.shadowBlur = 10;
+      ctx.fillStyle = '#ff9800';
+    }
+    ctx.fillText('📸', camX, camY);
+    ctx.restore();
+  }
+
+  // TICKS
+  const totalTicks=unit==='mph'?32:52,majorEvery=4;
   for(let i=0;i<=totalTicks;i++){
-    const t=i/totalTicks;
-    const ang=start+t*sweep;
-    const isMajor=i%majorEvery===0;
-    const isMid=i%(majorEvery/2)===0 && !isMajor;
-    const iR=isMajor?R-28:isMid?R-18:R-12;
-    const oR=R-5;
-    const x1=cX+Math.cos(ang)*iR, y1=cY+Math.sin(ang)*iR;
-    const x2=cX+Math.cos(ang)*oR, y2=cY+Math.sin(ang)*oR;
+    const t=i/totalTicks,ang=start+t*sweep;
+    const isMajor=i%majorEvery===0,isMid=i%(majorEvery/2)===0&&!isMajor;
+    const iR=isMajor?R-30:isMid?R-18:R-12,oR=R-5;
+    const x1=cX+Math.cos(ang)*iR,y1=cY+Math.sin(ang)*iR;
+    const x2=cX+Math.cos(ang)*oR,y2=cY+Math.sin(ang)*oR;
     ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
     ctx.strokeStyle=isMajor?'rgba(255,255,255,0.65)':isMid?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.12)';
-    ctx.lineWidth=isMajor?2.5:isMid?1.5:0.8;
-    ctx.lineCap='round';
-    ctx.stroke();
-
+    ctx.lineWidth=isMajor?2.5:isMid?1.5:0.8;ctx.lineCap='round';ctx.stroke();
     if(isMajor){
-      const val=Math.round(t*maxV);
-      const lR=R-40;
-      const lx=cX+Math.cos(ang)*lR, ly=cY+Math.sin(ang)*lR;
+      const val=Math.round(t*maxV),lR=R-44;
+      const lx=cX+Math.cos(ang)*lR,ly=cY+Math.sin(ang)*lR;
       const inRed=t>=0.75;
-      ctx.font=`600 ${w*0.035}px Segoe UI,Arial`;
-      ctx.fillStyle=inRed?'rgba(255,80,100,0.7)':'rgba(255,255,255,0.45)';
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText(val,lx,ly);
+      ctx.font=`600 ${w*0.04}px Segoe UI,Arial`;
+      ctx.fillStyle=inRed?'rgba(255,80,100,0.7)':'rgba(255,255,255,0.5)';
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(val,lx,ly);
     }
   }
 
-  // ---- İBRE ----
-  const nLen=R-30;
-  const nx=cX+Math.cos(na)*nLen, ny=cY+Math.sin(na)*nLen;
-  // İbre kontra ağırlık
-  const bAngle=na+Math.PI;
-  const bLen=22;
-  const bx=cX+Math.cos(bAngle)*bLen, by=cY+Math.sin(bAngle)*bLen;
+  // İBRE
+  const nLen=R-32,nx=cX+Math.cos(na)*nLen,ny=cY+Math.sin(na)*nLen;
+  const bAngle=na+Math.PI,bLen=24;
+  const bx=cX+Math.cos(bAngle)*bLen,by=cY+Math.sin(bAngle)*bLen;
+  let nColor;if(ratio<0.35)nColor='#00b4ff';else if(ratio<0.6)nColor='#00dc64';else if(ratio<0.75)nColor='#ffc400';else nColor='#ff1744';
+  ctx.save();ctx.shadowColor='rgba(0,0,0,0.5)';ctx.shadowBlur=8;ctx.shadowOffsetY=2;
+  ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(nx,ny);ctx.strokeStyle=nColor;ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();ctx.restore();
+  ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(cX,cY);ctx.strokeStyle='rgba(200,200,210,0.6)';ctx.lineWidth=4;ctx.lineCap='round';ctx.stroke();
 
-  // İbre gölge
-  ctx.save();
-  ctx.shadowColor='rgba(0,0,0,0.5)';ctx.shadowBlur=8;ctx.shadowOffsetY=2;
-  // İbre gövde (uç)
-  ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(nx,ny);
-  let nColor;
-  if(ratio<0.35) nColor='#00b4ff';
-  else if(ratio<0.6) nColor='#00dc64';
-  else if(ratio<0.75) nColor='#ffc400';
-  else nColor='#ff1744';
-  ctx.strokeStyle=nColor;ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
-  ctx.restore();
-
-  // Kontra (kalın kısım)
-  ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(cX,cY);
-  ctx.strokeStyle='rgba(200,200,210,0.6)';ctx.lineWidth=4;ctx.lineCap='round';ctx.stroke();
-
-  // Merkez kapak
-  ctx.beginPath();ctx.arc(cX,cY,10,0,Math.PI*2);
-  let capGrd=ctx.createRadialGradient(cX-2,cY-2,0,cX,cY,10);
-  capGrd.addColorStop(0,'#aaa');capGrd.addColorStop(0.5,'#555');capGrd.addColorStop(1,'#222');
-  ctx.fillStyle=capGrd;ctx.fill();
-  ctx.strokeStyle='rgba(200,200,210,0.4)';ctx.lineWidth=1.5;ctx.stroke();
-
-  // Merkez kırmızı nokta
-  ctx.beginPath();ctx.arc(cX,cY,3,0,Math.PI*2);
-  ctx.fillStyle=nColor;ctx.fill();
+  // MERKEZ
+  ctx.beginPath();ctx.arc(cX,cY,12,0,Math.PI*2);
+  let capGrd=ctx.createRadialGradient(cX-2,cY-2,0,cX,cY,12);
+  capGrd.addColorStop(0,'#bbb');capGrd.addColorStop(0.5,'#555');capGrd.addColorStop(1,'#222');
+  ctx.fillStyle=capGrd;ctx.fill();ctx.strokeStyle='rgba(200,200,210,0.4)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.beginPath();ctx.arc(cX,cY,4,0,Math.PI*2);ctx.fillStyle=nColor;ctx.fill();
 }
 
-// ============== DISPLAY UPDATE ==============
+// ============== DISPLAY ==============
 function updateDisplay(){
   displaySpeed+=(currentSpeed-displaySpeed)*0.12;
   const dv=unit==='mph'?displaySpeed*0.621371:displaySpeed;
   const shown=Math.round(dv);
-
   document.getElementById('speedVal').textContent=shown;
-
   const maxV=unit==='mph'?160:260;
   const ratio=Math.min(displaySpeed/maxV,1);
-  let nc;
-  if(ratio<0.35)nc='rgb(0,180,255)';
-  else if(ratio<0.6)nc='rgb(0,220,100)';
-  else if(ratio<0.75)nc='rgb(255,196,0)';
-  else nc='rgb(255,23,68)';
-
+  let nc;if(ratio<0.35)nc='rgb(0,180,255)';else if(ratio<0.6)nc='rgb(0,220,100)';else if(ratio<0.75)nc='rgb(255,196,0)';else nc='rgb(255,23,68)';
   document.getElementById('speedVal').style.color=isAlerting?'#ff1744':nc;
 
-  if(displaySpeed>maxSpeedVal){
-    maxSpeedVal=displaySpeed;
-    document.getElementById('maxSpeed').textContent=Math.round(unit==='mph'?maxSpeedVal*0.621371:maxSpeedVal);
-  }
+  if(displaySpeed>maxSpeedVal){maxSpeedVal=displaySpeed;document.getElementById('maxSpeed').textContent=Math.round(unit==='mph'?maxSpeedVal*0.621371:maxSpeedVal);}
   speedSum+=displaySpeed;speedCount++;
   document.getElementById('avgSpeed').textContent=Math.round(unit==='mph'?(speedSum/speedCount)*0.621371:speedSum/speedCount);
+  if(unit==='mph'){const mi=totalDist*0.621371;document.getElementById('distance').textContent=mi<1?(mi*5280).toFixed(0):mi.toFixed(1);}
+  else{document.getElementById('distance').textContent=totalDist<1?(totalDist*1000).toFixed(0):totalDist.toFixed(1);}
 
-  if(unit==='mph'){
-    const mi=totalDist*0.621371;
-    document.getElementById('distance').textContent=mi<1?(mi*5280).toFixed(0)+'ft':mi.toFixed(1)+'mi';
-  } else {
-    document.getElementById('distance').textContent=totalDist<1?(totalDist*1000).toFixed(0)+'m':totalDist.toFixed(1)+'km';
+  drawGauge(dv);checkAlert();
+
+  // Kamera mesafe güncelleme (her saniye)
+  if(myLat!==null && cameras.length>0){
+    updateCameraDistances();
   }
+}
 
-  drawGauge(dv);
-  checkAlert();
+function updateCameraDistances(){
+  for(const cam of cameras){
+    cam.dist = haversine(myLat, myLon, cam.lat, cam.lon) * 1000;
+  }
+  cameras.sort((a,b)=>a.dist-b.dist);
+  renderCamList();
+  checkCameraWarning();
 }
 
 function resetMax(){
   maxSpeedVal=0;speedSum=0;speedCount=0;totalDist=0;lastPos=null;lastTime=null;
-  stopAlert();
-  document.getElementById('maxSpeed').textContent='0';
-  document.getElementById('avgSpeed').textContent='0';
-  document.getElementById('distance').textContent='0';
-  document.getElementById('speedVal').textContent='0';currentSpeed=0;displaySpeed=0;
+  stopAlert();currentSpeed=0;displaySpeed=0;
+  document.getElementById('maxSpeed').textContent='0';document.getElementById('avgSpeed').textContent='0';
+  document.getElementById('distance').textContent='0';document.getElementById('speedVal').textContent='0';
 }
 
 // ============== GPS ==============
 function startGPS(){
-  if(gpsActive) return;
-  if(!navigator.geolocation){
-    document.getElementById('warnBox').style.display='block';
-    startSimulation();
-    return;
-  }
-
+  if(gpsActive)return;
+  if(!navigator.geolocation){document.getElementById('warnBox').style.display='block';startSimulation();return;}
   const opt={enableHighAccuracy:true,maximumAge:0,timeout:10000};
   watchId=navigator.geolocation.watchPosition(
     (pos)=>{
-      gpsActive=true;
-      updateStatus('green','GPS aktif');
+      gpsActive=true;updateStatus('green','GPS aktif');
+      myLat=pos.coords.latitude;myLon=pos.coords.longitude;
+      if(pos.coords.heading)myHeading=pos.coords.heading;
 
-      if(pos.coords.speed!==null&&pos.coords.speed>=0){
-        currentSpeed=pos.coords.speed*3.6;
-      } else if(lastPos&&lastTime){
+      if(pos.coords.speed!==null&&pos.coords.speed>=0)currentSpeed=pos.coords.speed*3.6;
+      else if(lastPos&&lastTime){
         const d=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos.coords.latitude,pos.coords.longitude);
-        const dt=(pos.timestamp-lastTime)/1000;
-        if(dt>0) currentSpeed=(d/dt)*3.6;
+        const dt=(pos.timestamp-lastTime)/1000;if(dt>0)currentSpeed=(d/dt)*3.6;
       }
-
-      if(lastPos){
-        totalDist+=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos.coords.latitude,pos.coords.longitude);
-      }
+      if(lastPos)totalDist+=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos.coords.latitude,pos.coords.longitude);
       lastPos=pos;lastTime=pos.timestamp;
 
-      // Konuma göre hız sınırı (her 30 saniyede bir kontrol)
-      if(!limitCheckTimeout && limitEnabled) {
-        limitCheckTimeout = setTimeout(() => {
-          fetchSpeedLimit(pos.coords.latitude, pos.coords.longitude);
-          limitCheckTimeout = setTimeout(() => { limitCheckTimeout = null; }, 30000);
-        }, 2000);
+      // Hız sınırı kontrol
+      if(!limitCheckTimeout&&limitEnabled){
+        limitCheckTimeout=setTimeout(()=>{fetchSpeedLimit(pos.coords.latitude,pos.coords.longitude);limitCheckTimeout=setTimeout(()=>{limitCheckTimeout=null;},30000);},2000);
+      }
+
+      // Kamera sorgusu – ilk konumda hemen, sonra her 60sn
+      if(!camFetchInterval){
+        fetchCameras(pos.coords.latitude,pos.coords.longitude);
+        camFetchInterval=setInterval(()=>{
+          if(myLat!==null) fetchCameras(myLat,myLon);
+        },60000);
       }
     },
-    (err)=>{
-      console.warn('GPS err:',err);
-      updateStatus('red','GPS hatası');
-      document.getElementById('warnBox').style.display='block';
-      startSimulation();
-    },
+    (err)=>{console.warn('GPS:',err);updateStatus('red','GPS hatası');document.getElementById('warnBox').style.display='block';startSimulation();},
     opt
   );
 }
@@ -939,29 +777,30 @@ function haversine(a,b,c,d){
   const x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dN/2)**2;
   return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
-
-function updateStatus(col,txt){
-  document.getElementById('status').innerHTML=`<span class="dot ${col}"></span> ${txt}`;
-}
+function updateStatus(col,txt){document.getElementById('status').innerHTML=`<span class="dot ${col}"></span> ${txt}`;}
 
 // ============== SIMULATION ==============
 function startSimulation(){
   simMode=true;updateStatus('yellow','Simülasyon');
+  // Simülasyon koordinatları (İstanbul Kadıköy civarı)
+  myLat=40.990;myLon=29.020;
   let ss=0,tgt=80,ph='accel';
   setInterval(()=>{
     if(ph==='accel'){ss+=Math.random()*4;if(ss>=tgt)ph='cruise';}
     else if(ph==='cruise'){ss+=(Math.random()-0.5)*3;if(Math.random()<0.02){tgt=30+Math.random()*170;ph='change';}}
     else if(ph==='change'){ss+=(tgt-ss)*0.05+(Math.random()-0.5);if(Math.abs(ss-tgt)<5)ph='cruise';}
     ss=Math.max(0,Math.min(ss,250));currentSpeed=ss;totalDist+=ss/3600;
+    // Simülasyon konum kaydırma
+    myLon+=ss/3600*0.001;myLat+=Math.random()*0.0001-0.00005;
   },500);
+  // Simülasyon kameralarını sorgula
+  setTimeout(()=>fetchCameras(myLat,myLon),1500);
+  camFetchInterval=setInterval(()=>{if(myLat)fetchCameras(myLat,myLon);},60000);
 }
 
-// ============== MAIN LOOP ==============
+// ============== LOOP ==============
 function animate(){updateDisplay();requestAnimationFrame(animate);}
-
-// İlk kadran çizimi
-drawGauge(0);
-animate();
+drawGauge(0);animate();
 </script>
 </body>
 </html>
