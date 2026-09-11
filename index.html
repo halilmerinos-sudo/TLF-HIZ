@@ -18,13 +18,48 @@
     min-height: 100vh;
     overflow: hidden;
     touch-action: none;
+    transition: background 0.15s;
+  }
+
+  body.alert-flash {
+    animation: flashRed 0.4s ease infinite;
+  }
+
+  @keyframes flashRed {
+    0%, 100% { background: #0a0a0f; }
+    50% { background: rgba(255,23,68,0.25); }
+  }
+
+  .alert-banner {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: linear-gradient(180deg, rgba(255,23,68,0.95), rgba(255,23,68,0.7));
+    color: #fff;
+    text-align: center;
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    z-index: 999;
+    animation: slideDown 0.3s ease;
+    box-shadow: 0 4px 30px rgba(255,23,68,0.5);
+  }
+
+  .alert-banner.visible {
+    display: block;
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 
   .container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
     padding: 20px;
     width: 100%;
     max-width: 500px;
@@ -32,13 +67,13 @@
 
   .speedo-wrapper {
     position: relative;
-    width: 340px;
-    height: 340px;
+    width: 320px;
+    height: 320px;
   }
 
   canvas#gauge {
-    width: 340px;
-    height: 340px;
+    width: 320px;
+    height: 320px;
   }
 
   .speed-digital {
@@ -50,7 +85,7 @@
   }
 
   .speed-value {
-    font-size: 72px;
+    font-size: 68px;
     font-weight: 700;
     letter-spacing: -2px;
     line-height: 1;
@@ -58,33 +93,158 @@
     transition: color 0.3s;
   }
 
+  .speed-value.alerting {
+    animation: pulseText 0.5s ease infinite;
+  }
+
+  @keyframes pulseText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
   .speed-unit {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
     color: rgba(255,255,255,0.5);
     letter-spacing: 3px;
     margin-top: 4px;
   }
 
+  /* === HIZ SINIRI PANELİ === */
+  .limit-panel {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 16px 20px;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .limit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .limit-header .title {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .limit-toggle {
+    position: relative;
+    width: 50px;
+    height: 28px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+    border: none;
+  }
+
+  .limit-toggle.on {
+    background: rgba(0,200,255,0.4);
+  }
+
+  .limit-toggle .knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    transition: left 0.3s;
+  }
+
+  .limit-toggle.on .knob {
+    left: 25px;
+  }
+
+  .limit-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: opacity 0.3s;
+  }
+
+  .limit-input-row.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .limit-input {
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+    width: 100px;
+    text-align: center;
+    padding: 10px 8px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .limit-input:focus {
+    border-color: #00c8ff;
+  }
+
+  .limit-input-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .limit-presets {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .limit-presets button {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    color: rgba(255,255,255,0.6);
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .limit-presets button:hover,
+  .limit-presets button.selected {
+    background: rgba(0,200,255,0.15);
+    border-color: rgba(0,200,255,0.4);
+    color: #00c8ff;
+  }
+
+  /* === BİLGİ KARTLARI === */
   .info-bar {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 10px;
   }
 
   .info-card {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 14px;
-    padding: 14px 22px;
+    padding: 12px 18px;
     text-align: center;
-    min-width: 130px;
+    min-width: 105px;
   }
 
   .info-card .label {
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: rgba(255,255,255,0.4);
@@ -92,7 +252,7 @@
   }
 
   .info-card .val {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
   }
 
@@ -108,7 +268,7 @@
     background: rgba(255,255,255,0.05);
     color: rgba(255,255,255,0.5);
     border: none;
-    padding: 10px 24px;
+    padding: 10px 22px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -124,7 +284,6 @@
     font-size: 12px;
     color: rgba(255,255,255,0.3);
     text-align: center;
-    margin-top: 6px;
   }
 
   .status .dot {
@@ -144,7 +303,7 @@
     background: linear-gradient(135deg, #00c8ff, #0070ff);
     border: none;
     color: #fff;
-    padding: 14px 40px;
+    padding: 14px 36px;
     font-size: 16px;
     font-weight: 600;
     border-radius: 12px;
@@ -160,6 +319,27 @@
 
   .start-btn:active { transform: scale(0.97); }
 
+  .reset-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .reset-row button {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.5);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .reset-row button:hover {
+    background: rgba(255,196,0,0.12);
+    color: #ffc400;
+  }
+
   .warning-box {
     background: rgba(255,23,68,0.1);
     border: 1px solid rgba(255,23,68,0.3);
@@ -171,45 +351,64 @@
     display: none;
   }
 
-  .max-speed-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 4px;
-  }
-
-  .max-speed-bar button {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.6);
+  /* Sesli uyarı test butonu */
+  .sound-test-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.5);
     border-radius: 8px;
-    padding: 6px 14px;
+    padding: 8px 16px;
     font-size: 12px;
     cursor: pointer;
     transition: all 0.2s;
   }
 
-  .max-speed-bar button:hover {
-    background: rgba(255,196,0,0.15);
-    color: #ffc400;
+  .sound-test-btn:hover {
+    background: rgba(0,200,255,0.12);
+    color: #00c8ff;
   }
 
   @media (max-width: 380px) {
-    .speedo-wrapper { width: 280px; height: 280px; }
-    canvas#gauge { width: 280px; height: 280px; }
-    .speed-value { font-size: 56px; }
-    .info-card { min-width: 110px; padding: 10px 16px; }
+    .speedo-wrapper { width: 270px; height: 270px; }
+    canvas#gauge { width: 270px; height: 270px; }
+    .speed-value { font-size: 52px; }
+    .info-card { min-width: 90px; padding: 8px 12px; }
+    .limit-panel { max-width: 290px; }
   }
 </style>
 </head>
 <body>
 
+<div class="alert-banner" id="alertBanner">⚠️ HIZ SINIRI AŞILDI! ⚠️</div>
+
 <div class="container">
   <div class="speedo-wrapper">
-    <canvas id="gauge" width="680" height="680"></canvas>
+    <canvas id="gauge" width="640" height="640"></canvas>
     <div class="speed-digital">
       <div class="speed-value" id="speedVal">0</div>
       <div class="speed-unit" id="speedUnit">KM/S</div>
+    </div>
+  </div>
+
+  <!-- HIZ SINIRI PANELİ -->
+  <div class="limit-panel">
+    <div class="limit-header">
+      <span class="title">⚡ Hız Sınırı Uyarısı</span>
+      <button class="limit-toggle on" id="limitToggle" onclick="toggleLimit()">
+        <div class="knob"></div>
+      </button>
+    </div>
+    <div class="limit-input-row" id="limitRow">
+      <input type="number" class="limit-input" id="limitInput" value="90" min="10" max="300" inputmode="numeric">
+      <span class="limit-input-label" id="limitUnit">km/s</span>
+    </div>
+    <div class="limit-presets" id="limitPresets">
+      <button onclick="setPreset(30)">30</button>
+      <button onclick="setPreset(50)">50</button>
+      <button onclick="setPreset(70)">70</button>
+      <button onclick="setPreset(90)" class="selected">90</button>
+      <button onclick="setPreset(110)">110</button>
+      <button onclick="setPreset(130)">130</button>
     </div>
   </div>
 
@@ -233,9 +432,10 @@
     </div>
   </div>
 
-  <div class="max-speed-bar">
+  <div class="reset-row">
     <button onclick="resetMax()">Maks. Sıfırla</button>
     <button onclick="resetAll()">Tümünü Sıfırla</button>
+    <button class="sound-test-btn" onclick="testSound()">🔊 Ses Test</button>
   </div>
 
   <div class="status" id="status">
@@ -250,10 +450,11 @@
 </div>
 
 <script>
+// ===================== DEĞİŞKENLER =====================
 const canvas = document.getElementById('gauge');
 const ctx = canvas.getContext('2d');
 const W = canvas.width, H = canvas.height;
-const cx = W / 2, cy = H / 2, R = 270;
+const cx = W / 2, cy = H / 2, R = 255;
 
 let currentSpeed = 0;
 let displaySpeed = 0;
@@ -261,29 +462,267 @@ let maxSpeedVal = 0;
 let speedSum = 0, speedCount = 0;
 let totalDist = 0;
 let lastPos = null, lastTime = null;
-let unit = 'kmh'; // kmh or mph
-let maxGauge = 220; // max km/h on gauge
+let unit = 'kmh';
+let maxGauge = 220;
 let gpsActive = false;
 let simMode = false;
 let watchId = null;
 
+// Hız sınırı
+let limitEnabled = true;
+let speedLimit = 90; // km/s
+let isAlerting = false;
+let alertCooldown = false;
+let audioCtx = null;
+let audioSupported = true;
+let lastAlertTime = 0;
+
+// ===================== SES SİSTEMİ =====================
+function initAudio() {
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Bazı tarayıcılarda kullanıcı etkileşimi gerekiyor
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  } catch (e) {
+    audioSupported = false;
+    console.warn('Web Audio API desteklenmiyor, görsel uyarı kullanılacak.');
+  }
+}
+
+function playBeep(frequency, duration, volume) {
+  if (!audioCtx) initAudio();
+  if (!audioSupported || !audioCtx) return false;
+
+  try {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    
+    osc.type = 'square';
+    osc.frequency.value = frequency || 880;
+    
+    gain.gain.value = volume || 0.3;
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (duration || 0.2));
+    
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + (duration || 0.2));
+    
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Çift bip uyarı sesi
+function playAlertSound() {
+  const now = Date.now();
+  // Son uyarıdan en az 1.5 saniye geçsin
+  if (now - lastAlertTime < 1500) return;
+  lastAlertTime = now;
+
+  const success1 = playBeep(900, 0.15, 0.4);
+  setTimeout(() => {
+    const success2 = playBeep(1100, 0.2, 0.5);
+    // Ses çalışmazsa görsel + titreşim fallback
+    if (!success1 && !success2) {
+      visualFallback();
+    }
+  }, 180);
+}
+
+// ===================== UYARI SİSTEMİ =====================
+function checkSpeedAlert() {
+  if (!limitEnabled) {
+    stopAlert();
+    return;
+  }
+
+  const limitInKmh = unit === 'mph' ? speedLimit / 0.621371 : speedLimit;
+  // MPH modunda input değerini mph olarak kabul et
+  const effectiveLimit = unit === 'mph' ? speedLimit * 1.60934 : speedLimit;
+
+  if (displaySpeed > effectiveLimit) {
+    if (!isAlerting) {
+      isAlerting = true;
+      startAlert();
+    }
+    // Sürekli uyarı döngüsü
+    if (isAlerting) {
+      playAlertSound();
+    }
+  } else {
+    if (isAlerting) {
+      stopAlert();
+    }
+  }
+}
+
+function startAlert() {
+  document.body.classList.add('alert-flash');
+  document.getElementById('alertBanner').classList.add('visible');
+  document.getElementById('speedVal').classList.add('alerting');
+  
+  // Titreşim (mobil cihazlar)
+  if (navigator.vibrate) {
+    navigator.vibrate([200, 100, 200, 100, 200]);
+  }
+  
+  // İlk bip
+  playAlertSound();
+  
+  // Periyodik uyarı
+  if (!window._alertInterval) {
+    window._alertInterval = setInterval(() => {
+      if (isAlerting) {
+        playAlertSound();
+        if (navigator.vibrate) {
+          navigator.vibrate([200, 100, 200]);
+        }
+      }
+    }, 2000);
+  }
+}
+
+function stopAlert() {
+  isAlerting = false;
+  document.body.classList.remove('alert-flash');
+  document.getElementById('alertBanner').classList.remove('visible');
+  document.getElementById('speedVal').classList.remove('alerting');
+  
+  if (navigator.vibrate) {
+    navigator.vibrate(0); // titreşimi durdur
+  }
+  
+  if (window._alertInterval) {
+    clearInterval(window._alertInterval);
+    window._alertInterval = null;
+  }
+}
+
+// Ses çalışmazsa alternatif görsel uyarı
+function visualFallback() {
+  const banner = document.getElementById('alertBanner');
+  banner.style.background = 'linear-gradient(180deg, rgba(255,100,0,0.95), rgba(255,50,0,0.8))';
+  banner.textContent = '⚠️ HIZ SINIRI AŞILDI! (Sessiz uyarı) ⚠️';
+  
+  // Ekranı daha agresif flaşla
+  document.body.style.animation = 'none';
+  document.body.offsetHeight; // reflow
+  document.body.classList.add('alert-flash');
+  
+  // 5 saniye sonra normal uyarı stilini geri yükle
+  setTimeout(() => {
+    banner.style.background = '';
+    banner.textContent = '⚠️ HIZ SINIRI AŞILDI! ⚠️';
+  }, 5000);
+}
+
+// ===================== HIZ SINIRI KONTROLÜ =====================
+function toggleLimit() {
+  limitEnabled = !limitEnabled;
+  const btn = document.getElementById('limitToggle');
+  const row = document.getElementById('limitRow');
+  const presets = document.getElementById('limitPresets');
+  
+  btn.classList.toggle('on', limitEnabled);
+  row.classList.toggle('disabled', !limitEnabled);
+  presets.style.opacity = limitEnabled ? '1' : '0.3';
+  presets.style.pointerEvents = limitEnabled ? 'auto' : 'none';
+  
+  if (!limitEnabled) stopAlert();
+}
+
+function setPreset(val) {
+  document.getElementById('limitInput').value = val;
+  speedLimit = val;
+  updatePresetHighlight(val);
+}
+
+function updatePresetHighlight(val) {
+  const btns = document.querySelectorAll('.limit-presets button');
+  btns.forEach(b => {
+    b.classList.toggle('selected', parseInt(b.textContent) === val);
+  });
+}
+
+document.getElementById('limitInput').addEventListener('input', function() {
+  let v = parseInt(this.value);
+  if (!isNaN(v) && v >= 10 && v <= 300) {
+    speedLimit = v;
+    updatePresetHighlight(v);
+  }
+});
+
+document.getElementById('limitInput').addEventListener('change', function() {
+  let v = parseInt(this.value);
+  if (isNaN(v) || v < 10) v = 10;
+  if (v > 300) v = 300;
+  this.value = v;
+  speedLimit = v;
+  updatePresetHighlight(v);
+});
+
+function testSound() {
+  initAudio();
+  const ok = playBeep(660, 0.3, 0.3);
+  setTimeout(() => playBeep(880, 0.3, 0.3), 350);
+  if (!ok) {
+    visualFallback();
+  }
+  // Titreşim test
+  if (navigator.vibrate) {
+    navigator.vibrate([100, 50, 100]);
+  }
+}
+
+// ===================== BİRİM DEĞİŞİMİ =====================
 function setUnit(u) {
   unit = u;
   document.getElementById('btnKmh').classList.toggle('active', u === 'kmh');
   document.getElementById('btnMph').classList.toggle('active', u === 'mph');
   document.getElementById('speedUnit').textContent = u === 'kmh' ? 'KM/S' : 'MPH';
-  if (u === 'mph') maxGauge = 140; else maxGauge = 220;
-  drawGauge(displaySpeed);
+  document.getElementById('limitUnit').textContent = u === 'kmh' ? 'km/s' : 'mph';
+  
+  // Preset değerlerini güncelle
+  const presets = document.getElementById('limitPresets');
+  if (u === 'mph') {
+    maxGauge = 140;
+    const mphPresets = [20, 30, 45, 55, 70, 80];
+    const btns = presets.querySelectorAll('button');
+    btns.forEach((b, i) => {
+      b.textContent = mphPresets[i];
+      b.onclick = () => setPreset(mphPresets[i]);
+    });
+    speedLimit = parseInt(document.getElementById('limitInput').value) || 55;
+    updatePresetHighlight(speedLimit);
+  } else {
+    maxGauge = 220;
+    const kmhPresets = [30, 50, 70, 90, 110, 130];
+    const btns = presets.querySelectorAll('button');
+    btns.forEach((b, i) => {
+      b.textContent = kmhPresets[i];
+      b.onclick = () => setPreset(kmhPresets[i]);
+    });
+    speedLimit = parseInt(document.getElementById('limitInput').value) || 90;
+    updatePresetHighlight(speedLimit);
+  }
 }
 
+// ===================== GAUGE ÇİZİMİ =====================
 function kToM(k) { return k * 0.621371; }
 function displayVal(kmh) { return unit === 'mph' ? kToM(kmh) : kmh; }
 
 function getSpeedColor(ratio) {
-  if (ratio < 0.4) return { r: 0, g: 200, b: 255 };       // cyan
-  if (ratio < 0.65) return { r: 0, g: 230, b: 118 };      // green
-  if (ratio < 0.82) return { r: 255, g: 196, b: 0 };     // yellow
-  return { r: 255, g: 23, b: 68 };                        // red
+  if (ratio < 0.4) return { r: 0, g: 200, b: 255 };
+  if (ratio < 0.65) return { r: 0, g: 230, b: 118 };
+  if (ratio < 0.82) return { r: 255, g: 196, b: 0 };
+  return { r: 255, g: 23, b: 68 };
 }
 
 function drawGauge(speed) {
@@ -294,24 +733,29 @@ function drawGauge(speed) {
   const sweepAngle = endAngle - startAngle;
   const needleAngle = startAngle + ratio * sweepAngle;
 
+  // Hız sınırı çizgisi
+  const effectiveLimit = unit === 'mph' ? speedLimit * 1.60934 : speedLimit;
+  const limitRatio = Math.min(effectiveLimit / maxV, 1);
+  const limitAngle = startAngle + limitRatio * sweepAngle;
+
   ctx.clearRect(0, 0, W, H);
 
   // Outer ring glow
   ctx.beginPath();
   ctx.arc(cx, cy, R + 8, startAngle, endAngle);
   ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-  ctx.lineWidth = 18;
+  ctx.lineWidth = 16;
   ctx.stroke();
 
   // Background arc
   ctx.beginPath();
   ctx.arc(cx, cy, R, startAngle, endAngle);
   ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-  ctx.lineWidth = 12;
+  ctx.lineWidth = 14;
   ctx.lineCap = 'round';
   ctx.stroke();
 
-  // Colored arc (gradient along speed)
+  // Renkli arc
   const segments = 100;
   const filled = Math.floor(ratio * segments);
   for (let i = 0; i <= filled; i++) {
@@ -322,9 +766,46 @@ function drawGauge(speed) {
     ctx.beginPath();
     ctx.arc(cx, cy, R, a1, a2 + 0.01);
     ctx.strokeStyle = `rgb(${c.r},${c.g},${c.b})`;
-    ctx.lineWidth = 12;
+    ctx.lineWidth = 14;
     ctx.lineCap = 'round';
     ctx.stroke();
+  }
+
+  // === HIZ SINIRI ÇİZGİSİ ===
+  if (limitEnabled) {
+    const lx1 = cx + Math.cos(limitAngle) * (R - 30);
+    const ly1 = cy + Math.sin(limitAngle) * (R - 30);
+    const lx2 = cx + Math.cos(limitAngle) * (R + 16);
+    const ly2 = cy + Math.sin(limitAngle) * (R + 16);
+    
+    ctx.beginPath();
+    ctx.moveTo(lx1, ly1);
+    ctx.lineTo(lx2, ly2);
+    
+    if (isAlerting) {
+      ctx.strokeStyle = 'rgba(255,23,68,0.9)';
+      ctx.lineWidth = 5;
+      // Parlama
+      ctx.shadowColor = '#ff1744';
+      ctx.shadowBlur = 15;
+    } else {
+      ctx.strokeStyle = 'rgba(255,196,0,0.7)';
+      ctx.lineWidth = 3;
+      ctx.shadowColor = '#ffc400';
+      ctx.shadowBlur = 8;
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Sınır etiketi
+    const labelR = R + 32;
+    const llx = cx + Math.cos(limitAngle) * labelR;
+    const lly = cy + Math.sin(limitAngle) * labelR;
+    ctx.font = 'bold 14px Segoe UI, Arial';
+    ctx.fillStyle = isAlerting ? '#ff1744' : 'rgba(255,196,0,0.8)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(speedLimit, llx, lly);
   }
 
   // Tick marks & labels
@@ -333,7 +814,7 @@ function drawGauge(speed) {
     const t = i / tickCount;
     const angle = startAngle + t * sweepAngle;
     const isMajor = i % 2 === 0;
-    const innerR = isMajor ? R - 36 : R - 24;
+    const innerR = isMajor ? R - 34 : R - 22;
     const outerR = R - 14;
 
     const x1 = cx + Math.cos(angle) * innerR;
@@ -344,18 +825,18 @@ function drawGauge(speed) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
-    ctx.strokeStyle = isMajor ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.25)';
-    ctx.lineWidth = isMajor ? 3 : 1.5;
+    ctx.strokeStyle = isMajor ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = isMajor ? 2.5 : 1.5;
     ctx.lineCap = 'round';
     ctx.stroke();
 
     if (isMajor) {
       const val = Math.round(t * maxV);
-      const labelR = R - 54;
+      const labelR = R - 50;
       const lx = cx + Math.cos(angle) * labelR;
       const ly = cy + Math.sin(angle) * labelR;
-      ctx.font = '600 20px Segoe UI, Arial';
-      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.font = '600 18px Segoe UI, Arial';
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(val, lx, ly);
@@ -363,17 +844,18 @@ function drawGauge(speed) {
   }
 
   // Needle
-  const needleLen = R - 40;
+  const needleLen = R - 36;
   const nx = cx + Math.cos(needleAngle) * needleLen;
   const ny = cy + Math.sin(needleAngle) * needleLen;
+
+  const nc = getSpeedColor(ratio);
 
   // Needle glow
   ctx.beginPath();
   ctx.moveTo(cx, cy);
   ctx.lineTo(nx, ny);
-  const nc = getSpeedColor(ratio);
   ctx.strokeStyle = `rgba(${nc.r},${nc.g},${nc.b},0.3)`;
-  ctx.lineWidth = 12;
+  ctx.lineWidth = 10;
   ctx.lineCap = 'round';
   ctx.stroke();
 
@@ -382,54 +864,56 @@ function drawGauge(speed) {
   ctx.moveTo(cx, cy);
   ctx.lineTo(nx, ny);
   ctx.strokeStyle = `rgb(${nc.r},${nc.g},${nc.b})`;
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 3.5;
   ctx.lineCap = 'round';
   ctx.stroke();
 
   // Center cap
   ctx.beginPath();
-  ctx.arc(cx, cy, 16, 0, Math.PI * 2);
+  ctx.arc(cx, cy, 14, 0, Math.PI * 2);
   ctx.fillStyle = '#1a1a2e';
   ctx.fill();
   ctx.strokeStyle = `rgb(${nc.r},${nc.g},${nc.b})`;
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 2.5;
   ctx.stroke();
 
-  // Inner glow dot
   ctx.beginPath();
-  ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2);
   ctx.fillStyle = `rgb(${nc.r},${nc.g},${nc.b})`;
   ctx.fill();
 }
 
+// ===================== EKRAN GÜNCELLEME =====================
 function updateDisplay() {
+  displaySpeed += (currentSpeed - displaySpeed) * 0.15;
+  
   const dv = displayVal(displaySpeed);
   const shown = Math.round(dv);
   
-  // Smooth animation
-  const diff = shown - parseFloat(document.getElementById('speedVal').textContent);
-  const step = diff * 0.3;
-  displaySpeed += (currentSpeed - displaySpeed) * 0.15;
+  document.getElementById('speedVal').textContent = shown;
   
-  document.getElementById('speedVal').textContent = Math.round(displayVal(displaySpeed));
-  
-  // Color
   const ratio = Math.min(displaySpeed / (unit === 'mph' ? 140 : 220), 1);
   const nc = getSpeedColor(ratio);
-  document.getElementById('speedVal').style.color = `rgb(${nc.r},${nc.g},${nc.b})`;
   
-  // Max
+  if (!isAlerting) {
+    document.getElementById('speedVal').style.color = `rgb(${nc.r},${nc.g},${nc.b})`;
+  } else {
+    document.getElementById('speedVal').style.color = '#ff1744';
+  }
+  
   if (displaySpeed > maxSpeedVal) {
     maxSpeedVal = displaySpeed;
     document.getElementById('maxSpeed').textContent = Math.round(displayVal(maxSpeedVal));
   }
   
-  // Avg
   speedSum += displaySpeed;
   speedCount++;
-  document.getElementById('avgSpeed').textContent = Math.round(displayVal(speedSum / speedCount));
+  if (speedCount > 0) {
+    document.getElementById('avgSpeed').textContent = Math.round(displayVal(speedSum / speedCount));
+  }
   
-  drawGauge(displayVal(displaySpeed));
+  drawGauge(dv);
+  checkSpeedAlert();
 }
 
 function resetMax() {
@@ -446,14 +930,19 @@ function resetAll() {
   lastTime = null;
   currentSpeed = 0;
   displaySpeed = 0;
+  stopAlert();
   document.getElementById('maxSpeed').textContent = '0';
   document.getElementById('avgSpeed').textContent = '0';
   document.getElementById('distance').textContent = '0 km';
   document.getElementById('speedVal').textContent = '0';
 }
 
+// ===================== GPS =====================
 function startGPS() {
   if (gpsActive) return;
+  
+  // Audio'yu başlat (kullanıcı etkileşimi gerekli)
+  initAudio();
   
   const btn = document.getElementById('startBtn');
   btn.style.display = 'none';
@@ -475,11 +964,9 @@ function startGPS() {
       gpsActive = true;
       updateStatus('green', 'GPS aktif');
       
-      // Speed from GPS (m/s -> km/h)
       if (pos.coords.speed !== null && pos.coords.speed >= 0) {
-        currentSpeed = pos.coords.speed * 3.6; // m/s to km/h
+        currentSpeed = pos.coords.speed * 3.6;
       } else {
-        // Calculate speed from position changes
         if (lastPos && lastTime) {
           const d = haversine(
             lastPos.coords.latitude, lastPos.coords.longitude,
@@ -490,20 +977,13 @@ function startGPS() {
         }
       }
       
-      // Distance
       if (lastPos) {
         const d = haversine(
           lastPos.coords.latitude, lastPos.coords.longitude,
           pos.coords.latitude, pos.coords.longitude
         );
         totalDist += d;
-        const distDisplay = totalDist < 1 ? (totalDist * 1000).toFixed(0) + ' m' : totalDist.toFixed(1) + ' km';
-        if (unit === 'mph') {
-          const mi = totalDist * 0.621371;
-          document.getElementById('distance').textContent = mi < 1 ? (mi * 5280).toFixed(0) + ' ft' : mi.toFixed(1) + ' mi';
-        } else {
-          document.getElementById('distance').textContent = distDisplay;
-        }
+        updateDistance();
       }
       
       lastPos = pos;
@@ -516,7 +996,17 @@ function startGPS() {
       startSimulation();
     },
     options
-  );n}
+  );
+}
+
+function updateDistance() {
+  if (unit === 'mph') {
+    const mi = totalDist * 0.621371;
+    document.getElementById('distance').textContent = mi < 1 ? (mi * 5280).toFixed(0) + ' ft' : mi.toFixed(1) + ' mi';
+  } else {
+    document.getElementById('distance').textContent = totalDist < 1 ? (totalDist * 1000).toFixed(0) + ' m' : totalDist.toFixed(1) + ' km';
+  }
+}
 
 function haversine(lat1, lon1, lat2, lon2) {
   const R = 6371;
@@ -530,6 +1020,7 @@ function updateStatus(color, text) {
   document.getElementById('status').innerHTML = `<span class="dot ${color}"></span> ${text}`;
 }
 
+// ===================== SİMÜLASYON =====================
 function startSimulation() {
   simMode = true;
   updateStatus('yellow', 'Simülasyon modu');
@@ -540,35 +1031,31 @@ function startSimulation() {
   
   setInterval(() => {
     if (phase === 'accel') {
-      simSpeed += (Math.random() * 3);
+      simSpeed += (Math.random() * 4);
       if (simSpeed >= target) phase = 'cruise';
     } else if (phase === 'cruise') {
-      simSpeed += (Math.random() - 0.5) * 2;
-      if (Math.random() < 0.01) { target = Math.random() * 140; phase = 'change'; }
+      simSpeed += (Math.random() - 0.5) * 3;
+      if (Math.random() < 0.015) {
+        target = 30 + Math.random() * 170;
+        phase = 'change';
+      }
     } else if (phase === 'change') {
-      simSpeed += (target - simSpeed) * 0.05 + (Math.random() - 0.5);
+      simSpeed += (target - simSpeed) * 0.06 + (Math.random() - 0.5);
       if (Math.abs(simSpeed - target) < 5) phase = 'cruise';
     }
     simSpeed = Math.max(0, Math.min(simSpeed, 220));
     currentSpeed = simSpeed;
     totalDist += simSpeed / 3600;
-    const distDisplay = totalDist < 1 ? (totalDist * 1000).toFixed(0) + ' m' : totalDist.toFixed(1) + ' km';
-    if (unit === 'mph') {
-      const mi = totalDist * 0.621371;
-      document.getElementById('distance').textContent = mi < 1 ? (mi * 5280).toFixed(0) + ' ft' : mi.toFixed(1) + ' mi';
-    } else {
-      document.getElementById('distance').textContent = distDisplay;
-    }
+    updateDistance();
   }, 500);
 }
 
-// Animation loop
+// ===================== ANİMASYON DÖNGÜSÜ =====================
 function animate() {
   updateDisplay();
   requestAnimationFrame(animate);
 }
 
-// Initial draw
 drawGauge(0);
 animate();
 </script>
