@@ -28,6 +28,8 @@ body.af{animation:afr .4s ease infinite}
 .cb.vis{display:flex;align-items:center;gap:8px}
 .cb.dg{background:rgba(255,23,68,.92);box-shadow:0 4px 24px rgba(255,23,68,.6);animation:cp .6s ease infinite}
 @keyframes cp{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes fp{0%,100%{opacity:1}50%{opacity:.4}}
+.cb.fuelblink{animation:fp .5s ease 6}
 .vs{position:fixed;top:88px;left:50%;transform:translateX(-50%);background:rgba(0,200,255,.15);color:#00c8ff;padding:6px 16px;font-size:12px;font-weight:600;border-radius:16px;z-index:88;display:none}
 .vs.vis{display:flex;align-items:center;gap:6px}
 .eb{position:fixed;bottom:16px;right:16px;z-index:90;width:56px;height:56px;border-radius:50%;background:rgba(255,23,68,.8);border:2px solid rgba(255,23,68,.5);color:#fff;font-size:24px;cursor:pointer;box-shadow:0 2px 12px rgba(255,23,68,.4);display:none;align-items:center;justify-content:center}
@@ -37,7 +39,7 @@ body.af{animation:afr .4s ease infinite}
 .mbar{display:flex;gap:4px;width:100%;max-width:400px;margin-bottom:6px;background:rgba(255,255,255,.03);border-radius:20px;padding:3px}
 .mbtn{flex:1;padding:7px 4px;border:none;border-radius:16px;background:transparent;color:rgba(255,255,255,.4);font-size:12px;font-weight:600;cursor:pointer;text-align:center}
 .mbtn.act{background:rgba(0,200,255,.15);color:#00c8ff}
-.mbtn .mi{font-size:15px;display:block;margin-bottom:1px}
+.mbtn .mi{font-size:22px;display:block;margin-bottom:1px}
 .lbar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:7px 12px;margin-bottom:5px;max-width:400px;width:100%}
 .li{font-size:18px;opacity:.7}
 .linp{background:rgba(255,255,255,.06);border:2px solid rgba(255,196,0,.3);border-radius:10px;color:#ffc400;font-size:22px;font-weight:700;width:60px;text-align:center;padding:4px 3px;outline:none;-moz-appearance:textfield}
@@ -58,7 +60,7 @@ body.af{animation:afr .4s ease infinite}
 .citem.nr{border-color:rgba(255,152,0,.3);background:rgba(255,152,0,.06)}
 .citem.vn{border-color:rgba(255,23,68,.4);background:rgba(255,23,68,.06);animation:cip 1s ease infinite}
 @keyframes cip{0%,100%{border-color:rgba(255,23,68,.4)}50%{border-color:rgba(255,23,68,.8)}}
-.cic{font-size:20px;flex-shrink:0}
+.cic{font-size:28px;flex-shrink:0}
 .cinf{flex:1}
 .ctp{font-size:11px;font-weight:600;color:rgba(255,255,255,.5)}
 .crd{font-size:9px;color:rgba(255,255,255,.3);margin-top:1px}
@@ -70,7 +72,7 @@ body.af{animation:afr .4s ease infinite}
 .istr{width:100%;max-width:400px;margin-bottom:5px;display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
 .istr::-webkit-scrollbar{display:none}
 .sc{flex-shrink:0;min-width:130px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:10px}
-.sc .si{font-size:24px;flex-shrink:0}
+.sc .si{font-size:32px;flex-shrink:0}
 .sc .sv{flex:1}
 .sc .sl{font-size:9px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase}
 .sc .sval{font-size:18px;font-weight:700;line-height:1.1}
@@ -148,6 +150,7 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
 <div class="ldbar" id="ldbar"><div class="ldfill" id="ldfill"></div></div>
 <div class="ap" id="apill">⚠️ HIZ SINIRI AŞILDI</div>
 <div class="cb" id="cban">📸 YAKIN KAMERA</div>
+<div class="cb" id="fban" style="top:90px;background:rgba(0,200,255,.92);box-shadow:0 4px 24px rgba(0,200,255,.5)">⛽ YAKIT İSTASYONU</div>
 <div class="vs" id="vstat">🔊</div>
 <button class="eb" id="ebtn" onclick="handleEmergency()">🆘</button>
 <button class="pip" id="pbtn" onclick="togglePip()">🔳</button>
@@ -192,7 +195,7 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
   </div>
   <div class="cpan" id="cpan">
     <div class="chead">
-      <span class="ct">📸 Kameralar (2km)</span>
+      <span class="ct">📸 Kameralar (3km)</span>
       <span class="cc sf" id="ccnt">0</span>
     </div>
     <div class="clist" id="clist"><div class="cemp">Konum alınıyor...</div></div>
@@ -283,7 +286,8 @@ function startApp(){
     document.getElementById('mUI').classList.add('show');
     document.getElementById('ebtn').style.display='flex';
     document.getElementById('pbtn').style.display='flex';
-    initAudio();startGPS();resizeGauge();fetchWeather();fetchFuel();
+    initAudio();startGPS();resizeGauge();reqWakeLock();
+    // fetchWeather and fetchFuel will be called by startGPS once location is obtained
   },800);
 }
 
@@ -304,7 +308,7 @@ var camFI=null,lastCamWT=0,camWarnOn=false;
 
 // Drive mode
 var dMode='city';
-var mLims={city:50,highway:120,sport:200};
+var mLims={city:90,highway:120,sport:200};
 
 // Theme
 var curTh=localStorage.getItem('sp_thm')||'classic';
@@ -356,6 +360,14 @@ var ths={
   }
 };
 
+// Wake Lock
+var wLock=null;
+function reqWakeLock(){
+  if(!('wakeLock' in navigator))return;
+  navigator.wakeLock.request('screen').then(function(lk){wLock=lk;wLock.addEventListener('release',function(){wLock=null;});}).catch(function(){wLock=null;});
+}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')reqWakeLock();});
+
 // Eco
 var ecoS=100,lastSpdE=0,lastTmE=0;
 
@@ -369,7 +381,7 @@ var vcOn=false,spSup='speechSynthesis' in window,lastVcT=0,lastCamVd=9999,lastLi
 var wData=null;
 
 // Fuel
-var fStations=[];
+var fStations=[],warnedCams=new Set(),warnedStations=new Set(),fuelWarnActive=null,fuelSndTimeout=null;
 
 // Drive time
 var drvStart=null,drvMs=0;
@@ -405,6 +417,7 @@ function beep(f,d,v){
 function alrtSnd(){var n=Date.now();if(n-lastAlrtT<1500)return;lastAlrtT=n;beep(900,.15,.4);setTimeout(function(){beep(1100,.2,.5)},180);}
 function camSnd(){var n=Date.now();if(n-lastCamWT<5000)return;lastCamWT=n;beep(1200,.1,.3);setTimeout(function(){beep(1400,.15,.4)},130);setTimeout(function(){beep(1600,.2,.5)},280);}
 function testSound(){initAudio();beep(660,.3,.3);setTimeout(function(){beep(880,.3,.3)},350);if(navigator.vibrate)navigator.vibrate([100,50,100]);}
+function fuelSnd(){beep(800,.12,.35);setTimeout(function(){beep(1000,.12,.35)},160);setTimeout(function(){beep(800,.12,.35)},320);if(navigator.vibrate)navigator.vibrate([80,40,80,40,80]);}
 
 // ===== SPEECH =====
 function speak(t){
@@ -520,7 +533,7 @@ function fetchWeather(){
 function fetchFuel(){
   if(!myLat)return;
   var lat=myLat,lon=myLon;
-  var q='[out:json][timeout:10];node["amenity"="fuel"](around:2000,'+lat+','+lon+');out body qt;';
+  var q='[out:json][timeout:15];(node["amenity"="fuel"](around:5000,'+lat+','+lon+');node["amenity"="fuel"]["brand"](around:5000,'+lat+','+lon+'););out body qt;';
   fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q))
   .then(function(r){if(!r.ok)throw 0;return r.json();})
   .then(function(d){
@@ -540,7 +553,7 @@ function fetchFuel(){
       document.getElementById('fDsc').textContent=n.name;
     }else{document.getElementById('fNrst').textContent='--';document.getElementById('fDsc').textContent='Bulunamadı';}
   })
-  .catch(function(){document.getElementById('fDsc').textContent='Hata';});
+  .catch(function(){document.getElementById('fDsc').textContent='Bağlantı hatası';});
 }
 
 // ===== EMERGENCY =====
@@ -638,8 +651,9 @@ function showThemes(){
 function toggleMap(){
   var o=document.getElementById('mover');
   if(!o.classList.contains('vis')&&myLat){
-    var url='https://www.openstreetmap.org/export/embed.html?bbox='+(myLon-.04)+','+(myLat-.03)+','+(myLon+.04)+','+(myLat+.03)+'&layer=mapnik&marker='+myLat+','+myLon;
+    var url='https://www.openstreetmap.org/export/embed.html?bbox='+(myLon-.06)+','+(myLat-.04)+','+(myLon+.06)+','+(myLat+.04)+'&layer=mapnik&marker='+myLat+','+myLon;
     if(cams.length>0)for(var i=0;i<Math.min(10,cams.length);i++)url+='&marker='+cams[i].lat+','+cams[i].lon;
+    if(fStations.length>0)for(var j=0;j<Math.min(5,fStations.length);j++)url+='&marker='+fStations[j].lat+','+fStations[j].lon;
     document.getElementById('mframe').src=url;
   }
   o.classList.toggle('vis');
@@ -647,7 +661,7 @@ function toggleMap(){
 
 // ===== CAMERA SYSTEM =====
 function fetchCams(lat,lon){
-  var q='[out:json][timeout:10];(node["highway"="speed_camera"](around:2000,'+lat+','+lon+');node["enforcement"="maxspeed"](around:2000,'+lat+','+lon+');node["enforcement"="traffic_signals"](around:2000,'+lat+','+lon+');node["man_made"="surveillance"]["surveillance:type"="camera"](around:2000,'+lat+','+lon+');node["highway"="speed_camera"]["camera_type"="red_light"](around:2000,'+lat+','+lon+'););out body qt;';
+  var q='[out:json][timeout:15];(node["highway"="speed_camera"](around:3000,'+lat+','+lon+');node["enforcement"="maxspeed"](around:3000,'+lat+','+lon+');node["enforcement"="traffic_signals"](around:3000,'+lat+','+lon+');node["man_made"="surveillance"]["surveillance:type"="camera"](around:3000,'+lat+','+lon+');node["highway"="speed_camera"]["camera_type"="red_light"](around:3000,'+lat+','+lon+');node["highway"="traffic_signals"]["traffic_signals"="camera"](around:3000,'+lat+','+lon+');node["enforcement"="maxspeed"]["camera_type"="fixed"](around:3000,'+lat+','+lon+');node["enforcement"="maxspeed"]["camera_type"="mobile"](around:3000,'+lat+','+lon+'););out body qt;';
   fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q))
   .then(function(r){if(!r.ok)throw 0;return r.json();})
   .then(function(d){
@@ -673,7 +687,11 @@ function fetchCams(lat,lon){
     }
     renderCamList();
   })
-  .catch(function(){});
+  .catch(function(){
+    // Overpass API error - show in camera list
+    var list=document.getElementById('clist');
+    if(list&&cams.length===0)list.innerHTML='<div class="cemp">Kamera verisi alınamadı ⚠️</div>';
+  });
 }
 
 function renderCamList(){
@@ -697,15 +715,37 @@ function renderCamList(){
 function checkCamWarn(){
   var ban=document.getElementById('cban');
   var nd=cams.length>0?cams[0].dist:9999;
+  var camId=cams.length>0?cams[0].id:null;
   camWarnOn=nd<800;
   if(nd<300){
     ban.className='cb vis dg';ban.textContent='📸 TEHLİKE! KAMERA '+Math.round(nd)+'m';
-    camSnd();if(navigator.vibrate)navigator.vibrate([100,50,100,50,100]);
-    if(vcOn&&nd<lastCamVd-100){speak('Kamera '+Math.round(nd)+' metre ileride!');lastCamVd=nd;}
+    if(camId&&!warnedCams.has(camId)){warnedCams.add(camId);camSnd();if(navigator.vibrate)navigator.vibrate([100,50,100,50,100]);if(vcOn){speak('Kamera '+Math.round(nd)+' metre ileride!');}}
+    lastCamVd=nd;
   }else if(nd<800){
     ban.className='cb vis';ban.textContent='📸 Kamera ~'+Math.round(nd)+'m';
-    if(vcOn&&nd<lastCamVd-200){speak('Kamera yaklaşıyor');lastCamVd=nd;}
+    if(camId&&!warnedCams.has(camId)&&nd<lastCamVd-200){speak('Kamera yaklaşıyor');}
   }else{ban.className='cb';lastCamVd=9999;}
+}
+
+function checkFuelWarn(){
+  var fban=document.getElementById('fban');
+  if(fStations.length===0){fban.className='cb';return;}
+  var nd=fStations[0].dist;
+  var sid=fStations[0].lat+'_'+fStations[0].lon;
+  if(nd<250){
+    if(!warnedStations.has(sid)){
+      warnedStations.add(sid);
+      fban.className='cb vis fuelblink';fban.textContent='⛽ YAKIT İSTASYONU '+Math.round(nd)+'m';
+      fuelSnd();
+      if(vcOn){speak('Yakıt istasyonu '+Math.round(nd)+' metre ileride!');}
+      clearTimeout(fuelSndTimeout);
+      fuelSndTimeout=setTimeout(function(){fban.className='cb';},3000);
+    }else{
+      if(fban.className.indexOf('vis')===-1){fban.className='cb vis';fban.textContent='⛽ İSTASYON '+Math.round(nd)+'m';}
+    }
+  }else{
+    fban.className='cb';
+  }
 }
 
 function getBrg(a,b,c,d){
@@ -857,6 +897,15 @@ function drawGauge(spd){
     ctx.fillText('📸',camX,camY);ctx.restore();
   }
 
+  // Fuel station icon on gauge when close
+  if(fStations.length>0&&fStations[0].dist<250){
+    var fuelAng=st+(fStations[0].dist<150?.93:.87)*sw;
+    var fuelR=R+22,fuelX=cX+Math.cos(fuelAng)*fuelR,fuelY=cY+Math.sin(fuelAng)*fuelR;
+    ctx.save();ctx.font='bold '+w*.06+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.shadowColor='#00c8ff';ctx.shadowBlur=12;ctx.fillStyle=Math.floor(Date.now()/400)%2?'#00c8ff':'rgba(0,200,255,.4)';
+    ctx.fillText('⛽',fuelX,fuelY);ctx.restore();
+  }
+
   // Ticks - theme colored
   var totalT=unit==='mph'?32:52,majEv=4;
   for(var i=0;i<=totalT;i++){
@@ -955,6 +1004,14 @@ function updateDisplay(){
     renderCamList();
     checkCamWarn();
   }
+  if(myLat!==null&&fStations.length>0){
+    for(var j=0;j<fStations.length;j++)fStations[j].dist=haversine(myLat,myLon,fStations[j].lat,fStations[j].lon)*1000;
+    fStations.sort(function(a,b){return a.dist-b.dist;});
+    var nf=fStations[0];
+    document.getElementById('fNrst').textContent=nf.dist<1000?Math.round(nf.dist)+'m':(nf.dist/1000).toFixed(1)+'km';
+    document.getElementById('fDsc').textContent=nf.name;
+    checkFuelWarn();
+  }
 }
 
 // ===== RESET =====
@@ -969,36 +1026,77 @@ function resetAll(){
 // ===== GPS =====
 function startGPS(){
   if(gpsOn)return;
-  if(!navigator.geolocation){document.getElementById('wbx').style.display='block';startSim();return;}
-  var opt={enableHighAccuracy:true,maximumAge:0,timeout:10000};
-  watchId=navigator.geolocation.watchPosition(
+  if(!navigator.geolocation){showGPSError('GPS desteklenmiyor');startSim();return;}
+  var opt={enableHighAccuracy:true,maximumAge:5000,timeout:15000};
+  updStat('y','Konum alınıyor...');
+  
+  // Try getCurrentPosition first for quick feedback
+  navigator.geolocation.getCurrentPosition(
     function(pos){
       gpsOn=true;updStat('g','GPS aktif');
       myLat=pos.coords.latitude;myLon=pos.coords.longitude;
       if(pos.coords.heading)myHdg=pos.coords.heading;
       if(!drvStart)drvStart=Date.now();
-
       if(pos.coords.speed!==null&&pos.coords.speed>=0)curSpd=pos.coords.speed*3.6;
-      else if(lastPos&&lastTm){
-        var d=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos.coords.latitude,pos.coords.longitude);
-        var dt=(pos.timestamp-lastTm)/1000;if(dt>0)curSpd=(d/dt)*3.6;
-      }
-      if(lastPos)totDist+=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos.coords.latitude,pos.coords.longitude);
-      lastPos=pos;lastTm=pos.timestamp;
-
-      if(!limChkTO&&limOn){
-        limChkTO=setTimeout(function(){fetchSpLim(pos.coords.latitude,pos.coords.longitude);limChkTO=setTimeout(function(){limChkTO=null;},30000);},2000);
-      }
-      if(!camFI){
-        fetchCams(pos.coords.latitude,pos.coords.longitude);
-        camFI=setInterval(function(){if(myLat!==null)fetchCams(myLat,myLon);},60000);
-      }
-      // Fetch weather and fuel when GPS first acquired
+      
+      // Immediately fetch cameras and fuel
+      fetchCams(myLat,myLon);
+      fetchSpLim(myLat,myLon);
       if(!wData){fetchWeather();fetchFuel();}
+      
+      // Then start watchPosition for continuous updates
+      watchId=navigator.geolocation.watchPosition(
+        function(pos2){
+          gpsOn=true;updStat('g','GPS aktif');
+          myLat=pos2.coords.latitude;myLon=pos2.coords.longitude;
+          if(pos2.coords.heading)myHdg=pos2.coords.heading;
+          if(!drvStart)drvStart=Date.now();
+          if(pos2.coords.speed!==null&&pos2.coords.speed>=0)curSpd=pos2.coords.speed*3.6;
+          else if(lastPos&&lastTm){
+            var d=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos2.coords.latitude,pos2.coords.longitude);
+            var dt=(pos2.timestamp-lastTm)/1000;if(dt>0)curSpd=(d/dt)*3.6;
+          }
+          if(lastPos)totDist+=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos2.coords.latitude,pos2.coords.longitude);
+          lastPos=pos2;lastTm=pos2.timestamp;
+          
+          // Periodic camera & limit refresh
+          if(!camFI){
+            camFI=setInterval(function(){if(myLat!==null)fetchCams(myLat,myLon);},60000);
+          }
+          if(!limChkTO&&limOn){
+            limChkTO=setTimeout(function(){fetchSpLim(myLat,myLon);limChkTO=setTimeout(function(){limChkTO=null;},30000);},30000);
+          }
+        },
+        function(err){
+          // WatchPosition error - but we already got initial position, keep GPS on
+          if(gpsOn){updStat('y','GPS sinyal zayıf');}
+          else{showGPSError('GPS hatası: '+err.message);startSim();}
+        },
+        opt
+      );
     },
-    function(err){updStat('r','GPS hatası');document.getElementById('wbx').style.display='block';startSim();},
+    function(err){
+      // getCurrentPosition failed
+      var msg='GPS hatası';
+      if(err.code===1)msg='Konum izni reddedildi';
+      else if(err.code===2)msg='Konum kullanılamıyor';
+      else if(err.code===3)msg='Konum zaman aşımı';
+      showGPSError(msg);
+      startSim();
+    },
     opt
   );
+  
+  // Fallback timeout - if no GPS in 8 seconds, start simulation
+  setTimeout(function(){
+    if(!gpsOn&&!simOn){showGPSError('GPS zaman aşımı – simülasyon');startSim();}
+  },8000);
+}
+
+function showGPSError(msg){
+  updStat('r',msg);
+  var wbx=document.getElementById('wbx');
+  if(wbx){wbx.textContent=msg+' – simülasyon modu';wbx.style.display='block';}
 }
 
 function haversine(a,b,c,d){
@@ -1011,16 +1109,17 @@ function updStat(c,t){document.getElementById('stat').innerHTML='<span class="do
 // ===== SIMULATION =====
 function startSim(){
   simOn=true;updStat('y','Simülasyon');
-  myLat=40.990;myLon=29.020;drvStart=Date.now();
+  myLat=41.008;myLon=28.978;drvStart=Date.now();
   var ss=0,tgt=80,ph='accel';
   setInterval(function(){
     if(ph==='accel'){ss+=Math.random()*4;if(ss>=tgt)ph='cruise';}
     else if(ph==='cruise'){ss+=(Math.random()-.5)*3;if(Math.random()<.02){tgt=30+Math.random()*170;ph='change';}}
     else if(ph==='change'){ss+=(tgt-ss)*.05+(Math.random()-.5);if(Math.abs(ss-tgt)<5)ph='cruise';}
     ss=Math.max(0,Math.min(ss,250));curSpd=ss;totDist+=ss/3600;
-    myLon+=ss/3600*.001;myLat+=Math.random()*.0001-.00005;
+    myLon+=ss/3600*.0005;myLat+=Math.random()*.00005-.000025;
   },500);
-  setTimeout(function(){fetchCams(myLat,myLon)},1500);
+  // Fetch cameras and fuel for Istanbul area (plenty of data there)
+  setTimeout(function(){fetchCams(myLat,myLon);fetchFuel();},500);
   camFI=setInterval(function(){if(myLat)fetchCams(myLat,myLon);},60000);
   setTimeout(function(){fetchWeather();fetchFuel();},2000);
 }
