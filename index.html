@@ -33,8 +33,10 @@ body.af{animation:afr .4s ease infinite}
 .campop{display:none;position:fixed;top:52px;left:50%;transform:translateX(-50%);background:rgba(20,20,30,.96);border:1px solid rgba(255,152,0,.5);border-radius:16px;padding:10px 14px;z-index:99;box-shadow:0 4px 24px rgba(255,152,0,.4);min-width:240px;animation:campopIn .3s ease}
 .campop.vis{display:block}
 .campop.dg{border-color:rgba(255,23,68,.6);box-shadow:0 4px 24px rgba(255,23,68,.5);animation:campopPulse .6s ease infinite}
+#fuelpop.dg{border-color:rgba(0,230,118,.5);box-shadow:0 4px 24px rgba(0,230,118,.4);animation:campopPulseG .6s ease infinite}
 @keyframes campopIn{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes campopPulse{0%,100%{opacity:1}50%{opacity:.65}}
+@keyframes campopPulseG{0%,100%{opacity:1}50%{opacity:.65}}
 .campop-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.1)}
 .campop-hdr .cic{font-size:28px}
 .campop-title{font-size:13px;font-weight:700;color:#fff;flex:1}
@@ -163,6 +165,10 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
 <div class="ap" id="apill">⚠️ HIZ SINIRI AŞILDI</div>
 <div class="cb" id="cban">📸 YAKIN KAMERA</div>
 <div class="cb" id="fban" style="top:90px;background:rgba(0,200,255,.92);box-shadow:0 4px 24px rgba(0,200,255,.5)">⛽ YAKIT İSTASYONU</div>
+<div class="campop" id="fuelpop" style="top:100px;border-color:rgba(0,200,255,.4);box-shadow:0 4px 24px rgba(0,200,255,.3)">
+  <div class="campop-hdr"><span class="cic">⛽</span><span class="campop-title" id="fuelpop-title">YAKIT İSTASYONU</span><span id="fuelpop-dist" class="campop-dst" style="color:#00c8ff">--</span></div>
+  <div class="campop-body" id="fuelpop-body"></div>
+</div>
 <div class="campop" id="campop">
   <div class="campop-hdr"><span class="cic">📸</span><span class="campop-title" id="campop-title">KAMERA</span><span id="campop-dist" class="campop-dst">--</span></div>
   <div class="campop-body" id="campop-body"></div>
@@ -220,7 +226,7 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
     <div class="sc" onclick="showCamList()" style="cursor:pointer"><div class="si">📸</div><div class="sv"><div class="sl">Kameralar</div><div class="sval" id="camInfo">0</div><div class="sd" id="camNearest">--</div></div></div>
     <div class="sc"><div class="si">🌱</div><div class="sv"><div class="sl">Eco Skor</div><div class="sval" id="ecoG" style="color:#00e676">A</div><div class="sd" id="ecoD">Mükemmel</div></div></div>
     <div class="sc"><div class="si" id="wIco">☀️</div><div class="sv"><div class="sl">Hava</div><div class="sval" id="wTmp">--°C</div><div class="sd" id="wDsc">Yükleniyor</div></div></div>
-    <div class="sc"><div class="si">⛽</div><div class="sv"><div class="sl">Yakıt</div><div class="sval" id="fNrst">--</div><div class="sd" id="fDsc">Aranıyor</div></div></div>
+    <div class="sc" onclick="showFuelDetail()" style="cursor:pointer"><div class="si">⛽</div><div class="sv"><div class="sl">Yakıt</div><div class="sval" id="fNrst" style="color:#00c8ff">--</div><div class="sd" id="fDsc">Aranıyor</div></div></div>
   </div>
   <div class="ga">
     <div class="sw" id="sw">
@@ -252,6 +258,7 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
     <button class="cbtn" onclick="resetAll()">Sıfırla</button>
   </div>
   <div class="stl" id="stat"><span class="dot y"></span> GPS bekleniyor</div>
+  <div class="stl" style="margin-top:10px;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:2px">HALİL KILIÇ ✦</div>
   <div class="wbx" id="wbx">GPS desteklenmiyor – simülasyon modu</div>
 </div>
 
@@ -398,7 +405,7 @@ var vcOn=false,spSup='speechSynthesis' in window,lastVcT=0,lastCamVd=9999,lastLi
 var wData=null;
 
 // Fuel
-var fStations=[],warnedCams=new Set(),warnedStations=new Set(),fuelSndTimeout=null,activeFuelStation=null,passedStations=new Set();
+var fStations=[],warnedCams=new Set(),warnedStations=new Set(),fuelSndTimeout=null,activeFuelStation=null,passedStations=new Set(),fuelFI=null,fuelLoaded=false;
 
 // Drive time
 var drvStart=null,drvMs=0;
@@ -555,6 +562,7 @@ function fetchFuel(){
   .then(function(r){if(!r.ok)throw 0;return r.json();})
   .then(function(d){
     fStations=[];
+    fuelLoaded=true;
     if(d.elements){
       for(var i=0;i<d.elements.length;i++){
         var el=d.elements[i];
@@ -564,9 +572,45 @@ function fetchFuel(){
       }
       fStations.sort(function(a,b){return a.dist-b.dist;});
     }
+    updateFuelStrip();
     checkFuelWarn();
   })
-  .catch(function(){document.getElementById('fDsc').textContent='Bağlantı hatası';});
+  .catch(function(){
+    fuelLoaded=true;
+    document.getElementById('fDsc').textContent='Bağlantı hatası';
+    document.getElementById('fNrst').textContent='⚠️';
+  });
+}
+
+function updateFuelStrip(){
+  if(!fuelLoaded)return;
+  if(fStations.length===0){
+    document.getElementById('fNrst').textContent='0';
+    document.getElementById('fDsc').textContent='5km içinde yok';
+    return;
+  }
+  // Find nearest non-passed station
+  var nearest=null;
+  for(var i=0;i<fStations.length;i++){
+    var sid=fStations[i].lat+'_'+fStations[i].lon;
+    if(!passedStations.has(sid)){nearest=fStations[i];break;}
+  }
+  if(!nearest){
+    document.getElementById('fNrst').textContent='✓';
+    document.getElementById('fDsc').textContent='Geçildi';
+    return;
+  }
+  var nd=nearest.dist;
+  if(nd>2000){
+    document.getElementById('fNrst').textContent=(nd/1000).toFixed(1)+'km';
+    document.getElementById('fDsc').textContent=nearest.name;
+  }else if(nd<=50){
+    document.getElementById('fNrst').textContent='ULAŞILDI';
+    document.getElementById('fDsc').textContent=nearest.name;
+  }else{
+    document.getElementById('fNrst').textContent=nd<1000?Math.round(nd)+'m':(nd/1000).toFixed(1)+'km';
+    document.getElementById('fDsc').textContent=nearest.name;
+  }
 }
 
 // ===== EMERGENCY =====
@@ -734,6 +778,39 @@ function showCamList(){
   if(list.style.display==='none'){list.style.display='flex';cpan.style.display='block';}
   else{list.style.display='none';}
 }
+
+function showFuelDetail(){
+  if(!fuelLoaded||fStations.length===0)return;
+  // Toggle fuel popup panel visibility
+  var fpop=document.getElementById('fuelpop');
+  if(fpop.className.indexOf('vis')>=0&&fpop.style.display!=='none'){
+    fpop.className='campop';
+  }else{
+    // Build a detailed list in the popup
+    var nearest=null;
+    for(var i=0;i<fStations.length;i++){var sid=fStations[i].lat+'_'+fStations[i].lon;if(!passedStations.has(sid)){nearest=fStations[i];break;}}
+    if(!nearest)return;
+    var nd=nearest.dist;
+    document.getElementById('fuelpop-title').textContent=nearest.name||'İstasyon';
+    document.getElementById('fuelpop-dist').textContent=nd<1000?Math.round(nd)+'m':(nd/1000).toFixed(1)+'km';
+    document.getElementById('fuelpop-dist').style.color='#00c8ff';
+    var bodyHtml='<div class="crd">'+nearest.name;
+    if(passedStations.has(nearest.lat+'_'+nearest.lon+'reached'))bodyHtml+=' ✓ ULAŞILDI';
+    bodyHtml+='</div>';
+    // Show up to 3 more nearby stations
+    var cnt=0;
+    for(var j=0;j<fStations.length&&cnt<3;j++){
+      var sid2=fStations[j].lat+'_'+fStations[j].lon;
+      if(passedStations.has(sid2)||fStations[j]===nearest)continue;
+      var d2=fStations[j].dist;
+      if(d2>5000)continue;
+      bodyHtml+='<div class="crd" style="margin-top:4px;opacity:.6">⛽ '+(fStations[j].name||'İstasyon')+' – '+(d2<1000?Math.round(d2)+'m':(d2/1000).toFixed(1)+'km')+'</div>';
+      cnt++;
+    }
+    document.getElementById('fuelpop-body').innerHTML=bodyHtml;
+    fpop.className='campop vis';
+  }
+}
 function checkCamWarn(){
   var ban=document.getElementById('cban');
   var popup=document.getElementById('campop');
@@ -777,7 +854,11 @@ function checkCamWarn(){
 
 function checkFuelWarn(){
   var fban=document.getElementById('fban');
-  if(fStations.length===0){fban.className='cb';return;}
+  var fpop=document.getElementById('fuelpop');
+  if(fStations.length===0){
+    if(fuelLoaded){fban.className='cb';fpop.className='campop';}
+    return;
+  }
   // Find nearest station that hasn't been passed
   var nearest=null;
   for(var i=0;i<fStations.length;i++){
@@ -786,25 +867,35 @@ function checkFuelWarn(){
   }
   if(!nearest){
     // All known stations passed, hide fuel display
-    document.getElementById('fNrst').textContent='--';
-    document.getElementById('fDsc').textContent='Yakınlarda yok';
     fban.className='cb';
+    fpop.className='campop';
     activeFuelStation=null;
     return;
   }
   var nd=nearest.dist;
   var sid=nearest.lat+'_'+nearest.lon;
-  // Hide fuel info card if beyond 2km
+  // Hide popup if beyond 2km (banner already handled in updateFuelStrip)
   if(nd>2000){
-    document.getElementById('fNrst').textContent='--';
-    document.getElementById('fDsc').textContent='2km+ yok';
     fban.className='cb';
+    fpop.className='campop';
     activeFuelStation=null;
     return;
   }
-  // Update fuel info card (only within 2km)
-  document.getElementById('fNrst').textContent=nd<1000?Math.round(nd)+'m':(nd/1000).toFixed(1)+'km';
-  document.getElementById('fDsc').textContent=nearest.name;
+  // Update popup panel
+  var distTxt=nd<1000?Math.round(nd)+'m':(nd/1000).toFixed(1)+'km';
+  var distCls=nd<250?'vn':'';
+  document.getElementById('fuelpop-title').textContent=nearest.name||'İstasyon';
+  document.getElementById('fuelpop-dist').textContent=distTxt;
+  document.getElementById('fuelpop-dist').className='campop-dst'+(distCls?' vn':'');
+  if(nd<=50){
+    document.getElementById('fuelpop-dist').textContent='ULAŞILDI';
+    document.getElementById('fuelpop-dist').style.color='#00e676';
+  }else{
+    document.getElementById('fuelpop-dist').style.color=nd<250?'#00c8ff':'#00c8ff';
+  }
+  var bodyHtml='<div class="crd">'+(nearest.name||'İstasyon');
+  bodyHtml+='</div>';
+  document.getElementById('fuelpop-body').innerHTML=bodyHtml;
   // Mark station as passed when distance increases (we passed it)
   if(activeFuelStation===sid){
     // We were tracking this station - check if we passed it
@@ -812,11 +903,20 @@ function checkFuelWarn(){
     if(nd>100&&passedStations.has(sid+'reached')){
       passedStations.add(sid);
       fban.className='cb';
+      fpop.className='campop';
       activeFuelStation=null;
       return;
     }
   }
   activeFuelStation=sid;
+  // Show popup when within 2km
+  if(nd<=2000){
+    if(nd<250){
+      fpop.className='campop vis'+(nd<=50?' dg':'');
+    }else{
+      fpop.className='campop vis';
+    }
+  }
   // 50m or less = reached
   if(nd<=50){
     if(!passedStations.has(sid+'reached')){
@@ -1113,9 +1213,12 @@ function updateDisplay(){
     document.getElementById('camInfo').textContent='0';
     document.getElementById('camNearest').textContent='Yok';
   }
-  if(myLat!==null&&fStations.length>0){
-    for(var j=0;j<fStations.length;j++)fStations[j].dist=haversine(myLat,myLon,fStations[j].lat,fStations[j].lon)*1000;
-    fStations.sort(function(a,b){return a.dist-b.dist;});
+  if(myLat!==null&&fuelLoaded){
+    if(fStations.length>0){
+      for(var j=0;j<fStations.length;j++)fStations[j].dist=haversine(myLat,myLon,fStations[j].lat,fStations[j].lon)*1000;
+      fStations.sort(function(a,b){return a.dist-b.dist;});
+    }
+    updateFuelStrip();
     checkFuelWarn();
   }
 }
@@ -1149,6 +1252,8 @@ function startGPS(){
       fetchCams(myLat,myLon);
       fetchSpLim(myLat,myLon);
       if(!wData){fetchWeather();fetchFuel();}
+      // Start periodic fuel refresh
+      if(!fuelFI){fuelFI=setInterval(function(){if(myLat!==null)fetchFuel();},90000);}
       
       // Then start watchPosition for continuous updates
       watchId=navigator.geolocation.watchPosition(
@@ -1227,7 +1332,8 @@ function startSim(){
   // Fetch cameras and fuel for Istanbul area (plenty of data there)
   setTimeout(function(){fetchCams(myLat,myLon);fetchFuel();},500);
   camFI=setInterval(function(){if(myLat)fetchCams(myLat,myLon);},60000);
-  setTimeout(function(){fetchWeather();fetchFuel();},2000);
+  fuelFI=setInterval(function(){if(myLat)fetchFuel();},90000);
+  setTimeout(function(){fetchWeather();},2000);
 }
 
 // ===== MAIN LOOP =====
