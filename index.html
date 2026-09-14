@@ -22,16 +22,23 @@ body{background:#0a0a0f;color:#fff;font-family:'Segoe UI',Arial,sans-serif;min-h
 @keyframes wfa{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 body.af{animation:afr .4s ease infinite}
 @keyframes afr{0%,100%{background:#0a0a0f}50%{background:rgba(255,23,68,.2)}}
-.ap{display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);background:rgba(255,23,68,.92);color:#fff;padding:12px 28px;font-size:15px;font-weight:700;letter-spacing:2px;border-radius:24px;z-index:100;box-shadow:0 4px 24px rgba(255,23,68,.6);white-space:nowrap}
+.ap{display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);background:rgba(255,23,68,.92);color:#fff;padding:12px 28px;font-size:15px;font-weight:700;letter-spacing:2px;border-radius:24px;z-index:100;box-shadow:0 4px 24px rgba(255,23,68,.6);white-space:nowrap;transition:transform .3s ease,opacity .3s ease;touch-action:pan-y}
 .ap.vis{display:flex;align-items:center;gap:8px}
-.cb{display:none;position:fixed;top:52px;left:50%;transform:translateX(-50%);background:rgba(255,152,0,.92);color:#fff;padding:10px 24px;font-size:14px;font-weight:700;border-radius:24px;z-index:99;box-shadow:0 4px 24px rgba(255,152,0,.5);white-space:nowrap}
+.ap.dismissing{opacity:0;transform:translateX(-50%) translateX(-120px)}
+.cb{display:none;position:fixed;left:50%;transform:translateX(-50%);background:rgba(255,152,0,.92);color:#fff;padding:10px 24px;font-size:14px;font-weight:700;border-radius:24px;z-index:99;box-shadow:0 4px 24px rgba(255,152,0,.5);white-space:nowrap;transition:transform .3s ease,opacity .3s ease;touch-action:pan-y}
 .cb.vis{display:flex;align-items:center;gap:8px}
+.cb.dismissing{opacity:0;transform:translateX(-50%) translateX(100px)}
+#cban{top:52px}
+#fban{top:96px}
 .cb.dg{background:rgba(255,23,68,.92);box-shadow:0 4px 24px rgba(255,23,68,.6);animation:cp .6s ease infinite}
 @keyframes cp{0%,100%{opacity:1}50%{opacity:.6}}
 @keyframes fp{0%,100%{opacity:1}50%{opacity:.4}}
 .cb.fuelblink{animation:fp .5s ease 6}
-.campop{display:none;position:fixed;top:52px;left:50%;transform:translateX(-50%);background:rgba(20,20,30,.96);border:1px solid rgba(255,152,0,.5);border-radius:16px;padding:10px 14px;z-index:99;box-shadow:0 4px 24px rgba(255,152,0,.4);min-width:240px;animation:campopIn .3s ease}
+.campop{display:none;position:fixed;left:50%;transform:translateX(-50%);background:rgba(20,20,30,.96);border:1px solid rgba(255,152,0,.5);border-radius:16px;padding:10px 14px;z-index:99;box-shadow:0 4px 24px rgba(255,152,0,.4);min-width:260px;max-width:320px;animation:campopIn .3s ease;transition:transform .3s ease,opacity .3s ease;touch-action:pan-y}
 .campop.vis{display:block}
+.campop.dismissing{opacity:0;transform:translateX(-50%) translateX(120px)}
+#campop{top:52px}
+#fuelpop{top:auto;bottom:120px;border-color:rgba(0,200,255,.4);box-shadow:0 4px 24px rgba(0,200,255,.3)}
 .campop.dg{border-color:rgba(255,23,68,.6);box-shadow:0 4px 24px rgba(255,23,68,.5);animation:campopPulse .6s ease infinite}
 #fuelpop.dg{border-color:rgba(0,230,118,.5);box-shadow:0 4px 24px rgba(0,230,118,.4);animation:campopPulseG .6s ease infinite}
 @keyframes campopIn{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
@@ -164,8 +171,8 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
 <div class="ldbar" id="ldbar"><div class="ldfill" id="ldfill"></div></div>
 <div class="ap" id="apill">⚠️ HIZ SINIRI AŞILDI</div>
 <div class="cb" id="cban">📸 YAKIN KAMERA</div>
-<div class="cb" id="fban" style="top:90px;background:rgba(0,200,255,.92);box-shadow:0 4px 24px rgba(0,200,255,.5)">⛽ YAKIT İSTASYONU</div>
-<div class="campop" id="fuelpop" style="top:100px;border-color:rgba(0,200,255,.4);box-shadow:0 4px 24px rgba(0,200,255,.3)">
+<div class="cb" id="fban">⛽ YAKIT İSTASYONU</div>
+<div class="campop" id="fuelpop">
   <div class="campop-hdr"><span class="cic">⛽</span><span class="campop-title" id="fuelpop-title">YAKIT İSTASYONU</span><span id="fuelpop-dist" class="campop-dst" style="color:#00c8ff">--</span></div>
   <div class="campop-body" id="fuelpop-body"></div>
 </div>
@@ -310,7 +317,7 @@ function startApp(){
     document.getElementById('mUI').classList.add('show');
     document.getElementById('ebtn').style.display='flex';
     document.getElementById('pbtn').style.display='flex';
-    initAudio();startGPS();resizeGauge();reqWakeLock();
+    initAudio();startGPS();resizeGauge();reqWakeLock();initSwipeDismissAll();
     // fetchWeather and fetchFuel will be called by startGPS once location is obtained
   },800);
 }
@@ -717,35 +724,88 @@ function toggleMap(){
 }
 
 // ===== CAMERA SYSTEM =====
+var camFI2=null;
 function fetchCams(lat,lon){
-  var q='[out:json][timeout:15];(node["highway"="speed_camera"](around:3000,'+lat+','+lon+');node["enforcement"="maxspeed"](around:3000,'+lat+','+lon+');node["enforcement"="traffic_signals"](around:3000,'+lat+','+lon+');node["man_made"="surveillance"]["surveillance:type"="camera"](around:3000,'+lat+','+lon+');node["highway"="speed_camera"]["camera_type"="red_light"](around:3000,'+lat+','+lon+');node["highway"="traffic_signals"]["traffic_signals"="camera"](around:3000,'+lat+','+lon+');node["enforcement"="maxspeed"]["camera_type"="fixed"](around:3000,'+lat+','+lon+');node["enforcement"="maxspeed"]["camera_type"="mobile"](around:3000,'+lat+','+lon+'););out body qt;';
+  // Comprehensive camera query - all types within 5km
+  var q='[out:json][timeout:20];('
+    // Speed cameras
+    +'node["highway"="speed_camera"](around:5000,'+lat+','+lon+');'
+    +'node["enforcement"="maxspeed"](around:5000,'+lat+','+lon+');'
+    // Red light cameras
+    +'node["enforcement"="traffic_signals"](around:5000,'+lat+','+lon+');'
+    +'node["highway"="speed_camera"]["camera_type"="red_light"](around:5000,'+lat+','+lon+');'
+    +'node["highway"="traffic_signals"]["traffic_signals"="camera"](around:5000,'+lat+','+lon+');'
+    // Mobile/speed trap cameras
+    +'node["enforcement"="maxspeed"]["camera_type"="mobile"](around:5000,'+lat+','+lon+');'
+    +'node["enforcement"="maxspeed"]["camera_type"="mobile_camera"](around:5000,'+lat+','+lon+');'
+    +'node["highway"="speed_camera"]["camera_type"="mobile"](around:5000,'+lat+','+lon+');'
+    // Fixed cameras
+    +'node["enforcement"="maxspeed"]["camera_type"="fixed"](around:5000,'+lat+','+lon+');'
+    +'node["highway"="speed_camera"]["camera_type"="fixed"](around:5000,'+lat+','+lon+');'
+    // Surveillance cameras on roads
+    +'node["man_made"="surveillance"]["surveillance:type"="camera"](around:3000,'+lat+','+lon+');'
+    +'node["man_made"="surveillance"]["surveillance"="public"](around:3000,'+lat+','+lon+');'
+    // Average speed / distance cameras (section control)
+    +'node["highway"="speed_camera"]["camera_type"="section"](around:5000,'+lat+','+lon+');'
+    +'node["enforcement"="maxspeed"]["camera_type"="section"](around:5000,'+lat+','+lon+');'
+    +'node["enforcement"="maxspeed"]["enforcement"="section_control"](around:5000,'+lat+','+lon+');'
+    // City entrance cameras
+    +'node["highway"="speed_camera"]["camera_type"="entrance"](around:5000,'+lat+','+lon+');'
+    +'node["enforcement"="maxspeed"]["camera_type"="entrance"](around:5000,'+lat+','+lon+');'
+    // Any node with enforcement tag
+    +'node["enforcement"](around:5000,'+lat+','+lon+');'
+    // Traffic signals with camera indication
+    +'node["highway"="traffic_signals"]["camera"="yes"](around:5000,'+lat+','+lon+');'
+    // Way-based speed cameras (some are mapped as ways)
+    +'way["highway"="speed_camera"](around:5000,'+lat+','+lon+');'
+    +');out body qt center;';
   fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q))
   .then(function(r){if(!r.ok)throw 0;return r.json();})
   .then(function(d){
+    var seen=new Set();
     cams=[];
     if(d.elements){
       for(var i=0;i<d.elements.length;i++){
         var el=d.elements[i];
-        var dist=haversine(lat,lon,el.lat,el.lon)*1000;
-        var brg=getBrg(lat,lon,el.lat,el.lon);
-        var tp='Sabit Kamera',ic='📸';
+        var elat=el.lat||el.center?.lat||0;
+        var elon=el.lon||el.center?.lon||0;
+        if(!elat||!elon)continue;
+        var key=elat.toFixed(5)+'_'+elon.toFixed(5);
+        if(seen.has(key))continue;
+        seen.add(key);
+        var dist=haversine(lat,lon,elat,elon)*1000;
+        var brg=getBrg(lat,lon,elat,elon);
+        var tp='Sabit Kamera',ic='📸',extra='';
         if(el.tags){
           var ct=el.tags.camera_type||el.tags.enforcement||'';
-          if(ct==='mobile'||ct==='mobile_camera'){tp='Seyyar Kamera';ic='🚔';}
-          else if(ct==='red_light'||ct==='traffic_signals'){tp='Kırmızı Işık';ic='🚦';}
-          else if(ct==='maxspeed'){tp='Hız Kamera';ic='📸';}
+          var source=el.tags.source||'';
+          // Determine type from tags
+          if(ct==='mobile'||ct==='mobile_camera'||ct==='trailer'){tp='Seyyar Kamera';ic='🚔';}
+          else if(ct==='red_light'||ct==='traffic_signals'||el.tags.enforcement==='traffic_signals'){tp='Kırmızı Işık Kamera';ic='🚦';}
+          else if(ct==='section'||el.tags.enforcement==='section_control'||ct==='average'){tp='Ortalama Hız (Mesafe)';ic='📏';}
+          else if(ct==='entrance'||ct==='city_entrance'){tp='Şehir Girişi Kamera';ic='🏛️';}
+          else if(ct==='fixed'){tp='Sabit Hız Kamera';ic='📸';}
           else if(el.tags.man_made==='surveillance'){tp='Gözlem Kamera';ic='👁️';}
+          else if(el.tags.highway==='speed_camera'){tp='Hız Kamera';ic='📸';}
+          else if(el.tags.enforcement==='maxspeed'){tp='Hız Kamera';ic='📸';}
+          else if(el.tags.enforcement){tp=el.tags.enforcement.charAt(0).toUpperCase()+el.tags.enforcement.slice(1)+' Kamera';ic='📷';}
+          // Extra info
+          var ms=el.tags.maxspeed||el.tags['maxspeed:forward']||el.tags['maxspeed:backward']||'';
+          if(ms)extra+=ms+' ';
+          var road=el.tags['addr:street']||el.tags.name||el.tags.ref||el.tags.description||'';
+          if(road)extra+=road+' ';
+          if(el.tags.camera_direction)extra+='Yön:'+el.tags.camera_direction+' ';
+          if(el.tags['camera:direction'])extra+='Yön:'+el.tags['camera:direction']+' ';
+          if(el.tags.operator)extra+='('+el.tags.operator+') ';
+          if(source.indexOf('mobile')>=0||source.indexOf('radar')>=0){tp='Seyyar Kamera';ic='🚔';}
         }
-        var road=el.tags?(el.tags['addr:street']||el.tags.name||''):'';
-        var ms=el.tags?el.tags.maxspeed||'':'';
-        cams.push({lat:el.lat,lon:el.lon,dist:dist,brg:brg,type:tp,icon:ic,road:road,maxSpeed:ms});
+        cams.push({lat:elat,lon:elon,dist:dist,brg:brg,type:tp,icon:ic,road:extra.trim(),maxSpeed:el.tags?(el.tags.maxspeed||''):'',id:key});
       }
       cams.sort(function(a,b){return a.dist-b.dist;});
     }
     renderCamList();
   })
   .catch(function(){
-    // Overpass API error - show in camera list
     var list=document.getElementById('clist');
     if(list&&cams.length===0)list.innerHTML='<div class="cemp">Kamera verisi alınamadı ⚠️</div>';
   });
@@ -760,15 +820,24 @@ function renderCamList(){
   if(badge)badge.className='cc '+(vn>0?'dg':nr>0?'dg':'sf');
   if(!cams.length){list.innerHTML='<div class="cemp">Yakınınızda kamera yok ✓</div>';return;}
   var h='';
-  for(var i=0;i<Math.min(6,cams.length);i++){
+  for(var i=0;i<Math.min(10,cams.length);i++){
     var c=cams[i];
     var cls=c.dist<300?'vn':c.dist<1000?'nr':'';
     var dCls=c.dist<300?'vn':c.dist<1000?'nr':'fr';
     var dTxt=c.dist<1000?Math.round(c.dist)+'m':(c.dist/1000).toFixed(1)+'km';
-    var dir=getDir(c.brg);
-    h+='<div class="citem '+cls+'"><span class="cic">'+c.icon+'</span><div class="cinf"><div class="ctp">'+c.type+'</div><div class="crd">'+c.road+' '+dir+' '+c.maxSpeed+'</div></div><div class="cdst '+dCls+'">'+dTxt+'</div></div>';
+    var dir=c.brg?getDir(c.brg):'';
+    var info=c.type;
+    if(c.maxSpeed)info+=' • '+c.maxSpeed;
+    if(c.road)info+=' • '+c.road;
+    h+='<div class="citem '+cls+'"><span class="cic">'+c.icon+'</span><div class="cinf"><div class="ctp">'+c.type+'</div><div class="crd">'+(c.road||dir||'')+' '+(c.maxSpeed?c.maxSpeed:'')+'</div></div><div class="cdst '+dCls+'">'+dTxt+'</div></div>';
   }
-  list.innerHTML=h;
+  // Show type summary
+  var types={};
+  for(var j=0;j<cams.length;j++){var t=cams[j].type;if(!types[t])types[t]=0;types[t]++;}
+  var sumHtml='<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.08);font-size:10px;color:rgba(255,255,255,.4);display:flex;gap:8px;flex-wrap:wrap">';
+  for(var tk in types){sumHtml+='<span>'+cams.filter(function(c){return c.type===tk})[0].icon+' '+tk+': '+types[tk]+'</span>';}
+  sumHtml+='</div>';
+  list.innerHTML=h+sumHtml;
 }
 
 var camPopTimeout=null;
@@ -814,41 +883,60 @@ function showFuelDetail(){
 function checkCamWarn(){
   var ban=document.getElementById('cban');
   var popup=document.getElementById('campop');
-  var nd=cams.length>0?cams[0].dist:9999;
-  var camId=cams.length>0?cams[0].id:null;
-  camWarnOn=nd<1000;
-  if(nd<1000){
-    // Show popup panel with camera details
-    var nearest=cams[0];
-    var distTxt=Math.round(nd)+'m';
-    var distCls=nd<300?'vn':'';
-    document.getElementById('campop-title').textContent=nearest.type||'Kamera';
+  if(cams.length===0){camWarnOn=false;ban.className='cb';if(camPopTimeout===null){camPopTimeout=setTimeout(function(){popup.className='campop';camPopTimeout=null;},1000);}return;}
+  // Find cameras within 1km
+  var nearCams=cams.filter(function(c){return c.dist<1000;});
+  camWarnOn=nearCams.length>0;
+  if(nearCams.length>0){
+    // Show popup with ALL nearby cameras
+    var nearest=nearCams[0];
+    var nd=nearest.dist;
+    var distTxt=nd<1000?Math.round(nd)+'m':'--';
+    document.getElementById('campop-title').textContent=nearest.type;
     document.getElementById('campop-dist').textContent=distTxt;
-    document.getElementById('campop-dist').className='campop-dst'+(distCls?' '+distCls:'');
-    var bodyHtml='<div class="crd">'+nearest.road+(nearest.maxSpeed?' • '+nearest.maxSpeed:'');
-    if(nearest.brg){bodyHtml+=' • '+getDir(nearest.brg);}
-    bodyHtml+='</div>';
+    document.getElementById('campop-dist').className='campop-dst'+(nd<300?' vn':'');
+    // Build body with all nearby cameras
+    var bodyHtml='';
+    for(var i=0;i<Math.min(5,nearCams.length);i++){
+      var c=nearCams[i];
+      var cls=c.dist<300?'color:#ff1744;font-weight:700':c.dist<500?'color:#ff9800':'color:rgba(255,255,255,.5)';
+      bodyHtml+='<div class="crd" style="'+cls+';margin-top:3px;display:flex;align-items:center;gap:6px">';
+      bodyHtml+='<span>'+c.icon+'</span>';
+      bodyHtml+='<span style="flex:1">'+c.type+(c.maxSpeed?' • '+c.maxSpeed:'')+(c.road?' • '+c.road:'')+'</span>';
+      bodyHtml+='<span style="font-weight:700;min-width:40px;text-align:right">'+(c.dist<1000?Math.round(c.dist)+'m':'')+'</span>';
+      bodyHtml+='</div>';
+    }
+    if(nearCams.length>5)bodyHtml+='<div class="crd" style="opacity:.4">+ '+(nearCams.length-5)+' kamera daha</div>';
     document.getElementById('campop-body').innerHTML=bodyHtml;
     
     if(nd<300){
       popup.className='campop vis dg';
       ban.className='cb vis dg';ban.textContent='📸 TEHLİKE! KAMERA '+Math.round(nd)+'m';
-      if(camId&&!warnedCams.has(camId)){warnedCams.add(camId);camSnd();if(navigator.vibrate)navigator.vibrate([100,50,100,50,100]);if(vcOn){speak('Kamera '+Math.round(nd)+' metre ileride!');}}
+      // Warn for each close camera that hasn't been warned yet
+      for(var j=0;j<nearCams.length;j++){
+        if(nearCams[j].dist<500){
+          var cid=nearCams[j].id;
+          if(cid&&!warnedCams.has(cid)){warnedCams.add(cid);camSnd();if(navigator.vibrate)navigator.vibrate([100,50,100,50,100]);if(vcOn){speak(nearCams[j].type+' '+Math.round(nearCams[j].dist)+' metre ileride!');break;}}
+        }
+      }
     }else{
       popup.className='campop vis';
       ban.className='cb';
-      if(camId&&!warnedCams.has(camId)&&nd<500){warnedCams.add(camId);if(vcOn){speak('Kamera yaklaşıyor');}}
+      // Warn approaching cameras
+      for(var k=0;k<nearCams.length;k++){
+        if(nearCams[k].dist<700){
+          var cid2=nearCams[k].id;
+          if(cid2&&!warnedCams.has(cid2)){warnedCams.add(cid2);if(vcOn){speak(nearCams[k].type+' yaklaşıyor');break;}}
+        }
+      }
     }
-    clearTimeout(camPopTimeout);
-    lastCamVd=nd;
+    clearTimeout(camPopTimeout);camPopTimeout=null;
   }else{
-    // Camera is far (>1km), hide after 3 seconds
+    // No cameras within 1km, hide after 3s
+    ban.className='cb';
     if(camPopTimeout===null){
-      camPopTimeout=setTimeout(function(){
-        popup.className='campop';ban.className='cb';camPopTimeout=null;
-      },3000);
+      camPopTimeout=setTimeout(function(){popup.className='campop';camPopTimeout=null;},3000);
     }
-    lastCamVd=9999;
   }
 }
 
@@ -896,18 +984,6 @@ function checkFuelWarn(){
   var bodyHtml='<div class="crd">'+(nearest.name||'İstasyon');
   bodyHtml+='</div>';
   document.getElementById('fuelpop-body').innerHTML=bodyHtml;
-  // Mark station as passed when distance increases (we passed it)
-  if(activeFuelStation===sid){
-    // We were tracking this station - check if we passed it
-    // If dist was <100 and now >100, we reached and passed
-    if(nd>100&&passedStations.has(sid+'reached')){
-      passedStations.add(sid);
-      fban.className='cb';
-      fpop.className='campop';
-      activeFuelStation=null;
-      return;
-    }
-  }
   activeFuelStation=sid;
   // Show popup when within 2km
   if(nd<=2000){
@@ -925,6 +1001,22 @@ function checkFuelWarn(){
       if(vcOn){speak('İstasyona ulaşıldı!');}
     }
     return;
+  }
+  // Passed: was reached, now 50-150m away → show briefly then hide
+  if(nd>50&&nd<=150&&passedStations.has(sid+'reached')&&!passedStations.has(sid)){
+    fban.className='cb vis';fban.textContent='⛽ İSTASYON GEÇİLDİ';
+    fpop.className='campop vis';
+    passedStations.add(sid);
+    if(fuelPopTimeout===null){
+      fuelPopTimeout=setTimeout(function(){
+        fpop.className='campop';fban.className='cb';fuelPopTimeout=null;activeFuelStation=null;
+      },3000);
+    }
+    return;
+  }
+  // Beyond 150m after reaching → fully hide
+  if(nd>150&&passedStations.has(sid+'reached')){
+    fpop.className='campop';fban.className='cb';activeFuelStation=null;return;
   }
   // 250m warning (new station only)
   if(nd<250){
@@ -1334,6 +1426,80 @@ function startSim(){
   camFI=setInterval(function(){if(myLat)fetchCams(myLat,myLon);},60000);
   fuelFI=setInterval(function(){if(myLat)fetchFuel();},90000);
   setTimeout(function(){fetchWeather();},2000);
+}
+
+// ===== SWIPE DISMISS =====
+function setupSwipeDismiss(el,onDismiss){
+  if(!el)return null;
+  var startX=0,startY=0,dx=0,swiping=false;
+  el.addEventListener('touchstart',function(e){
+    startX=e.touches[0].clientX;startY=e.touches[0].clientY;dx=0;swiping=true;
+    el.style.transition='none';
+  },{passive:true});
+  el.addEventListener('touchmove',function(e){
+    if(!swiping)return;
+    dx=e.touches[0].clientX-startX;
+    var dy=Math.abs(e.touches[0].clientY-startY);
+    if(dy>Math.abs(dx)&&Math.abs(dx)<10)return; // vertical scroll
+    el.style.transform='translateX('+dx+'px)';
+    el.style.opacity=Math.max(0.2,1-Math.abs(dx)/200);
+  },{passive:true});
+  el.addEventListener('touchend',function(){
+    if(!swiping)return;swiping=false;
+    el.style.transition='transform .3s ease,opacity .3s ease';
+    if(Math.abs(dx)>80){
+      // Dismissed
+      el.style.transform='translateX('+(dx>0?'110%':'-110%')+')';
+      el.style.opacity='0';
+      setTimeout(function(){if(onDismiss)onDismiss();el.style.transform='';el.style.opacity='';},350);
+    }else{
+      // Bounce back
+      el.style.transform='';el.style.opacity='';
+    }
+  },{passive:true});
+  // Mouse support for desktop
+  el.addEventListener('mousedown',function(e){
+    startX=e.clientX;startY=e.clientY;dx=0;swiping=true;
+    el.style.transition='none';e.preventDefault();
+  });
+  el.addEventListener('mousemove',function(e){
+    if(!swiping)return;
+    dx=e.clientX-startX;
+    var dy=Math.abs(e.clientY-startY);
+    if(dy>Math.abs(dx)&&Math.abs(dx)<10)return;
+    el.style.transform='translateX('+dx+'px)';
+    el.style.opacity=Math.max(0.2,1-Math.abs(dx)/200);
+  });
+  el.addEventListener('mouseup',function(){
+    if(!swiping)return;swiping=false;
+    el.style.transition='transform .3s ease,opacity .3s ease';
+    if(Math.abs(dx)>80){
+      el.style.transform='translateX('+(dx>0?'110%':'-110%')+')';
+      el.style.opacity='0';
+      setTimeout(function(){if(onDismiss)onDismiss();el.style.transform='';el.style.opacity='';},350);
+    }else{el.style.transform='';el.style.opacity='';}
+  });
+  el.addEventListener('mouseleave',function(){if(swiping){swiping=false;el.style.transition='transform .3s ease,opacity .3s ease';el.style.transform='';el.style.opacity='';}});
+  return el;
+}
+
+function initSwipeDismissAll(){
+  // Camera banner
+  setupSwipeDismiss(document.getElementById('cban'),function(){
+    document.getElementById('cban').className='cb';
+  });
+  // Fuel banner
+  setupSwipeDismiss(document.getElementById('fban'),function(){
+    document.getElementById('fban').className='cb';
+  });
+  // Camera popup
+  setupSwipeDismiss(document.getElementById('campop'),function(){
+    document.getElementById('campop').className='campop';
+  });
+  // Fuel popup
+  setupSwipeDismiss(document.getElementById('fuelpop'),function(){
+    document.getElementById('fuelpop').className='campop';
+  });
 }
 
 // ===== MAIN LOOP =====
