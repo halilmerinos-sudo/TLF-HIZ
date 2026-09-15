@@ -157,6 +157,45 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
 .ldfill.done{width:100%;opacity:0;transition:width .1s,opacity .6s .3s}
 .tprev{width:100%;height:60px;border-radius:12px;margin-top:12px;position:relative;overflow:hidden}
 .tprev canvas{width:100%;height:100%}
+/* Fatigue */
+.fatban{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,152,0,.95);color:#fff;padding:20px 32px;font-size:18px;font-weight:700;border-radius:20px;z-index:250;text-align:center;box-shadow:0 8px 40px rgba(255,152,0,.6);animation:fatp 1.5s ease infinite}
+.fatban.vis{display:block}
+@keyframes fatp{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.05)}}
+/* Compass */
+.comp{display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:2px}
+.comp-cir{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.15);position:relative;background:rgba(255,255,255,.03)}
+.comp-arr{position:absolute;top:50%;left:50%;width:2px;height:16px;background:linear-gradient(to top,transparent,#ff1744 40%,#ff1744);transform-origin:bottom center;transform:translate(-50%,-100%) rotate(0deg);border-radius:1px}
+.comp-n{position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:700;color:#ff1744}
+.comp-lbl{font-size:12px;font-weight:700;color:rgba(255,255,255,.55);font-variant-numeric:tabular-nums;min-width:28px;text-align:center}
+/* Altitude */
+.alt-val{font-size:14px;font-weight:700;color:rgba(255,255,255,.5);font-variant-numeric:tabular-nums}
+/* Speed Graph */
+.spgraph{width:100%;max-width:400px;height:50px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin-bottom:4px;overflow:hidden}
+.spgraph canvas{width:100%;height:100%}
+/* Fine banner */
+.fineban{display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(255,23,68,.9);color:#fff;padding:8px 20px;font-size:13px;font-weight:700;border-radius:16px;z-index:98;box-shadow:0 4px 20px rgba(255,23,68,.5);white-space:nowrap;touch-action:pan-y;transition:transform .3s ease,opacity .3s ease}
+.fineban.vis{display:flex;align-items:center;gap:8px}
+/* Park */
+.parkbtn{background:rgba(0,230,118,.15);border:1px solid rgba(0,230,118,.3);color:#00e676;font-size:12px;font-weight:600;padding:8px 12px;border-radius:12px;cursor:pointer}
+.parkbtn:active{transform:scale(.95)}
+/* Rest areas */
+.restbadge{background:rgba(156,39,176,.15);color:#ce93d8;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
+/* Trip history */
+.triplist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.tripcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px}
+.tripcard .tdate{font-size:11px;color:rgba(255,255,255,.4)}
+.tripcard .tstats{display:flex;gap:12px;margin-top:4px}
+.tripcard .tstat{font-size:13px;font-weight:700;color:rgba(255,255,255,.7)}
+.tripcard .tstat span{font-size:9px;color:rgba(255,255,255,.3);margin-left:3px}
+/* Sunset */
+.sunset-info{font-size:11px;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:6px}
+/* Fuel consumption */
+.fuel-est{font-size:11px;color:rgba(0,200,255,.6);margin-top:2px}
+/* ETA */
+.eta-box{font-size:12px;font-weight:600;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:6px}
+.eta-box input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#00c8ff;font-size:13px;font-weight:700;width:60px;padding:4px 6px;text-align:center;outline:none}
+.eta-box input:focus{border-color:#00c8ff}
+.eta-res{font-size:14px;font-weight:700;color:#00c8ff;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -183,6 +222,28 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
 <div class="vs" id="vstat">🔊</div>
 <button class="eb" id="ebtn" onclick="handleEmergency()">🆘</button>
 <button class="pip" id="pbtn" onclick="togglePip()">🔳</button>
+<div class="fatban" id="fatBan">😴 2 SAAT SÜRÜŞ! MOLA VER!</div>
+<div class="fineban" id="fineBan">💰 CEZA RİSKİ</div>
+<div class="eta-box" id="etaBox" style="display:none;margin-bottom:4px;width:100%;max-width:400px;justify-content:center">
+  <span>⏱️ Hedef:</span>
+  <input type="number" id="etaKm" placeholder="km" min="1" max="9999" inputmode="numeric">
+  <span>km</span>
+  <span class="eta-res" id="etaRes">--</span>
+</div>
+<div class="rmod" id="restMod">
+  <div class="rcnt">
+    <button class="rcls" onclick="toggleRest()">✕</button>
+    <div class="rttl">🛣️ Mola & Dinlenme Alanları</div>
+    <div id="restBody"><div class="cemp">Aranıyor...</div></div>
+  </div>
+</div>
+<div class="rmod" id="tripMod">
+  <div class="rcnt">
+    <button class="rcls" onclick="showTrips()">✕</button>
+    <div class="rttl">🏁 Yolculuk Geçmişi</div>
+    <div id="tripBody"><div class="cemp">Henüz yolculuk yok</div></div>
+  </div>
+</div>
 <div class="movr" id="mover">
   <div class="mcnt">
     <button class="mcls" onclick="toggleMap()">✕</button>
@@ -234,6 +295,9 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
     <div class="sc"><div class="si">🌱</div><div class="sv"><div class="sl">Eco Skor</div><div class="sval" id="ecoG" style="color:#00e676">A</div><div class="sd" id="ecoD">Mükemmel</div></div></div>
     <div class="sc"><div class="si" id="wIco">☀️</div><div class="sv"><div class="sl">Hava</div><div class="sval" id="wTmp">--°C</div><div class="sd" id="wDsc">Yükleniyor</div></div></div>
     <div class="sc" onclick="showFuelDetail()" style="cursor:pointer"><div class="si">⛽</div><div class="sv"><div class="sl">Yakıt</div><div class="sval" id="fNrst" style="color:#00c8ff">--</div><div class="sd" id="fDsc">Aranıyor</div></div></div>
+    <div class="sc"><div class="si">🏔️</div><div class="sv"><div class="sl">Rakım</div><div class="sval" id="altCard" style="color:rgba(255,255,255,.5)">--</div><div class="sd" id="altUnit">m</div></div></div>
+    <div class="sc" onclick="toggleRest()" style="cursor:pointer"><div class="si">🛣️</div><div class="sv"><div class="sl">Mola</div><div class="sval" id="restCnt" style="color:#ce93d8">0</div><div class="sd" id="restNear">--</div></div></div>
+    <div class="sc" onclick="findPark()" style="cursor:pointer"><div class="si">🅿️</div><div class="sv"><div class="sl">Park</div><div class="sval" id="parkStat" style="color:#00e676">--</div><div class="sd" id="parkDist">--</div></div></div>
   </div>
   <div class="ga">
     <div class="sw" id="sw">
@@ -248,6 +312,22 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
       </div>
     </div>
   </div>
+  <!-- Compass -->
+  <div class="comp" id="compBox">
+    <div class="comp-cir"><div class="comp-arr" id="compArr"></div><div class="comp-n">K</div></div>
+    <div class="comp-lbl" id="compLbl">--</div>
+  </div>
+  <!-- Altitude -->
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;width:100%;max-width:400px;justify-content:center">
+    <span style="font-size:14px">🏔️</span>
+    <div class="alt-val" id="altVal">-- m</div>
+  </div>
+  <!-- Speed Graph -->
+  <div class="spgraph"><canvas id="spCvs"></canvas></div>
+  <!-- Sunset info -->
+  <div class="sunset-info" id="sunsetBox">🌅 Gün batımı: --</div>
+  <!-- Fuel consumption estimate -->
+  <div class="fuel-est" id="fuelEst">⛽ Tahmini: -- L/100km</div>
   <div class="bbar">
     <div class="ic"><div class="lab">Maks</div><div class="num" id="mxSp">0</div><div class="usm" id="mxU">km/s</div></div>
     <div class="ic"><div class="lab">Ort</div><div class="num" id="avSp">0</div><div class="usm" id="avU">km/s</div></div>
@@ -262,6 +342,11 @@ body.pipm .sw{transform:scale(.55);transform-origin:center center}
     <button class="cbtn" onclick="showThemes()">🎨</button>
     <button class="cbtn" id="bVc" onclick="toggleVoice()">🔇</button>
     <button class="cbtn" onclick="toggleMap()">🗺️</button>
+    <button class="cbtn" onclick="savePark()" id="bPark">🅿️</button>
+    <button class="cbtn" onclick="findPark()">📍</button>
+    <button class="cbtn" onclick="toggleRest()" id="bRest">🛣️</button>
+    <button class="cbtn" onclick="showTrips()" id="bTrips">🏁</button>
+    <button class="cbtn" onclick="toggleETA()" id="bEta">⏱️</button>
     <button class="cbtn" onclick="resetAll()">Sıfırla</button>
   </div>
   <div class="stl" id="stat"><span class="dot y"></span> GPS bekleniyor</div>
@@ -318,6 +403,27 @@ function startApp(){
     document.getElementById('ebtn').style.display='flex';
     document.getElementById('pbtn').style.display='flex';
     initAudio();startGPS();resizeGauge();reqWakeLock();initSwipeDismissAll();
+    // Init speed graph
+    spGfx=document.getElementById('spCvs');
+    if(spGfx){
+      var dpr=window.devicePixelRatio||1;
+      var rect=spGfx.parentElement.getBoundingClientRect();
+      spGfx.width=rect.width*dpr;spGfx.height=rect.height*dpr;
+      spGCtx=spGfx.getContext('2d');spGCtx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    // Load trips from localStorage
+    try{var saved=localStorage.getItem(TRIP_KEY);if(saved)trips=JSON.parse(saved);}catch(e){}
+    // Load park location
+    try{var ps=localStorage.getItem('speedo_park');if(ps)parkLoc=JSON.parse(ps);}catch(e){}
+    // Check park status
+    updParkStatus();
+    // Fetch rest areas after GPS
+    setTimeout(function(){if(myLat)fetchRest();},2000);
+    // Sunset calculation
+    calcSunset();
+    // Fatigue timer
+    fatigueStart=Date.now();
+    fatigueTO=setInterval(checkFatigue,60000);
     // fetchWeather and fetchFuel will be called by startGPS once location is obtained
   },800);
 }
@@ -398,6 +504,7 @@ function reqWakeLock(){
   navigator.wakeLock.request('screen').then(function(lk){wLock=lk;wLock.addEventListener('release',function(){wLock=null;});}).catch(function(){wLock=null;});
 }
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')reqWakeLock();});
+window.addEventListener('beforeunload',function(){saveTrip();});
 
 // Eco
 var ecoS=100,lastSpdE=0,lastTmE=0;
@@ -424,6 +531,328 @@ var pipOn=false;
 var nightOn=false;
 var nightCheckT=0;
 
+// Fatigue
+var fatigueStart=null,fatigueWarned=false,fatigueTO=null;
+
+// Altitude
+var myAlt=null;
+
+// Speed Graph
+var spHist=[],spHistMax=180,spGfx=null,spGCtx=null,spLastUpd=0;
+
+// Fine calculator
+var fineBannerOn=false;
+// Turkish traffic fines 2024 (TL)
+var FINES={
+  speed10:{label:'Hız sınırı +10-20',val:741},
+  speed20:{label:'Hız sınırı +20-30',val:1482},
+  speed30:{label:'Hız sınırı +30+',val:2964},
+  redlight:{label:'Kırmızı ışık',val:1482},
+  seatbelt:{label:'Emniyet kemeri',val:741}
+};
+
+// Park location
+var parkLoc=null;
+
+// Rest areas
+var restAreas=[],restLoaded=false;
+
+// Trip history
+var trips=[],curTrip=null;
+var TRIP_KEY='speedo_trips';
+
+// ETA
+var etaOn=false;
+
+// Sunset
+var sunsetTime=null;
+
+// ===== FATIGUE =====
+function checkFatigue(){
+  if(!fatigueStart||!drvStart)return;
+  var driven=(Date.now()-drvStart)/3600000; // hours
+  if(driven>=2&&!fatigueWarned){
+    fatigueWarned=true;
+    document.getElementById('fatBan').classList.add('vis');
+    if(vcOn)speak('İki saattir sürüyorsunuz! Lütfen mola verin!');
+    if(navigator.vibrate)navigator.vibrate([500,200,500,200,500]);
+    // Auto-hide after 10s
+    setTimeout(function(){document.getElementById('fatBan').classList.remove('vis');},10000);
+    // Warn again every 30 min
+  }else if(driven>=2.5&&driven>=2.5&&((Date.now()-fatigueWarned)>1800000)){
+    fatigueWarned=Date.now();
+    document.getElementById('fatBan').classList.add('vis');
+    if(vcOn)speak('Yorgunluk uyarısı! Mola verin!');
+    if(navigator.vibrate)navigator.vibrate([500,200,500]);
+    setTimeout(function(){document.getElementById('fatBan').classList.remove('vis');},10000);
+  }
+}
+
+// ===== COMPASS =====
+function updateCompass(){
+  var arr=document.getElementById('compArr');
+  var lbl=document.getElementById('compLbl');
+  if(!arr||!lbl)return;
+  var hdg=myHdg||0;
+  arr.style.transform='translate(-50%,-100%) rotate('+hdg+'deg)';
+  var dirs=['K','KD','D','GD','G','GB','B','KB'];
+  var idx=Math.round(hdg/45)%8;
+  lbl.textContent=dirs[idx]+' '+Math.round(hdg)+'°';
+}
+
+// ===== ALTITUDE =====
+function updateAltitude(){
+  if(!lastPos||lastPos.coords.altitude===null){document.getElementById('altVal').textContent='-- m';document.getElementById('altCard').textContent='--';return;}
+  myAlt=lastPos.coords.altitude;
+  var alt=Math.round(myAlt);
+  document.getElementById('altVal').textContent=alt+' m';
+  document.getElementById('altCard').textContent=alt;
+}
+
+// ===== SPEED GRAPH =====
+function updateSpeedGraph(){
+  if(!spGCtx)return;
+  spHist.push(Math.round(dispSpd));
+  if(spHist.length>spHistMax)spHist.shift();
+  var w=spGfx.width/(window.devicePixelRatio||1),h=spGfx.height/(window.devicePixelRatio||1);
+  spGCtx.clearRect(0,0,w,h);
+  if(spHist.length<2)return;
+  var maxV=Math.max(20,...spHist);
+  var step=w/(spHistMax-1);
+  // Fill gradient
+  var grd=spGCtx.createLinearGradient(0,0,0,h);
+  grd.addColorStop(0,'rgba(0,200,255,.3)');grd.addColorStop(1,'rgba(0,200,255,.01)');
+  spGCtx.beginPath();
+  spGCtx.moveTo(0,h);
+  for(var i=0;i<spHist.length;i++){spGCtx.lineTo(i*step,h-(spHist[i]/maxV)*h*.9);}
+  spGCtx.lineTo((spHist.length-1)*step,h);spGCtx.closePath();
+  spGCtx.fillStyle=grd;spGCtx.fill();
+  // Line
+  spGCtx.beginPath();
+  for(var j=0;j<spHist.length;j++){
+    var x=j*step,y=h-(spHist[j]/maxV)*h*.9;
+    j===0?spGCtx.moveTo(x,y):spGCtx.lineTo(x,y);
+  }
+  spGCtx.strokeStyle='#00c8ff';spGCtx.lineWidth=1.5;spGCtx.stroke();
+  // Current value dot
+  if(spHist.length>0){
+    var lx=(spHist.length-1)*step,ly=h-(spHist[spHist.length-1]/maxV)*h*.9;
+    spGCtx.beginPath();spGCtx.arc(lx,ly,3,0,Math.PI*2);spGCtx.fillStyle='#00c8ff';spGCtx.fill();
+  }
+}
+
+// ===== FINE CALCULATOR =====
+function checkFine(){
+  var fb=document.getElementById('fineBan');
+  if(!limOn||!limV){fb.classList.remove('vis');fineBannerOn=false;return;}
+  var over=dispSpd-limV;
+  var fineType=null;
+  if(over>30)fineType='speed30';
+  else if(over>20)fineType='speed20';
+  else if(over>10)fineType='speed10';
+  if(fineType){
+    var f=FINES[fineType];
+    fb.innerHTML='💰 <span>'+f.label+': <b>'+f.val.toLocaleString('tr-TR')+' TL</b></span>';
+    fb.classList.add('vis');fineBannerOn=true;
+  }else{
+    fb.classList.remove('vis');fineBannerOn=false;
+  }
+}
+
+// ===== PARK LOCATION =====
+function savePark(){
+  if(myLat===null){speak('Konum bilgisi yok!');return;}
+  parkLoc={lat:myLat,lon:myLon,ts:Date.now()};
+  try{localStorage.setItem('speedo_park',JSON.stringify(parkLoc));}catch(e){}
+  updParkStatus();
+  document.getElementById('parkStat').textContent='Kayıt ✓';
+  document.getElementById('parkDist').textContent='Kaydedildi';
+  if(vcOn)speak('Park konumu kaydedildi!');
+}
+function findPark(){
+  if(!parkLoc){document.getElementById('parkStat').textContent='Yok';document.getElementById('parkDist').textContent='Kaydedilmedi';if(vcOn)speak('Park konumu kaydedilmemiş');return;}
+  var d=haversine(myLat,myLon,parkLoc.lat,parkLoc.lon)*1000;
+  var dTxt=d<1000?Math.round(d)+'m':(d/1000).toFixed(1)+'km';
+  var brg=getBrg(myLat,myLon,parkLoc.lat,parkLoc.lon);
+  var dir=getDir(brg);
+  document.getElementById('parkStat').textContent=dTxt;
+  document.getElementById('parkDist').textContent=dir+' yönünde';
+  // Show on map
+  var url='https://www.openstreetmap.org/directions?from='+myLat+','+myLon+'&to='+parkLoc.lat+','+parkLoc.lon;
+  window.open(url,'_blank');
+  if(vcOn)speak('Park konumu '+dTxt+' '+dir+' yönünde');
+}
+function updParkStatus(){
+  if(!parkLoc){document.getElementById('parkStat').textContent='--';document.getElementById('parkDist').textContent='Kaydedilmedi';return;}
+  if(myLat!==null){
+    var d=haversine(myLat,myLon,parkLoc.lat,parkLoc.lon)*1000;
+    var dTxt=d<1000?Math.round(d)+'m':(d/1000).toFixed(1)+'km';
+    document.getElementById('parkStat').textContent=dTxt;
+    var brg=getBrg(myLat,myLon,parkLoc.lat,parkLoc.lon);
+    document.getElementById('parkDist').textContent=getDir(brg);
+  }else{
+    document.getElementById('parkStat').textContent='✓';
+    document.getElementById('parkDist').textContent='Kayıtlı';
+  }
+}
+
+// ===== REST AREAS =====
+function fetchRest(){
+  if(restLoaded||myLat===null)return;
+  var r=10000; // 10km radius
+  var q='[out:json][timeout:10];(node["highway"="rest_area"](around:'+r+','+myLat+','+myLon+');node["amenity"="parking"](around:'+r+','+myLat+','+myLon+');node["highway"="services"](around:'+r+','+myLat+','+myLon+');way["highway"="services"](around:'+r+','+myLat+','+myLon+'););out center;';
+  fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q)})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      restAreas=[];var seen=new Set();
+      if(d.elements){
+        d.elements.forEach(function(e){
+          var lat=e.lat||e.center&&e.center.lat,lon=e.lon||e.center&&e.center.lon;
+          if(!lat||!lon)return;
+          var k=lat.toFixed(4)+'_'+lon.toFixed(4);
+          if(seen.has(k))return;seen.add(k);
+          var nm=e.tags&&e.tags.name||e.tags&&e.tags.operator||'Mola Alanı';
+          var tp=e.tags&&e.tags.highway||e.tags&&e.tags.amenity||'';
+          var dist=haversine(myLat,myLon,lat,lon)*1000;
+          restAreas.push({lat:lat,lon:lon,name:nm,type:tp,dist:dist});
+        });
+      }
+      restAreas.sort(function(a,b){return a.dist-b.dist;});
+      restLoaded=true;
+      renderRestList();
+      // Update info strip
+      document.getElementById('restCnt').textContent=restAreas.length;
+      if(restAreas.length>0){
+        var nr=restAreas[0];
+        document.getElementById('restNear').textContent=nr.dist<1000?Math.round(nr.dist)+'m':(nr.dist/1000).toFixed(1)+'km';
+      }
+    })
+    .catch(function(){restLoaded=true;});
+}
+function renderRestList(){
+  var body=document.getElementById('restBody');
+  if(!restAreas.length){body.innerHTML='<div class="cemp">Yakınınızda mola alanı yok</div>';return;}
+  var h='';
+  for(var i=0;i<Math.min(10,restAreas.length);i++){
+    var r=restAreas[i];
+    var dTxt=r.dist<1000?Math.round(r.dist)+'m':(r.dist/1000).toFixed(1)+'km';
+    var icon=r.type==='services'?'🛣️':r.type==='rest_area'?'☕':r.type==='parking'?'🅿️':'🛑';
+    var cls=r.dist<1000?'vn':r.dist<3000?'nr':'';
+    h+='<div class="citem '+cls+'"><span class="cic">'+icon+'</span><div class="cinf"><div class="ctp">'+r.name+'</div><div class="crd">'+r.type.replace(/_/g,' ')+'</div></div><div class="cdst '+(r.dist<1000?'nr':'fr')+'">'+dTxt+'</div></div>';
+  }
+  body.innerHTML=h;
+}
+function toggleRest(){
+  var m=document.getElementById('restMod');
+  if(m.classList.contains('vis')){m.classList.remove('vis');}
+  else{m.classList.add('vis');if(!restLoaded&&myLat)fetchRest();}
+}
+
+// ===== TRIP HISTORY =====
+function saveTrip(){
+  if(!drvStart||spCnt<10)return;
+  var trip={
+    date:new Date().toLocaleDateString('tr-TR'),
+    ts:Date.now(),
+    dist:totDist,
+    dur:drvStart?(Date.now()-drvStart)/60000:0,
+    avgSpd:spCnt>0?spSum/spCnt:0,
+    maxSpd:maxSpdV,
+    eco:ecoS
+  };
+  trips.unshift(trip);
+  if(trips.length>50)trips.pop(); // Keep last 50
+  try{localStorage.setItem(TRIP_KEY,JSON.stringify(trips));}catch(e){}
+}
+function showTrips(){
+  var m=document.getElementById('tripMod');
+  if(m.classList.contains('vis')){m.classList.remove('vis');saveTrip();return;}
+  m.classList.add('vis');
+  renderTrips();
+}
+function renderTrips(){
+  var body=document.getElementById('tripBody');
+  if(!trips.length){body.innerHTML='<div class="cemp">Henüz kayıtlı yolculuk yok</div>';return;}
+  var h='<div class="triplist">';
+  for(var i=0;i<Math.min(20,trips.length);i++){
+    var t=trips[i];
+    var dur=t.dur>0?Math.floor(t.dur)+'dk':'--';
+    var dst=t.dist<1?(t.dist*1000).toFixed(0)+'m':t.dist.toFixed(1)+'km';
+    var av=Math.round(t.avgSpd);
+    h+='<div class="tripcard"><div class="tdate">'+t.date+'</div><div class="tstats">';
+    h+='<div class="tstat">'+dst+'<span>mesafe</span></div>';
+    h+='<div class="tstat">'+dur+'<span>süre</span></div>';
+    h+='<div class="tstat">'+av+'<span>ort</span></div>';
+    h+='<div class="tstat">'+Math.round(t.maxSpd)+'<span>maks</span></div>';
+    h+='</div></div>';
+  }
+  h+='</div>';
+  if(trips.length>0){h+='<div style="margin-top:12px;text-align:center"><button class="cbtn" onclick="clearTrips()" style="background:rgba(255,23,68,.1);border-color:rgba(255,23,68,.3);color:#ff1744">Geçmişi Sil</button></div>';}
+  body.innerHTML=h;
+}
+function clearTrips(){
+  trips=[];try{localStorage.removeItem(TRIP_KEY);}catch(e){}
+  renderTrips();
+}
+
+// ===== ETA =====
+function toggleETA(){
+  etaOn=!etaOn;
+  var box=document.getElementById('etaBox');
+  if(etaOn){box.style.display='flex';document.getElementById('bEta').classList.add('act');}
+  else{box.style.display='none';document.getElementById('bEta').classList.remove('act');}
+}
+function calcETA(){
+  if(!etaOn)return;
+  var km=parseFloat(document.getElementById('etaKm').value);
+  if(!km||km<=0){document.getElementById('etaRes').textContent='--';return;}
+  var avg=spCnt>0?spSum/spCnt:0;
+  if(avg<=0){document.getElementById('etaRes').textContent='--';return;}
+  var hrs=km/avg;
+  var h=Math.floor(hrs),m=Math.round((hrs-h)*60);
+  document.getElementById('etaRes').textContent='~'+h+'s '+m+'dk';
+}
+
+// ===== SUNSET =====
+function calcSunset(){
+  if(myLat===null)return;
+  // Approximate sunset calculation
+  var now=new Date();
+  var doy=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
+  var latRad=myLat*Math.PI/180;
+  var dec=-23.45*Math.cos(2*Math.PI/365*(doy+10))*Math.PI/180; // declination
+  var ha=Math.acos(-Math.tan(latRad)*Math.tan(dec)); // hour angle
+  var sunset=12+ha*180/Math.PI/15; // UTC hours
+  // Apply timezone offset
+  var tz=-now.getTimezoneOffset()/60;
+  sunset+=tz;
+  var h=Math.floor(sunset),m=Math.round((sunset-h)*60);
+  sunsetTime=h+':'+(m<10?'0':'')+m;
+  var box=document.getElementById('sunsetBox');
+  if(box){
+    var isNight=now.getHours()*60+now.getMinutes()>h*60+m;
+    box.innerHTML='🌅 Gün batımı: '+sunsetTime+(isNight?' 🌙 Gece modu yakında':'');
+  }
+}
+
+// ===== FUEL CONSUMPTION =====
+function updateFuelEst(){
+  var box=document.getElementById('fuelEst');
+  if(!box)return;
+  if(dispSpd<5){box.textContent='⛽ Tahmini: -- L/100km';return;}
+  // Simple estimation based on speed
+  // City: ~8-10L/100km, Highway 90kmh: ~6-7L, Highway 120kmh: ~8-9L, Very fast: 12+
+  var base=dMode==='city'?9:dMode==='highway'?6.5:8;
+  var spdFactor=1;
+  if(dispSpd>50)spdFactor+=(dispSpd-50)*0.015;
+  if(dispSpd>120)spdFactor+=(dispSpd-120)*0.03;
+  var ecoFactor=(100-ecoS)/100*2; // eco score affects: worse eco = more fuel
+  var est=base*spdFactor+ecoFactor;
+  est=Math.max(3,Math.min(25,est));
+  var range=est>0&&dispSpd>5?Math.round(50/est*100):0; // Assume 50L tank
+  box.textContent='⛽ Tahmini: '+est.toFixed(1)+' L/100km • Menzil: ~'+range+'km';
+}
+
 // ===== RESIZE =====
 function resizeGauge(){
   var vw=window.innerWidth,vh=window.innerHeight,otherH=380;
@@ -432,6 +861,12 @@ function resizeGauge(){
   cvs.style.width=sz+'px';cvs.style.height=sz+'px';
   cvs.width=sz*dpr;cvs.height=sz*dpr;
   ctx.setTransform(dpr,0,0,dpr,0,0);CW=sz;CH=sz;
+  // Resize speed graph canvas too
+  if(spGfx){
+    var rect=spGfx.parentElement.getBoundingClientRect();
+    spGfx.width=rect.width*dpr;spGfx.height=rect.height*dpr;
+    if(spGCtx)spGCtx.setTransform(dpr,0,0,dpr,0,0);
+  }
 }
 window.addEventListener('resize',resizeGauge);
 
@@ -1291,6 +1726,16 @@ function updateDisplay(){
   drawGauge(dv);checkAlert();
   updateEco();
   updateRPM();
+  // New features
+  updateCompass();
+  updateAltitude();
+  // Speed graph - update every 500ms
+  var now=Date.now();if(now-spLastUpd>500){updateSpeedGraph();spLastUpd=now;}
+  checkFine();
+  calcETA();
+  // Fuel consumption - update every 2s
+  if(now%2000<50)updateFuelEst();
+  updParkStatus();
 
   if(myLat!==null&&cams.length>0){
     for(var i=0;i<cams.length;i++)cams[i].dist=haversine(myLat,myLon,cams[i].lat,cams[i].lon)*1000;
@@ -1319,9 +1764,11 @@ function updateDisplay(){
 function resetAll(){
   maxSpdV=0;spSum=0;spCnt=0;totDist=0;lastPos=null;lastTm=null;
   stopAlrt();curSpd=0;dispSpd=0;ecoS=100;drvStart=null;
+  spHist=[];fatigueStart=Date.now();fatigueWarned=false;
   document.getElementById('mxSp').textContent='0';document.getElementById('avSp').textContent='0';
   document.getElementById('dist').textContent='0';document.getElementById('spVal').textContent='0';
   document.getElementById('dTm').textContent='0:00';document.getElementById('ecoG').textContent='A';
+  document.getElementById('fineBan').classList.remove('vis');
 }
 
 // ===== GPS =====
@@ -1361,6 +1808,10 @@ function startGPS(){
           }
           if(lastPos)totDist+=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos2.coords.latitude,pos2.coords.longitude);
           lastPos=pos2;lastTm=pos2.timestamp;
+          // Update altitude from GPS
+          if(pos2.coords.altitude!==null)myAlt=pos2.coords.altitude;
+          // Fetch rest areas on first location
+          if(!restLoaded)fetchRest();
           
           // Periodic camera & limit refresh
           if(!camFI){
@@ -1500,6 +1951,14 @@ function initSwipeDismissAll(){
   setupSwipeDismiss(document.getElementById('fuelpop'),function(){
     document.getElementById('fuelpop').className='campop';
   });
+  // Fine banner
+  setupSwipeDismiss(document.getElementById('fineBan'),function(){
+    document.getElementById('fineBan').classList.remove('vis');
+  });
+  // Fatigue banner
+  setupSwipeDismiss(document.getElementById('fatBan'),function(){
+    document.getElementById('fatBan').classList.remove('vis');
+  });
 }
 
 // ===== MAIN LOOP =====
@@ -1530,4 +1989,5 @@ drawGauge(0);animate();
 // Input listener
 document.getElementById('limp').addEventListener('change',function(){spLim=parseInt(this.value)||90;});
 </script>
+</body>
 </html>
