@@ -2,1664 +2,1012 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0a0a0f">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Hız Göstergesi Pro</title>
-<link rel="manifest" id="manifestLink">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>NAVIMAX Multimedya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0f;color:#fff;font-family:'Segoe UI',Arial,sans-serif;min-height:100dvh;overflow-x:hidden;overflow-y:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.welcome{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 40%,#1a1a2e,#0a0a0f 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;transition:opacity .8s,transform .8s}
-.welcome.hide{opacity:0;transform:scale(1.1);pointer-events:none}
-.wg{width:200px;height:200px}
-.wg canvas{width:200px;height:200px}
-.wt{font-size:30px;font-weight:700;margin-top:24px;text-shadow:0 0 20px rgba(0,200,255,.4)}
-.ws{font-size:15px;color:rgba(255,255,255,.45);margin-top:8px;letter-spacing:3px}
-.wb{margin-top:32px;background:linear-gradient(135deg,#00c8ff,#0060dd);border:none;color:#fff;padding:16px 52px;font-size:18px;font-weight:600;border-radius:30px;cursor:pointer}
-.wb:active{transform:scale(.96)}
-.wa{animation:wfa 1.5s ease}
-@keyframes wfa{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-body.af{animation:afr .4s ease infinite}
-@keyframes afr{0%,100%{background:#0a0a0f}50%{background:rgba(255,23,68,.2)}}
-.ap{display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);background:rgba(255,23,68,.92);color:#fff;padding:12px 28px;font-size:15px;font-weight:700;letter-spacing:2px;border-radius:24px;z-index:100;box-shadow:0 4px 24px rgba(255,23,68,.6);white-space:nowrap;transition:transform .3s ease,opacity .3s ease;touch-action:pan-y}
-.ap.vis{display:flex;align-items:center;gap:8px}
-.ap.dismissing{opacity:0;transform:translateX(-50%) translateX(-120px)}
-.cb{display:none;position:fixed;left:50%;transform:translateX(-50%);background:rgba(255,152,0,.92);color:#fff;padding:10px 24px;font-size:14px;font-weight:700;border-radius:24px;z-index:99;box-shadow:0 4px 24px rgba(255,152,0,.5);white-space:nowrap;transition:transform .3s ease,opacity .3s ease;touch-action:pan-y}
-.cb.vis{display:flex;align-items:center;gap:8px}
-.cb.dismissing{opacity:0;transform:translateX(-50%) translateX(100px)}
-#cban{top:52px}
-#fban{top:96px}
-.cb.dg{background:rgba(255,23,68,.92);box-shadow:0 4px 24px rgba(255,23,68,.6);animation:cp .6s ease infinite}
-@keyframes cp{0%,100%{opacity:1}50%{opacity:.6}}
-@keyframes fp{0%,100%{opacity:1}50%{opacity:.4}}
-.cb.fuelblink{animation:fp .5s ease 6}
-.campop{display:none;position:fixed;left:50%;transform:translateX(-50%);background:rgba(20,20,30,.96);border:1px solid rgba(255,152,0,.5);border-radius:16px;padding:10px 14px;z-index:99;box-shadow:0 4px 24px rgba(255,152,0,.4);min-width:260px;max-width:320px;animation:campopIn .3s ease;transition:transform .3s ease,opacity .3s ease;touch-action:pan-y}
-.campop.vis{display:block}
-.campop.dismissing{opacity:0;transform:translateX(-50%) translateX(120px)}
-#campop{top:52px}
-#fuelpop{top:auto;bottom:120px;border-color:rgba(0,200,255,.4);box-shadow:0 4px 24px rgba(0,200,255,.3)}
-.campop.dg{border-color:rgba(255,23,68,.6);box-shadow:0 4px 24px rgba(255,23,68,.5);animation:campopPulse .6s ease infinite}
-#fuelpop.dg{border-color:rgba(0,230,118,.5);box-shadow:0 4px 24px rgba(0,230,118,.4);animation:campopPulseG .6s ease infinite}
-@keyframes campopIn{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-@keyframes campopPulse{0%,100%{opacity:1}50%{opacity:.65}}
-@keyframes campopPulseG{0%,100%{opacity:1}50%{opacity:.65}}
-.campop-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.1)}
-.campop-hdr .cic{font-size:28px}
-.campop-title{font-size:13px;font-weight:700;color:#fff;flex:1}
-.campop-dst{font-size:20px;font-weight:700;color:#ff9800;font-variant-numeric:tabular-nums}
-.campop-dst.vn{color:#ff1744}
-.campop-body{font-size:11px;color:rgba(255,255,255,.5);line-height:1.4}
-.campop-body .crd{margin-top:2px}
-.vs{position:fixed;top:88px;left:50%;transform:translateX(-50%);background:rgba(0,200,255,.15);color:#00c8ff;padding:6px 16px;font-size:12px;font-weight:600;border-radius:16px;z-index:88;display:none}
-.vs.vis{display:flex;align-items:center;gap:6px}
-.eb{position:fixed;bottom:16px;right:16px;z-index:90;width:56px;height:56px;border-radius:50%;background:rgba(255,23,68,.8);border:2px solid rgba(255,23,68,.5);color:#fff;font-size:24px;cursor:pointer;box-shadow:0 2px 12px rgba(255,23,68,.4);display:none;align-items:center;justify-content:center}
-.eb:active{transform:scale(.9)}
-.main{display:none;flex-direction:column;align-items:center;padding:4px 8px 10px;min-height:100dvh}
-.main.show{display:flex}
-.mbar{display:flex;gap:4px;width:100%;max-width:400px;margin-bottom:3px;background:rgba(255,255,255,.03);border-radius:20px;padding:2px}
-.mbtn{flex:1;padding:7px 4px;border:none;border-radius:16px;background:transparent;color:rgba(255,255,255,.4);font-size:12px;font-weight:600;cursor:pointer;text-align:center}
-.mbtn.act{background:rgba(0,200,255,.15);color:#00c8ff}
-.mbtn .mi{font-size:22px;display:block;margin-bottom:1px}
-.lbar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:5px 10px;margin-bottom:2px;max-width:400px;width:100%}
-.li{font-size:18px;opacity:.7}
-.linp{background:rgba(255,255,255,.06);border:2px solid rgba(255,196,0,.3);border-radius:10px;color:#ffc400;font-size:22px;font-weight:700;width:60px;text-align:center;padding:4px 3px;outline:none;-moz-appearance:textfield}
-.linp:focus{border-color:#ffc400}
-.linp::-webkit-outer-spin-button,.linp::-webkit-inner-spin-button{-webkit-appearance:none}
-.lul{font-size:13px;font-weight:600;color:rgba(255,255,255,.45)}
-.lat{font-size:10px;font-weight:600;background:rgba(0,200,255,.15);color:#00c8ff;padding:2px 8px;border-radius:8px}
-.ltb{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;padding:5px 12px;border-radius:12px;cursor:pointer;margin-left:auto}
-.ltb.off{color:rgba(255,255,255,.2);text-decoration:line-through;opacity:.5}
-.cpan{width:100%;max-width:400px;margin-bottom:4px}
-.chead{display:flex;align-items:center;gap:6px;padding:5px 0}
-.chead .ct{font-size:12px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:1px}
-.chead .cc{font-size:10px;font-weight:700;background:rgba(255,152,0,.2);color:#ff9800;padding:2px 8px;border-radius:8px}
-.chead .cc.dg{background:rgba(255,23,68,.2);color:#ff1744}
-.chead .cc.sf{background:rgba(0,230,118,.15);color:#00e676}
-.clist{display:flex;flex-direction:column;gap:3px}
-.citem{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:7px 10px}
-.citem.nr{border-color:rgba(255,152,0,.3);background:rgba(255,152,0,.06)}
-.citem.vn{border-color:rgba(255,23,68,.4);background:rgba(255,23,68,.06);animation:cip 1s ease infinite}
-@keyframes cip{0%,100%{border-color:rgba(255,23,68,.4)}50%{border-color:rgba(255,23,68,.8)}}
-.cic{font-size:28px;flex-shrink:0}
-.cinf{flex:1}
-.ctp{font-size:11px;font-weight:600;color:rgba(255,255,255,.5)}
-.crd{font-size:9px;color:rgba(255,255,255,.3);margin-top:1px}
-.cdst{font-size:15px;font-weight:700;min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
-.cdst.nr{color:#ff9800}
-.cdst.vn{color:#ff1744}
-.cdst.fr{color:rgba(255,255,255,.4)}
-.cemp{text-align:center;padding:8px;color:rgba(255,255,255,.25);font-size:11px}
-.istr{width:100%;max-width:400px;margin-bottom:2px;display:flex;gap:4px;overflow-x:auto;padding-bottom:1px;-webkit-overflow-scrolling:touch}
-.istr::-webkit-scrollbar{display:none}
-.sc{flex-shrink:0;min-width:130px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:10px}
-.sc .si{font-size:32px;flex-shrink:0}
-.sc .sv{flex:1}
-.sc .sl{font-size:9px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase}
-.sc .sval{font-size:18px;font-weight:700;line-height:1.1}
-.sc .sd{font-size:9px;color:rgba(255,255,255,.3);margin-top:1px}
-.ga{position:relative;display:flex;align-items:center;justify-content:center;width:100%;flex-shrink:0}
-.sw{position:relative}
-canvas#gauge{display:block}
-.sdigi{position:absolute;top:58%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
-.sv{font-size:52px;font-weight:700;letter-spacing:-1px;line-height:1;font-variant-numeric:tabular-nums}
-.sv.alr{animation:pt .4s ease infinite}
-@keyframes pt{0%,100%{opacity:1}50%{opacity:.4}}
-.su{font-size:14px;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:4px;margin-top:4px}
-.tw{position:absolute;bottom:6%;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none}
-.tv{font-size:16px;font-weight:700;color:rgba(255,255,255,.45);font-variant-numeric:tabular-nums}
-.tu{font-size:9px;color:rgba(255,255,255,.25);letter-spacing:2px}
-.bbar{display:flex;gap:6px;width:100%;max-width:420px;margin-top:4px}
-.ic{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 4px;text-align:center;flex:1}
-.ic .lab{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.4);margin-bottom:2px}
-.ic .num{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
-.ic .usm{font-size:10px;color:rgba(255,255,255,.3);margin-top:1px}
-.rmod,.movr{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);align-items:center;justify-content:center}
-.rmod.vis,.movr.vis{display:flex}
-.rcnt{width:90%;max-width:380px;max-height:80vh;overflow-y:auto;background:#16161e;border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:22px 18px}
-.rcls{float:right;background:none;border:none;color:rgba(255,255,255,.5);font-size:18px;cursor:pointer}
-.rttl{font-size:20px;font-weight:700;margin-bottom:14px}
-.rsec{margin-bottom:14px}
-.rsec h3{font-size:11px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.rrow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.rrow .rl{font-size:13px;color:rgba(255,255,255,.55)}
-.rrow .rv{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+  :root{
+    --bg: #080B10;
+    --bg-2: #0D131A;
+    --panel: #121A22;
+    --panel-2: #17212B;
+    --line: #223140;
+    --text: #E9F1F6;
+    --text-dim: #7E93A3;
+    --teal: #35D6C9;
+    --teal-dim: #1B4A48;
+    --amber: #FFB454;
+    --amber-dim: #4A3A1B;
+    --red: #FF5C5C;
+    --red-dim: #4A1E1E;
+    --green: #63E6A0;
+    --radius-s: 8px;
+    --radius-m: 14px;
+    --radius-l: 22px;
+  }
+  :root:not([data-theme="light"]){ color-scheme: dark; }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg: #E9EEF2; --bg-2: #DDE5EA; --panel: #F4F7F9; --panel-2: #FFFFFF;
+      --line: #C6D2DA; --text: #10181F; --text-dim: #56697A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #080B10; --bg-2: #0D131A; --panel: #121A22; --panel-2: #17212B;
+    --line: #223140; --text: #E9F1F6; --text-dim: #7E93A3;
+  }
 
-.mcnt{width:92%;max-width:500px;height:70vh;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.1);position:relative}
-.mcnt iframe{width:100%;height:100%;border:none}
-.mcls{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.7);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
-.mleg{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.75);border-radius:10px;padding:6px 10px;font-size:10px;color:rgba(255,255,255,.7)}
-.mleg .mli{display:flex;align-items:center;gap:5px;margin-bottom:2px}
-.mleg .mld{width:7px;height:7px;border-radius:50%}
-.crow{display:flex;gap:5px;margin-top:4px;max-width:420px;width:100%;justify-content:center;flex-wrap:wrap}
-.cbtn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);border-radius:12px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;min-width:50px;text-align:center}
-.cbtn:active{background:rgba(0,200,255,.15);color:#00c8ff}
-.cbtn.act{background:rgba(0,200,255,.15);border-color:rgba(0,200,255,.4);color:#00c8ff}
-.stl{font-size:12px;color:rgba(255,255,255,.35);text-align:center;margin-top:6px}
-.stl .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
-.dot.g{background:#00e676;box-shadow:0 0 6px #00e676}
-.dot.y{background:#ffc400;box-shadow:0 0 6px #ffc400}
-.dot.r{background:#ff1744;box-shadow:0 0 6px #ff1744}
-.wbx{background:rgba(255,23,68,.08);border:1px solid rgba(255,23,68,.2);border-radius:10px;padding:6px 12px;font-size:12px;color:rgba(255,255,255,.6);text-align:center;display:none;margin-top:5px}
-.pip{position:fixed;bottom:16px;left:16px;z-index:80;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);font-size:16px;cursor:pointer;display:none;align-items:center;justify-content:center}
-body.pipm .cpan,body.pipm .istr,body.pipm .mbar,body.pipm .lbar,body.pipm .bbar,body.pipm .crow,body.pipm .stl,body.pipm .wbx{display:none!important}
-body.pipm .ga{margin-top:0}
-body.pipm .sw{transform:scale(.55);transform-origin:center center}
-.ldbar{position:fixed;top:0;left:0;width:100%;height:4px;z-index:5000;display:none;background:rgba(255,255,255,.03)}
-.ldbar.vis{display:block}
-.ldfill{height:100%;width:0;background:linear-gradient(90deg,#00c8ff,#00e676,#ffc400);border-radius:0 3px 3px 0;transition:width .3s ease;box-shadow:0 0 10px rgba(0,200,255,.5)}
-.ldfill.go{animation:ldgo 1.2s ease forwards}
-@keyframes ldgo{0%{width:0}15%{width:25%}40%{width:55%}70%{width:80%}100%{width:100%}}
-.ldfill.done{width:100%;opacity:0;transition:width .1s,opacity .6s .3s}
-.tprev{width:100%;height:60px;border-radius:12px;margin-top:12px;position:relative;overflow:hidden}
-.tprev canvas{width:100%;height:100%}
-/* Fatigue */
-.fatban{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,152,0,.95);color:#fff;padding:20px 32px;font-size:18px;font-weight:700;border-radius:20px;z-index:250;text-align:center;box-shadow:0 8px 40px rgba(255,152,0,.6);animation:fatp 1.5s ease infinite}
-.fatban.vis{display:block}
-@keyframes fatp{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.05)}}
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html,body{ margin:0; height:100%; background:var(--bg); }
+  body{
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    overflow:hidden;
+  }
+  .num{ font-family:'Rajdhani', 'Inter', sans-serif; font-weight:700; letter-spacing:0.5px; }
 
-/* Fine banner */
-.fineban{display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(255,23,68,.9);color:#fff;padding:8px 20px;font-size:13px;font-weight:700;border-radius:16px;z-index:98;box-shadow:0 4px 20px rgba(255,23,68,.5);white-space:nowrap;touch-action:pan-y;transition:transform .3s ease,opacity .3s ease}
-.fineban.vis{display:flex;align-items:center;gap:8px}
+  #app{
+    height:100vh; height:100dvh;
+    display:flex;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(53,214,201,0.07), transparent 60%),
+      var(--bg);
+  }
 
-/* Trip history */
-.triplist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
-.tripcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px}
-.tripcard .tdate{font-size:11px;color:rgba(255,255,255,.4)}
-.tripcard .tstats{display:flex;gap:12px;margin-top:4px}
-.tripcard .tstat{font-size:13px;font-weight:700;color:rgba(255,255,255,.7)}
-.tripcard .tstat span{font-size:9px;color:rgba(255,255,255,.3);margin-left:3px}
+  /* ---------- SIDE RAIL ---------- */
+  .rail{
+    width:78px; flex:0 0 78px;
+    background:var(--bg-2);
+    border-right:1px solid var(--line);
+    display:flex; flex-direction:column; align-items:center;
+    padding:14px 0;
+    gap:6px;
+    z-index:5;
+  }
+  .rail-logo{
+    width:38px; height:38px; border-radius:10px;
+    background:linear-gradient(145deg, var(--teal), #1C8B82);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:10px;
+    font-family:'Rajdhani',sans-serif; font-weight:700; color:#04211F; font-size:15px;
+  }
+  .rail-btn{
+    width:56px; height:56px; border-radius:var(--radius-m);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:4px;
+    background:transparent; border:1px solid transparent;
+    color:var(--text-dim);
+    cursor:pointer;
+    font-size:10px; font-weight:500;
+    transition: background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .rail-btn svg{ width:22px; height:22px; }
+  .rail-btn.active{
+    background:var(--panel);
+    border-color:var(--line);
+    color:var(--teal);
+  }
+  .rail-btn:hover{ color:var(--text); }
+  .rail-spacer{ flex:1; }
+  .rail-clock{
+    font-family:'Rajdhani',sans-serif; font-size:13px; color:var(--text-dim);
+    margin-bottom:8px; text-align:center;
+  }
 
+  /* ---------- MAIN ---------- */
+  .main{ flex:1; display:flex; flex-direction:column; min-width:0; }
+
+  .topbar{
+    height:56px; flex:0 0 56px;
+    display:flex; align-items:center;
+    padding:0 22px;
+    border-bottom:1px solid var(--line);
+    gap:22px;
+    background:var(--bg-2);
+  }
+  .topbar .chip{
+    display:flex; align-items:center; gap:8px;
+    color:var(--text-dim); font-size:13px;
+  }
+  .topbar .chip svg{ width:16px; height:16px; opacity:.8; }
+  .topbar .speed{
+    margin-left:auto;
+    display:flex; align-items:baseline; gap:6px;
+    color:var(--text);
+  }
+  .topbar .speed .v{ font-size:22px; }
+  .topbar .speed .u{ font-size:11px; color:var(--text-dim); font-weight:600;}
+
+  .alert-ticker{
+    flex:0 0 auto;
+    display:none;
+    align-items:center; gap:10px;
+    padding:9px 22px;
+    background: var(--red-dim);
+    border-bottom:1px solid var(--line);
+    color:#FFD6D6; font-size:13px; font-weight:600;
+  }
+  .alert-ticker.show{ display:flex; }
+  .alert-ticker svg{ width:18px; height:18px; flex:0 0 auto; }
+  .alert-ticker .close-x{
+    margin-left:auto; cursor:pointer; color:#FFD6D6; opacity:.7; font-size:16px; line-height:1;
+  }
+
+  .view{ flex:1; overflow-y:auto; padding:26px; display:none; }
+  .view.active{ display:block; }
+
+  .section-title{
+    font-size:12px; text-transform:uppercase; letter-spacing:1.2px;
+    color:var(--text-dim); margin:0 0 12px 2px; font-weight:600;
+  }
+  .card{
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--radius-l);
+    padding:20px;
+  }
+  .grid{ display:grid; gap:16px; }
+
+  /* ---------- RADIO ---------- */
+  .radio-hero{
+    display:flex; align-items:center; gap:26px; flex-wrap:wrap;
+  }
+  .freq-dial{
+    flex:0 0 auto;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .freq-num{ font-size:56px; line-height:1; color:var(--teal); }
+  .freq-band{ font-size:12px; color:var(--text-dim); letter-spacing:1px; }
+  .station-info{ flex:1; min-width:180px; }
+  .station-info .name{ font-size:20px; font-weight:700; }
+  .station-info .sub{ color:var(--text-dim); font-size:13px; margin-top:4px; }
+  .viz{ display:flex; align-items:flex-end; gap:3px; height:34px; margin-top:12px; }
+  .viz span{
+    width:4px; background:var(--teal); border-radius:2px; opacity:.85;
+    animation: bar 1.1s ease-in-out infinite;
+  }
+  .viz span:nth-child(1){ height:40%; animation-delay:0s; }
+  .viz span:nth-child(2){ height:80%; animation-delay:.1s; }
+  .viz span:nth-child(3){ height:55%; animation-delay:.2s; }
+  .viz span:nth-child(4){ height:95%; animation-delay:.3s; }
+  .viz span:nth-child(5){ height:65%; animation-delay:.4s; }
+  .viz span:nth-child(6){ height:40%; animation-delay:.5s; }
+  .viz span:nth-child(7){ height:75%; animation-delay:.6s; }
+  .viz.paused span{ animation-play-state: paused; opacity:.25; }
+  @keyframes bar{ 0%,100%{ transform:scaleY(.5);} 50%{ transform:scaleY(1);} }
+
+  .transport{ display:flex; align-items:center; gap:14px; margin-top:18px; }
+  .tbtn{
+    width:46px; height:46px; border-radius:50%;
+    background:var(--panel-2); border:1px solid var(--line);
+    color:var(--text); display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .tbtn svg{ width:18px; height:18px; }
+  .tbtn.play{ width:58px; height:58px; background:var(--teal); color:#04211F; border:none; }
+  .tbtn.play svg{ width:22px; height:22px; }
+  .tbtn:active{ transform:scale(.94); }
+
+  .volwrap{ display:flex; align-items:center; gap:10px; margin-top:18px; max-width:320px; }
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:4px;
+    background:var(--line); border-radius:2px; outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:16px; height:16px; border-radius:50%;
+    background:var(--teal); cursor:pointer; border:3px solid var(--bg-2);
+  }
+  .presets{ display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:10px; margin-top:16px; }
+  .preset{
+    padding:10px 8px; border-radius:var(--radius-s); text-align:center;
+    background:var(--panel-2); border:1px solid var(--line); cursor:pointer;
+    font-family:'Rajdhani',sans-serif; font-weight:600; font-size:15px;
+  }
+  .preset .pname{ font-family:'Inter',sans-serif; font-weight:500; font-size:10px; color:var(--text-dim); margin-top:2px; }
+  .preset.active{ border-color:var(--teal); color:var(--teal); background:var(--teal-dim); }
+
+  /* ---------- NAV ---------- */
+  .nav-layout{ display:grid; grid-template-columns: 1.4fr 1fr; gap:16px; }
+  @media (max-width:820px){ .nav-layout{ grid-template-columns:1fr; } }
+  .map-card{ padding:0; overflow:hidden; position:relative; height:420px; }
+  .map-card svg{ width:100%; height:100%; display:block; }
+  .search-row{
+    display:flex; gap:10px; align-items:center;
+    background:var(--panel-2); border:1px solid var(--line);
+    border-radius:var(--radius-m); padding:12px 14px; margin-bottom:16px;
+  }
+  .search-row svg{ width:18px; height:18px; color:var(--text-dim); flex:0 0 auto; }
+  .search-row input{
+    background:transparent; border:none; outline:none; color:var(--text);
+    font-size:14px; width:100%; font-family:'Inter',sans-serif;
+  }
+  .search-row input::placeholder{ color:var(--text-dim); }
+  .turn-banner{
+    position:absolute; top:16px; left:16px; right:16px;
+    background:rgba(13,19,26,0.92); border:1px solid var(--line);
+    border-radius:var(--radius-m); padding:14px 16px;
+    display:flex; align-items:center; gap:14px;
+    backdrop-filter: blur(6px);
+  }
+  .turn-icon{
+    width:44px; height:44px; border-radius:12px; background:var(--teal);
+    display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  }
+  .turn-icon svg{ width:24px; height:24px; color:#04211F; }
+  .turn-text .dist{ font-family:'Rajdhani',sans-serif; font-weight:700; font-size:20px; }
+  .turn-text .street{ color:var(--text-dim); font-size:12.5px; }
+  .speed-sign{
+    position:absolute; bottom:16px; left:16px;
+    width:52px; height:52px; border-radius:50%;
+    background:#fff; border:5px solid var(--red);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:19px; color:#111;
+  }
+  .trip-stats{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+  .stat-box{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius-m);
+    padding:14px;
+  }
+  .stat-box .lab{ font-size:11.5px; color:var(--text-dim); margin-bottom:6px; }
+  .stat-box .val{ font-family:'Rajdhani',sans-serif; font-weight:700; font-size:22px; }
+
+  /* ---------- CAMERA ---------- */
+  .cam-tabs{ display:flex; gap:8px; margin-bottom:16px; }
+  .cam-tab{
+    padding:9px 16px; border-radius:999px; background:var(--panel-2);
+    border:1px solid var(--line); color:var(--text-dim); cursor:pointer; font-size:13px; font-weight:600;
+  }
+  .cam-tab.active{ background:var(--teal-dim); color:var(--teal); border-color:var(--teal); }
+  .cam-view{
+    position:relative; height:380px; border-radius:var(--radius-l); overflow:hidden;
+    background: linear-gradient(180deg, #2A3742 0%, #131A22 55%, #0B0F14 100%);
+    border:1px solid var(--line);
+  }
+  .cam-view svg{ position:absolute; inset:0; width:100%; height:100%; }
+  .cam-hud{
+    position:absolute; top:14px; left:14px; display:flex; align-items:center; gap:8px;
+    background:rgba(0,0,0,0.45); padding:6px 10px; border-radius:8px; font-size:11px; color:#fff;
+  }
+  .cam-hud .dot{ width:8px; height:8px; border-radius:50%; background:var(--red); animation:pulse 1.4s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+  .sensor-bars{ display:flex; justify-content:center; gap:6px; position:absolute; bottom:14px; left:0; right:0; }
+  .sensor-bars i{
+    width:34px; height:8px; border-radius:4px; background:#2A3742; display:inline-block;
+  }
+  .sensor-bars i.on-g{ background:var(--green); }
+  .sensor-bars i.on-y{ background:var(--amber); }
+  .sensor-bars i.on-r{ background:var(--red); }
+  .cam-note{ margin-top:14px; color:var(--text-dim); font-size:12.5px; }
+
+  /* ---------- WARNINGS ---------- */
+  .warn-list{ display:grid; gap:10px; }
+  .warn-row{
+    display:flex; align-items:center; gap:14px;
+    background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius-m);
+    padding:14px 16px;
+  }
+  .warn-ic{
+    width:38px; height:38px; border-radius:10px; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .warn-ic svg{ width:20px; height:20px; }
+  .warn-ic.sev-info{ background:var(--teal-dim); color:var(--teal); }
+  .warn-ic.sev-warn{ background:var(--amber-dim); color:var(--amber); }
+  .warn-ic.sev-crit{ background:var(--red-dim); color:var(--red); }
+  .warn-body{ flex:1; min-width:0; }
+  .warn-body .t{ font-weight:600; font-size:14px; }
+  .warn-body .d{ color:var(--text-dim); font-size:12px; margin-top:2px; }
+  .warn-toggle{
+    padding:8px 14px; border-radius:999px; font-size:12px; font-weight:600;
+    background:var(--panel); border:1px solid var(--line); color:var(--text-dim); cursor:pointer;
+  }
+  .warn-toggle.on{ color:#04211F; background:var(--amber); border-color:var(--amber); }
+
+  /* ---------- EXTRA ---------- */
+  .extra-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; }
+  .tpms{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
+  .tpms-cell{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius-s);
+    padding:10px; text-align:center;
+  }
+  .tpms-cell .p{ font-family:'Rajdhani',sans-serif; font-weight:700; font-size:20px; }
+  .tpms-cell.low .p{ color:var(--amber); }
+  .tpms-cell .l{ font-size:10.5px; color:var(--text-dim); margin-top:2px; }
+
+  .toggle-row{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+  .switch{
+    width:44px; height:24px; border-radius:999px; background:var(--panel-2);
+    border:1px solid var(--line); position:relative; cursor:pointer; flex:0 0 auto;
+  }
+  .switch .knob{
+    position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%;
+    background:var(--text-dim); transition: left .18s ease, background .18s ease;
+  }
+  .switch.on{ background:var(--teal-dim); border-color:var(--teal); }
+  .switch.on .knob{ left:22px; background:var(--teal); }
+
+  .mic-btn{
+    width:64px; height:64px; border-radius:50%; margin:6px auto 4px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--panel-2); border:1px solid var(--line); cursor:pointer; position:relative;
+  }
+  .mic-btn svg{ width:26px; height:26px; color:var(--teal); }
+  .mic-btn.listening{ background:var(--teal-dim); border-color:var(--teal); }
+  .mic-ring{
+    position:absolute; inset:-6px; border-radius:50%; border:2px solid var(--teal);
+    opacity:0;
+  }
+  .mic-btn.listening .mic-ring{ animation: ring 1.2s ease-out infinite; }
+  @keyframes ring{ 0%{ opacity:.7; transform:scale(.9);} 100%{ opacity:0; transform:scale(1.35);} }
+  .mic-caption{ text-align:center; font-size:12px; color:var(--text-dim); margin-top:6px; }
+
+  .bt-device{
+    display:flex; align-items:center; gap:10px; padding:10px; border-radius:var(--radius-s);
+    background:var(--panel-2); border:1px solid var(--line); margin-top:8px; font-size:13px;
+  }
+  .bt-device svg{ width:16px; height:16px; color:var(--teal); }
+  .bt-device .st{ margin-left:auto; font-size:11px; color:var(--green); }
+
+  .weather-row{ display:flex; align-items:center; gap:16px; }
+  .weather-row svg{ width:44px; height:44px; color:var(--amber); }
+  .weather-row .wt{ font-family:'Rajdhani',sans-serif; font-weight:700; font-size:34px; }
+  .weather-row .wd{ color:var(--text-dim); font-size:13px; }
+
+  /* Bottom rail for narrow / mobile */
+  @media (max-width:700px){
+    .rail{ flex-direction:row; width:100%; height:64px; flex:0 0 64px; order:2;
+      border-right:none; border-top:1px solid var(--line); padding:6px 6px; overflow-x:auto; gap:4px;}
+    .rail-logo,.rail-clock,.rail-spacer{ display:none; }
+    #app{ flex-direction:column; }
+    .rail-btn{ width:56px; height:52px; }
+    .main{ order:1; }
+  }
+
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
 </style>
 </head>
 <body>
-<div class="welcome" id="wel">
-  <div class="wg"><canvas id="wc" width="400" height="400"></canvas></div>
-  <div class="wa">
-    <div class="wt">MERHABA HALİL KILIÇ</div>
-    <div class="ws">ARAÇ HIZ GÖSTERGESİ PRO</div>
-    <button class="wb" onclick="startApp()">Başla</button>
-  </div>
-</div>
-<div class="ldbar" id="ldbar"><div class="ldfill" id="ldfill"></div></div>
-<div class="ap" id="apill">⚠️ HIZ SINIRI AŞILDI</div>
-<div class="cb" id="cban">📸 YAKIN KAMERA</div>
-<div class="cb" id="fban">⛽ YAKIT İSTASYONU</div>
-<div class="campop" id="fuelpop">
-  <div class="campop-hdr"><span class="cic">⛽</span><span class="campop-title" id="fuelpop-title">YAKIT İSTASYONU</span><span id="fuelpop-dist" class="campop-dst" style="color:#00c8ff">--</span></div>
-  <div class="campop-body" id="fuelpop-body"></div>
-</div>
-<div class="campop" id="campop">
-  <div class="campop-hdr"><span class="cic">📸</span><span class="campop-title" id="campop-title">KAMERA</span><span id="campop-dist" class="campop-dst">--</span></div>
-  <div class="campop-body" id="campop-body"></div>
-</div>
-<div class="vs" id="vstat">🔊</div>
-<button class="eb" id="ebtn" onclick="handleEmergency()">🆘</button>
-<button class="pip" id="pbtn" onclick="togglePip()">🔳</button>
-<div class="fatban" id="fatBan">😴 2 SAAT SÜRÜŞ! MOLA VER!</div>
-<div class="fineban" id="fineBan">💰 CEZA RİSKİ</div>
 
+<div id="app">
+  <!-- SIDE RAIL -->
+  <nav class="rail">
+    <div class="rail-logo">NX</div>
+    <div class="rail-clock" id="railClock">--:--</div>
+    <button class="rail-btn active" data-view="radio" title="Radyo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="9" width="18" height="11" rx="2"/><path d="M7 9V6a5 5 0 0 1 8.6-3.5"/><circle cx="8" cy="14.5" r="1.6" fill="currentColor" stroke="none"/><path d="M13 13h5M13 16h5"/></svg>
+      Radyo
+    </button>
+    <button class="rail-btn" data-view="nav" title="Navigasyon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l17-8-8 17-2.5-6.5L3 11z"/></svg>
+      Harita
+    </button>
+    <button class="rail-btn" data-view="camera" title="Kameralar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.4"/></svg>
+      Kamera
+    </button>
+    <button class="rail-btn" data-view="warn" title="Uyarılar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>
+      Uyarı
+    </button>
+    <button class="rail-btn" data-view="extra" title="Ekstra">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l1.9-1.5-2-3.4-2.3.6a7.6 7.6 0 0 0-2.6-1.5L14 2h-4l-.4 2.7a7.6 7.6 0 0 0-2.6 1.5l-2.3-.6-2 3.4L4.6 10.5a7.6 7.6 0 0 0 0 3l-1.9 1.5 2 3.4 2.3-.6a7.6 7.6 0 0 0 2.6 1.5L10 22h4l.4-2.7a7.6 7.6 0 0 0 2.6-1.5l2.3.6 2-3.4-1.9-1.5z"/></svg>
+      Ekstra
+    </button>
+    <div class="rail-spacer"></div>
+  </nav>
 
-<div class="rmod" id="tripMod">
-  <div class="rcnt">
-    <button class="rcls" onclick="showTrips()">✕</button>
-    <div class="rttl">🏁 Yolculuk Geçmişi</div>
-    <div id="tripBody"><div class="cemp">Henüz yolculuk yok</div></div>
-  </div>
-</div>
-<div class="movr" id="mover">
-  <div class="mcnt">
-    <button class="mcls" onclick="toggleMap()">✕</button>
-    <iframe id="mframe" src="about:blank"></iframe>
-    <div class="mleg">
-      <div class="mli"><div class="mld" style="background:#00c8ff"></div>Konumunuz</div>
-      <div class="mli"><div class="mld" style="background:#ff1744"></div>📸 Kamera</div>
-      <div class="mli"><div class="mld" style="background:#ff9800"></div>⛽ İstasyon</div>
+  <div class="main">
+    <div class="topbar">
+      <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/><circle cx="12" cy="12" r="4"/></svg><span id="tempChip">24°C</span></div>
+      <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="6" width="18" height="12" rx="2"/><path d="M23 10v4" stroke="currentColor"/><rect x="3" y="8" width="12" height="8" fill="currentColor" opacity=".7" stroke="none"/></svg><span id="fuelChip">%62 yakıt</span></div>
+      <div class="chip" id="clockChip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="clockText">--:--</span></div>
+      <div class="speed"><span class="num v" id="speedVal">68</span><span class="u">km/s</span></div>
     </div>
-  </div>
-</div>
-<div class="rmod" id="rmod">
-  <div class="rcnt">
-    <button class="rcls" onclick="toggleReport()">✕</button>
-    <div class="rttl">📊 Sürüş Raporu</div>
-    <div id="rbody"></div>
-  </div>
-</div>
 
-<div class="main" id="mUI">
-  <div class="mbar">
-    <button class="mbtn act" id="mCity" onclick="setDriveMode('city')"><span class="mi">🏙️</span>Şehir</button>
-    <button class="mbtn" id="mHwy" onclick="setDriveMode('highway')"><span class="mi">🛣️</span>Otoyol</button>
-    <button class="mbtn" id="mSpt" onclick="setDriveMode('sport')"><span class="mi">🏎️</span>Spor</button>
-  </div>
-  <div class="lbar">
-    <span class="li">🚧</span>
-    <input type="number" class="linp" id="limp" value="50" min="10" max="300" inputmode="numeric">
-    <span class="lul" id="lulb">km/s</span>
-    <span class="lat" id="atag" style="display:none">OTO</span>
-    <button class="ltb" id="ltbtn" onclick="toggleLimit()">AÇIK</button>
-  </div>
-  <div class="cpan" id="cpan" style="display:none">
-    <div class="chead" onclick="showCamList()" style="cursor:pointer">
-      <span class="ct">📸 Kameralar (<span id="ccnt">0</span>)</span>
-      <span class="cc sf" id="ccntBadge">0</span>
+    <div class="alert-ticker" id="alertTicker">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>
+      <span id="alertText">Uyarı metni</span>
+      <span class="close-x" id="alertClose">✕</span>
     </div>
-    <div class="clist" id="clist" style="display:none"><div class="cemp">Konum alınıyor...</div></div>
-  </div>
-  <div class="ga">
-    <div class="sw" id="sw">
-      <canvas id="gauge" width="700" height="700"></canvas>
-      <div class="sdigi">
-        <div class="sv" id="spVal">0</div>
-        <div class="su" id="spUni">KM/S</div>
+
+    <!-- RADIO VIEW -->
+    <section class="view active" id="view-radio">
+      <div class="section-title">Radyo</div>
+      <div class="card radio-hero">
+        <div class="freq-dial">
+          <div class="freq-num num" id="freqNum">98.4</div>
+          <div class="freq-band">FM · TÜRKİYE</div>
+        </div>
+        <div class="station-info">
+          <div class="name" id="stationName">Ege FM</div>
+          <div class="sub" id="stationSub">Şimdi çalıyor · Akşam Yolu Programı</div>
+          <div class="viz paused" id="viz">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
       </div>
-      <div class="tw">
-        <div class="tv" id="tchV">0.8</div>
-        <div class="tu">RPM x1000</div>
-      </div>
-    </div>
-  </div>
-  <div class="istr">
-    <div class="sc" onclick="showCamList()" style="cursor:pointer"><div class="si">📸</div><div class="sv"><div class="sl">Kameralar</div><div class="sval" id="camInfo">0</div><div class="sd" id="camNearest">--</div></div></div>
-    <div class="sc"><div class="si">🌱</div><div class="sv"><div class="sl">Eco Skor</div><div class="sval" id="ecoG" style="color:#00e676">A</div><div class="sd" id="ecoD">Mükemmel</div></div></div>
-    <div class="sc"><div class="si" id="wIco">☀️</div><div class="sv"><div class="sl">Hava</div><div class="sval" id="wTmp">--°C</div><div class="sd" id="wDsc">Yükleniyor</div></div></div>
-    <div class="sc" onclick="showFuelDetail()" style="cursor:pointer"><div class="si">⛽</div><div class="sv"><div class="sl">Yakıt</div><div class="sval" id="fNrst" style="color:#00c8ff">--</div><div class="sd" id="fDsc">Aranıyor</div></div></div>
-  </div>
 
-  <div class="bbar">
-    <div class="ic"><div class="lab">Maks</div><div class="num" id="mxSp">0</div><div class="usm" id="mxU">km/s</div></div>
-    <div class="ic"><div class="lab">Ort</div><div class="num" id="avSp">0</div><div class="usm" id="avU">km/s</div></div>
-    <div class="ic"><div class="lab">Mesafe</div><div class="num" id="dist">0</div><div class="usm" id="dU">km</div></div>
-    <div class="ic"><div class="lab">Süre</div><div class="num" id="dTm">0:00</div><div class="usm">dk</div></div>
+      <div class="card" style="margin-top:16px;">
+        <div class="transport">
+          <div class="tbtn" id="seekPrev" title="Önceki istasyon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM20 6L10 12l10 6z"/></svg>
+          </div>
+          <div class="tbtn play" id="playBtn" title="Oynat / Duraklat">
+            <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="tbtn" id="seekNext" title="Sonraki istasyon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM4 6l10 6-10 6z"/></svg>
+          </div>
+          <div style="margin-left:auto; color:var(--text-dim); font-size:12px;">Otomatik tarama: <b style="color:var(--text)">Kapalı</b></div>
+        </div>
+        <div class="volwrap">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--text-dim); flex:0 0 auto;"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 8a5 5 0 0 1 0 8"/></svg>
+          <input type="range" id="volSlider" min="0" max="100" value="55">
+          <span class="num" id="volVal" style="width:30px; text-align:right;">55</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="section-title" style="margin-bottom:8px;">Yayın Adresi (gerçek ses için)</div>
+        <div class="search-row" style="margin-bottom:8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 .01 0zM3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+          <input type="text" id="streamUrlInput" placeholder="Gerçek yayın linkini buraya yapıştır (.mp3 / .aac akışı)">
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <div class="tbtn" id="applyStreamBtn" style="width:auto; height:auto; padding:10px 16px; border-radius:10px;">Bağlan</div>
+          <span id="streamStatus" style="font-size:12px; color:var(--text-dim);">Demo yayın hazır — Bağlan'a bas</span>
+        </div>
+        <div class="cam-note" style="margin-top:12px;">
+          Hafızalardaki istasyonlar gerçek Türkiye radyo yayınlarına bağlanır (Kral FM, Power FM, Best FM, Alem FM vb.) ve her birinde birden fazla yedek adres var — biri yanıt vermezse otomatik olarak diğerine geçer. m3u8 uzantılı yayınlar hls.js ile, doğrudan mp3/aac akışları ise tarayıcının kendi ses motoruyla çalınır. Kendi istasyonunu eklemek istersen bu kutuya akış adresini yapıştırıp "Bağlan"a bas. <b>Not:</b> bu sayfa Claude içindeki önizleme bağlantısından açıksa güvenlik politikası dış yayın isteklerini engeller — sesin gerçekten çıkması için dosyayı indirip telefonunda/Navimax'ta normal tarayıcıdan açman gerekir (aşağıdaki kurulum adımlarına bak).
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:20px;">Hafızalar</div>
+      <div class="presets" id="presetList"></div>
+      <audio id="radioAudio" preload="none"></audio>
+    </section>
+
+    <!-- NAV VIEW -->
+    <section class="view" id="view-nav">
+      <div class="section-title">Navigasyon</div>
+      <div class="nav-layout">
+        <div class="map-card">
+          <svg viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="mapbg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#17222C"/>
+                <stop offset="1" stop-color="#0C1218"/>
+              </linearGradient>
+            </defs>
+            <rect width="400" height="420" fill="url(#mapbg)"/>
+            <g stroke="#223140" stroke-width="1">
+              <line x1="0" y1="60" x2="400" y2="40"/>
+              <line x1="0" y1="150" x2="400" y2="170"/>
+              <line x1="0" y1="300" x2="400" y2="290"/>
+              <line x1="60" y1="0" x2="90" y2="420"/>
+              <line x1="260" y1="0" x2="230" y2="420"/>
+            </g>
+            <path d="M20 380 C 120 340, 140 260, 120 190 S 220 90, 210 40" fill="none" stroke="#35D6C9" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
+            <path d="M20 380 C 120 340, 140 260, 120 190 S 220 90, 210 40" fill="none" stroke="#0C1218" stroke-width="7" stroke-linecap="round" stroke-dasharray="2 14" opacity="0.6"/>
+            <circle cx="120" cy="190" r="7" fill="#FFB454"/>
+            <circle cx="210" cy="40" r="9" fill="#FF5C5C"/>
+            <path d="M210 30l6 16h-12z" fill="#FF5C5C"/>
+            <g transform="translate(120,230)">
+              <circle r="11" fill="#35D6C9" opacity="0.25"/>
+              <circle r="6" fill="#35D6C9" stroke="#04211F" stroke-width="2"/>
+            </g>
+          </svg>
+          <div class="turn-banner">
+            <div class="turn-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 4v11M12 4l-5 5M12 4l5 5"/><path d="M7 15h10a3 3 0 0 1 3 3v2"/></svg>
+            </div>
+            <div class="turn-text">
+              <div class="dist num">300 m sonra sağa dön</div>
+              <div class="street">Mithatpaşa Caddesi üzerinde devam et</div>
+            </div>
+          </div>
+          <div class="speed-sign num">70</div>
+        </div>
+
+        <div>
+          <div class="search-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" id="destInput" placeholder="Konak, İzmir — nereye gidelim?">
+          </div>
+          <div class="card">
+            <div style="font-weight:600; font-size:14px;" id="destTitle">Varış: Konak, İzmir</div>
+            <div class="trip-stats">
+              <div class="stat-box"><div class="lab">Tahmini varış</div><div class="val num" id="etaVal">18:47</div></div>
+              <div class="stat-box"><div class="lab">Kalan mesafe</div><div class="val num" id="distVal">12.4 km</div></div>
+              <div class="stat-box"><div class="lab">Kalan süre</div><div class="val num" id="durVal">22 dk</div></div>
+              <div class="stat-box"><div class="lab">Trafik durumu</div><div class="val num" style="color:var(--amber); font-size:16px;">Orta yoğunluk</div></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:16px;">
+            <div class="section-title" style="margin-bottom:8px;">Yakındaki duraklar</div>
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:13px; color:var(--text-dim);">
+              <div>⛽ Petrol İstasyonu — 1.2 km</div>
+              <div>🅿️ Kapalı Otopark — 2.0 km</div>
+              <div>☕ Mola Noktası — 3.4 km</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAMERA VIEW -->
+    <section class="view" id="view-camera">
+      <div class="section-title">Yol Kameraları</div>
+      <div class="cam-tabs">
+        <div class="cam-tab active" data-cam="front">Ön Kamera</div>
+        <div class="cam-tab" data-cam="rear">Geri Vites Kamerası</div>
+        <div class="cam-tab" data-cam="around">360° Görünüm</div>
+      </div>
+
+      <div class="cam-view" id="camView">
+        <svg id="camFront" viewBox="0 0 400 260" preserveAspectRatio="none">
+          <rect width="400" height="150" fill="#3A4854"/>
+          <rect y="150" width="400" height="110" fill="#22262B"/>
+          <polygon points="150,150 250,150 400,260 0,260" fill="#2B3035"/>
+          <line x1="185" y1="150" x2="120" y2="260" stroke="#F5D76E" stroke-width="4" stroke-dasharray="18 14"/>
+          <line x1="215" y1="150" x2="280" y2="260" stroke="#F5D76E" stroke-width="4" stroke-dasharray="18 14"/>
+          <circle cx="330" cy="60" r="26" fill="#FFE9A8" opacity="0.85"/>
+          <rect x="60" y="95" width="26" height="18" rx="3" fill="#1B1F23"/>
+        </svg>
+        <svg id="camRear" viewBox="0 0 400 260" preserveAspectRatio="none" style="display:none;">
+          <rect width="400" height="150" fill="#2E3B45"/>
+          <rect y="150" width="400" height="110" fill="#22262B"/>
+          <polygon points="130,150 270,150 400,260 0,260" fill="#2B3035"/>
+          <path d="M60 260 C 120 190, 280 190, 340 260" fill="none" stroke="#63E6A0" stroke-width="5"/>
+          <path d="M95 260 C 140 215, 260 215, 305 260" fill="none" stroke="#FFB454" stroke-width="5"/>
+          <path d="M140 260 C 165 240, 235 240, 260 260" fill="none" stroke="#FF5C5C" stroke-width="5"/>
+          <rect x="170" y="180" width="60" height="34" rx="4" fill="#0C1218" opacity="0.5"/>
+        </svg>
+        <svg id="camAround" viewBox="0 0 400 260" style="display:none;">
+          <rect width="400" height="260" fill="#171F27"/>
+          <rect x="150" y="90" width="100" height="80" rx="10" fill="#3A4854" stroke="#35D6C9" stroke-width="2"/>
+          <circle cx="200" cy="130" r="95" fill="none" stroke="#223140" stroke-width="1"/>
+          <circle cx="200" cy="130" r="60" fill="none" stroke="#223140" stroke-width="1"/>
+          <path d="M150 90 a95 95 0 0 1 100 0" fill="none" stroke="#63E6A0" stroke-width="4"/>
+          <path d="M105 170 a95 95 0 0 1 0 -80" fill="none" stroke="#FFB454" stroke-width="4"/>
+          <path d="M150 170 a95 95 0 0 0 100 0" fill="none" stroke="#FF5C5C" stroke-width="4"/>
+        </svg>
+        <div class="cam-hud"><span class="dot"></span> CANLI GÖRÜNTÜ</div>
+        <div class="sensor-bars" id="sensorBars">
+          <i class="on-g"></i><i class="on-g"></i><i class="on-y"></i><i class="on-r"></i><i class="on-y"></i><i class="on-g"></i>
+        </div>
+      </div>
+      <div class="cam-note" id="camNote">Park sensörleri: engel yaklaştıkça çubuklar kırmızıya döner. Bu görüntü, bağlı kamera modülünden gelen simülasyon akışıdır.</div>
+    </section>
+
+    <!-- WARNINGS VIEW -->
+    <section class="view" id="view-warn">
+      <div class="section-title">Sürüş Uyarıları</div>
+      <div class="warn-list" id="warnList"></div>
+    </section>
+
+    <!-- EXTRA VIEW -->
+    <section class="view" id="view-extra">
+      <div class="section-title">Ekstra Özellikler</div>
+      <div class="extra-grid">
+
+        <div class="card">
+          <div class="section-title" style="margin-bottom:10px;">Yolculuk Bilgisayarı</div>
+          <div class="trip-stats">
+            <div class="stat-box"><div class="lab">Süre</div><div class="val num" id="tripTime">00:00</div></div>
+            <div class="stat-box"><div class="lab">Mesafe</div><div class="val num" id="tripDist">0.0 km</div></div>
+            <div class="stat-box"><div class="lab">Ort. hız</div><div class="val num" id="tripAvg">0 km/s</div></div>
+            <div class="stat-box"><div class="lab">Tüketim</div><div class="val num" id="tripFuel">6.4 L/100km</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="margin-bottom:10px;">Lastik Basıncı (TPMS)</div>
+          <div class="tpms">
+            <div class="tpms-cell"><div class="p num">2.3</div><div class="l">Ön Sol · bar</div></div>
+            <div class="tpms-cell"><div class="p num">2.3</div><div class="l">Ön Sağ · bar</div></div>
+            <div class="tpms-cell low"><div class="p num">1.7</div><div class="l">Arka Sol · bar ⚠</div></div>
+            <div class="tpms-cell"><div class="p num">2.2</div><div class="l">Arka Sağ · bar</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="margin-bottom:10px;">Hava Durumu</div>
+          <div class="weather-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+            <div>
+              <div class="wt num">24°C</div>
+              <div class="wd">İzmir · Açık · Rüzgar 14 km/s</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="margin-bottom:10px;">Sesli Asistan</div>
+          <div class="mic-btn" id="micBtn">
+            <div class="mic-ring"></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          </div>
+          <div class="mic-caption" id="micCaption">Dinlemeyi başlatmak için dokun</div>
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="margin-bottom:10px;">Bluetooth Cihazları</div>
+          <div class="bt-device">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l5 4-4 3.3 4 3.3-5 4V15l-3.3 2.7-1.4-1.4L11 13l-3.7-3.3 1.4-1.4L12 11V2z"/></svg>
+            Sürücü Telefonu — iPhone
+            <span class="st">Bağlı</span>
+          </div>
+          <div class="bt-device" style="opacity:.55;">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l5 4-4 3.3 4 3.3-5 4V15l-3.3 2.7-1.4-1.4L11 13l-3.7-3.3 1.4-1.4L12 11V2z"/></svg>
+            Kulaklık — QuietBuds
+            <span class="st" style="color:var(--text-dim);">Bağlı değil</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="margin-bottom:10px;">Sürücü ve Ekran Ayarları</div>
+          <div class="toggle-row">
+            <span style="font-size:13px;">Gece modu</span>
+            <div class="switch on" id="nightSwitch"><div class="knob"></div></div>
+          </div>
+          <div class="toggle-row">
+            <span style="font-size:13px;">Yorgunluk takibi hatırlatması</span>
+            <div class="switch on" id="fatigueSwitch"><div class="knob"></div></div>
+          </div>
+          <div class="toggle-row">
+            <span style="font-size:13px;">Şerit takip asistanı</span>
+            <div class="switch on" id="laneSwitch"><div class="knob"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </div>
-  <div class="crow">
-    <button class="cbtn act" id="bKmh" onclick="setUnit('kmh')">KM/S</button>
-    <button class="cbtn" onclick="testSound()">🔊</button>
-    <button class="cbtn" onclick="toggleReport()">📊</button>
-    <button class="cbtn" id="bVc" onclick="toggleVoice()">🔇</button>
-    <button class="cbtn" onclick="toggleMap()">🗺️</button>
-    <button class="cbtn" onclick="showTrips()" id="bTrips">🏁</button>
-    <button class="cbtn" onclick="resetAll()">Sıfırla</button>
-  </div>
-  <div class="stl" id="stat"><span class="dot y"></span> GPS bekleniyor</div>
-  <div class="stl" style="margin-top:10px;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:2px">HALİL KILIÇ ✦</div>
-  <div class="wbx" id="wbx">GPS desteklenmiyor – simülasyon modu</div>
 </div>
 
 <script>
-// ===== PWA MANIFEST =====
-var mf={name:'Hiz Gostergesi Pro',short_name:'HizGoster',start_url:'.',display:'standalone',orientation:'portrait',background_color:'#0a0a0f',theme_color:'#0a0a0f',icons:[{src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🚗</text></svg>'),sizes:'192x192',type:'image/svg+xml'}]};
-document.getElementById('manifestLink').href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:'application/json'}));
-
-// ===== WELCOME =====
-var wCvs=document.getElementById('wc'),wCtx=wCvs.getContext('2d');
-var wA=0,wD=1;
-function drawWG(){
-  var w=wCvs.width,h=wCvs.height,c=w/2,r=150,st=0.75*Math.PI,en=2.25*Math.PI,sw=en-st;
-  wCtx.clearRect(0,0,w,h);
-  wCtx.beginPath();wCtx.arc(c,c,r+6,0,Math.PI*2);
-  var g=wCtx.createRadialGradient(c,c,r-10,c,c,r+12);
-  g.addColorStop(0,'rgba(60,60,70,.6)');g.addColorStop(.5,'rgba(180,180,190,.3)');g.addColorStop(1,'rgba(40,40,50,.8)');
-  wCtx.strokeStyle=g;wCtx.lineWidth=10;wCtx.stroke();
-  wCtx.beginPath();wCtx.arc(c,c,r,st,en);wCtx.strokeStyle='rgba(255,255,255,.06)';wCtx.lineWidth=8;wCtx.stroke();
-  var f=Math.floor(wA*60);
-  for(var i=0;i<=f;i++){
-    var t=i/60,a1=st+t*sw,a2=st+(t+1/60)*sw;
-    var rc=t<.5?{r:0,g:200,b:255}:t<.75?{r:255,g:196,b:0}:{r:255,g:23,b:68};
-    wCtx.beginPath();wCtx.arc(c,c,r,a1,a2+.01);wCtx.strokeStyle='rgb('+rc.r+','+rc.g+','+rc.b+')';wCtx.lineWidth=8;wCtx.lineCap='round';wCtx.stroke();
-  }
-  var na=st+wA*sw,nx=c+Math.cos(na)*(r-20),ny=c+Math.sin(na)*(r-20);
-  var rc2=wA<.5?{r:0,g:200,b:255}:wA<.75?{r:255,g:196,b:0}:{r:255,g:23,b:68};
-  wCtx.beginPath();wCtx.moveTo(c,c);wCtx.lineTo(nx,ny);wCtx.strokeStyle='rgb('+rc2.r+','+rc2.g+','+rc2.b+')';wCtx.lineWidth=2.5;wCtx.lineCap='round';wCtx.stroke();
-  wCtx.beginPath();wCtx.arc(c,c,6,0,Math.PI*2);wCtx.fillStyle='#1a1a2e';wCtx.fill();wCtx.strokeStyle='rgb('+rc2.r+','+rc2.g+','+rc2.b+')';wCtx.lineWidth=2;wCtx.stroke();
-  wA+=.008*wD;if(wA>=1)wD=-1;if(wA<=0)wD=1;
-}
-var wI=setInterval(drawWG,30);
-
-function startApp(){
-  clearInterval(wI);
-  document.getElementById('wel').classList.add('hide');
-  setTimeout(function(){
-    document.getElementById('wel').style.display='none';
-    // Show loading bar
-    var lp=document.getElementById('ldbar');
-    if(lp){lp.classList.add('vis');
-      var fl=document.getElementById('ldfill');
-      if(fl){fl.classList.add('go');
-        setTimeout(function(){fl.classList.add('done');
-          setTimeout(function(){lp.classList.remove('vis');fl.classList.remove('go','done');},900);
-        },1400);
-      }
-    }
-    document.getElementById('mUI').classList.add('show');
-    document.getElementById('ebtn').style.display='flex';
-    document.getElementById('pbtn').style.display='flex';
-    initAudio();startGPS();resizeGauge();reqWakeLock();initSwipeDismissAll();
-    // Load trips from localStorage
-    try{var saved=localStorage.getItem(TRIP_KEY);if(saved)trips=JSON.parse(saved);}catch(e){}
-    // Fatigue timer
-    fatigueStart=Date.now();
-    fatigueTO=setInterval(checkFatigue,60000);
-    // fetchWeather and fetchFuel will be called by startGPS once location is obtained
-  },800);
-}
-
-// ===== STATE =====
-var cvs=document.getElementById('gauge'),ctx=cvs.getContext('2d');
-var CW=700,CH=700;
-var curSpd=0,dispSpd=0,maxSpdV=0,spSum=0,spCnt=0;
-var totDist=0,lastPos=null,lastTm=null;
-var unit='kmh';
-var gpsOn=false,simOn=false,watchId=null;
-var limOn=true,spLim=90,isAlrt=false,lastAlrtT=0;
-var audioCtx=null,audioOk=true;
-var limChkTO=null;
-
-// Camera
-var cams=[],myLat=null,myLon=null,myHdg=null;
-var camFI=null,lastCamWT=0,camWarnOn=false;
-
-// Drive mode
-var dMode='city';
-var mLims={city:90,highway:120,sport:200};
-
-// Theme
-var curTh=localStorage.getItem('sp_thm')||'classic';
-// Theme definitions with full visual properties
-var ths={
-  classic:{name:'Klasik',icon:'🏎️',
-    cols:['#00b4ff','#00dc64','#ffc400','#ff1744'],
-    glow:false,
-    face:['#1e1e28','#121218','#0a0a10'],
-    chrome:['#3a3a44','#8a8a95','#c8c8d0'],
-    chromeInner:['#2a2a30','#555560'],
-    tickMaj:'rgba(255,255,255,.65)',tickMin:'rgba(255,255,255,.12)',
-    labelNorm:'rgba(255,255,255,.5)',labelRed:'rgba(255,80,100,.7)',
-    needleW:3,needleCap:true,
-    bgGlow:'rgba(0,0,0,0)'
-  },
-  sport:{name:'Spor',icon:'🏁',
-    cols:['#ff1744','#ff6e40','#ffc400','#00e676'],
-    glow:true,
-    face:['#1a0a0a','#120808','#0a0505'],
-    chrome:['#3a2020','#8a3030','#d04040'],
-    chromeInner:['#2a1515','#553030'],
-    tickMaj:'rgba(255,100,100,.8)',tickMin:'rgba(255,80,80,.18)',
-    labelNorm:'rgba(255,180,180,.7)',labelRed:'rgba(255,50,50,.95)',
-    needleW:4,needleCap:false,
-    bgGlow:'rgba(255,23,68,0.08)'
-  },
-  neon:{name:'Neon',icon:'💜',
-    cols:['#e040fb','#7c4dff','#00e5ff','#76ff03'],
-    glow:true,
-    face:['#0a0a1e','#080818','#050510'],
-    chrome:['#2a1a4a','#6a3a9a','#aa5aea'],
-    chromeInner:['#1a0a3a','#4a2a6a'],
-    tickMaj:'rgba(224,64,251,.75)',tickMin:'rgba(124,77,255,.2)',
-    labelNorm:'rgba(200,180,255,.7)',labelRed:'rgba(224,64,251,.95)',
-    needleW:3,needleCap:true,
-    bgGlow:'rgba(124,77,255,0.08)'
-  },
-  minimal:{name:'Minimal',icon:'⚪',
-    cols:['#555','#888','#bbb','#fff'],
-    glow:false,
-    face:['#111115','#0d0d10','#08080b'],
-    chrome:['#222','#333','#444'],
-    chromeInner:['#1a1a1a','#2a2a2a'],
-    tickMaj:'rgba(255,255,255,.35)',tickMin:'rgba(255,255,255,.06)',
-    labelNorm:'rgba(255,255,255,.3)',labelRed:'rgba(255,255,255,.6)',
-    needleW:2,needleCap:false,
-    bgGlow:'rgba(0,0,0,0)'
-  }
-};
-
-// Wake Lock
-var wLock=null;
-function reqWakeLock(){
-  if(!('wakeLock' in navigator))return;
-  navigator.wakeLock.request('screen').then(function(lk){wLock=lk;wLock.addEventListener('release',function(){wLock=null;});}).catch(function(){wLock=null;});
-}
-document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')reqWakeLock();});
-window.addEventListener('beforeunload',function(){saveTrip();});
-
-// Eco
-var ecoS=100,lastSpdE=0,lastTmE=0;
-
-// RPM
-var estRPM=800;
-
-// Voice
-var vcOn=false,spSup='speechSynthesis' in window,lastVcT=0,lastCamVd=9999,lastLimVst=false;
-
-// Weather
-var wData=null;
-
-// Fuel
-var fStations=[],warnedCams=new Set(),warnedStations=new Set(),fuelSndTimeout=null,activeFuelStation=null,passedStations=new Set(),fuelFI=null,fuelLoaded=false;
-
-// Drive time
-var drvStart=null,drvMs=0;
-
-// PiP
-var pipOn=false;
-
-// Night
-var nightOn=false;
-var nightCheckT=0;
-
-// Fatigue
-var fatigueStart=null,fatigueWarned=false,fatigueTO=null;
-
-// Altitude
-var myAlt=null;
-
-// ===== PERFORMANCE THROTTLE =====
-var _lastCamCalc=0,_lastFuelDistCalc=0,_lastCamRender='',_lastFineChk=0;
-var camDismissUntil=0,fuelDismissUntil=0;
-var CAM_CALC_INT=2000,FUEL_CALC_INT=2000,FINE_CHK_INT=500;
-var lastFetchLat=null,lastFetchLon=null,FETCH_DIST_THRESH=500; // refetch when moved 500m+
-
-// Fine calculator
-var fineBannerOn=false;
-// Turkish traffic fines 2024 (TL)
-var FINES={
-  speed10:{label:'Hız sınırı +10-20',val:741},
-  speed20:{label:'Hız sınırı +20-30',val:1482},
-  speed30:{label:'Hız sınırı +30+',val:2964},
-  redlight:{label:'Kırmızı ışık',val:1482},
-  seatbelt:{label:'Emniyet kemeri',val:741}
-};
-
-// Trip history
-var trips=[],curTrip=null;
-var TRIP_KEY='speedo_trips';
-
-// ===== FATIGUE =====
-function checkFatigue(){
-  if(!fatigueStart||!drvStart)return;
-  var driven=(Date.now()-drvStart)/3600000; // hours
-  if(driven>=2&&!fatigueWarned){
-    fatigueWarned=true;
-    document.getElementById('fatBan').classList.add('vis');
-    if(vcOn)speak('İki saattir sürüyorsunuz! Lütfen mola verin!');
-    if(navigator.vibrate)navigator.vibrate([500,200,500,200,500]);
-    // Auto-hide after 10s
-    setTimeout(function(){document.getElementById('fatBan').classList.remove('vis');},10000);
-    // Warn again every 30 min
-  }else if(driven>=2.5&&driven>=2.5&&((Date.now()-fatigueWarned)>1800000)){
-    fatigueWarned=Date.now();
-    document.getElementById('fatBan').classList.add('vis');
-    if(vcOn)speak('Yorgunluk uyarısı! Mola verin!');
-    if(navigator.vibrate)navigator.vibrate([500,200,500]);
-    setTimeout(function(){document.getElementById('fatBan').classList.remove('vis');},10000);
-  }
-}
-
-// Compass feature removed
-
-
-// Altitude & Speed Graph features removed
-
-
-// ===== FINE CALCULATOR =====
-function checkFine(){
-  var fb=document.getElementById('fineBan');
-  if(!limOn||!limV){fb.classList.remove('vis');fineBannerOn=false;return;}
-  var over=dispSpd-limV;
-  var fineType=null;
-  if(over>30)fineType='speed30';
-  else if(over>20)fineType='speed20';
-  else if(over>10)fineType='speed10';
-  if(fineType){
-    var f=FINES[fineType];
-    fb.innerHTML='💰 <span>'+f.label+': <b>'+f.val.toLocaleString('tr-TR')+' TL</b></span>';
-    fb.classList.add('vis');fineBannerOn=true;
-  }else{
-    fb.classList.remove('vis');fineBannerOn=false;
-  }
-}
-
-// ===== PARK LOCATION =====
-// PARK & REST features removed
-
-
-// ===== TRIP HISTORY =====
-function saveTrip(){
-  if(!drvStart||spCnt<10)return;
-  var trip={
-    date:new Date().toLocaleDateString('tr-TR'),
-    ts:Date.now(),
-    dist:totDist,
-    dur:drvStart?(Date.now()-drvStart)/60000:0,
-    avgSpd:spCnt>0?spSum/spCnt:0,
-    maxSpd:maxSpdV,
-    eco:ecoS
-  };
-  trips.unshift(trip);
-  if(trips.length>50)trips.pop(); // Keep last 50
-  try{localStorage.setItem(TRIP_KEY,JSON.stringify(trips));}catch(e){}
-}
-function showTrips(){
-  var m=document.getElementById('tripMod');
-  if(m.classList.contains('vis')){m.classList.remove('vis');saveTrip();return;}
-  m.classList.add('vis');
-  renderTrips();
-}
-function renderTrips(){
-  var body=document.getElementById('tripBody');
-  if(!trips.length){body.innerHTML='<div class="cemp">Henüz kayıtlı yolculuk yok</div>';return;}
-  var h='<div class="triplist">';
-  for(var i=0;i<Math.min(20,trips.length);i++){
-    var t=trips[i];
-    var dur=t.dur>0?Math.floor(t.dur)+'dk':'--';
-    var dst=t.dist<1?(t.dist*1000).toFixed(0)+'m':t.dist.toFixed(1)+'km';
-    var av=Math.round(t.avgSpd);
-    h+='<div class="tripcard"><div class="tdate">'+t.date+'</div><div class="tstats">';
-    h+='<div class="tstat">'+dst+'<span>mesafe</span></div>';
-    h+='<div class="tstat">'+dur+'<span>süre</span></div>';
-    h+='<div class="tstat">'+av+'<span>ort</span></div>';
-    h+='<div class="tstat">'+Math.round(t.maxSpd)+'<span>maks</span></div>';
-    h+='</div></div>';
-  }
-  h+='</div>';
-  if(trips.length>0){h+='<div style="margin-top:12px;text-align:center"><button class="cbtn" onclick="clearTrips()" style="background:rgba(255,23,68,.1);border-color:rgba(255,23,68,.3);color:#ff1744">Geçmişi Sil</button></div>';}
-  body.innerHTML=h;
-}
-function clearTrips(){
-  trips=[];try{localStorage.removeItem(TRIP_KEY);}catch(e){}
-  renderTrips();
-}
-
-// ETA & SUNSET & FUEL-EST features removed
-
-
-// ===== RESIZE =====
-function resizeGauge(){
-  var vw=window.innerWidth,vh=window.innerHeight,otherH=100;
-  var sz=Math.max(220,Math.min(vw-4,vh-otherH-4,520));
-  var dpr=window.devicePixelRatio||1;
-  cvs.style.width=sz+'px';cvs.style.height=sz+'px';
-  cvs.width=sz*dpr;cvs.height=sz*dpr;
-  ctx.setTransform(dpr,0,0,dpr,0,0);CW=sz;CH=sz;
-}
-window.addEventListener('resize',resizeGauge);
-
-// ===== AUDIO =====
-function initAudio(){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();}catch(e){audioOk=false;}}
-function beep(f,d,v){
-  if(!audioCtx)initAudio();if(!audioOk||!audioCtx)return false;
-  try{if(audioCtx.state==='suspended')audioCtx.resume();
-    var o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='square';o.frequency.value=f||880;g.gain.value=v||.3;
-    g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+(d||.2));o.connect(g);g.connect(audioCtx.destination);
-    o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+(d||.2));return true;
-  }catch(e){return false;}
-}
-function alrtSnd(){var n=Date.now();if(n-lastAlrtT<1500)return;lastAlrtT=n;beep(900,.15,.4);setTimeout(function(){beep(1100,.2,.5)},180);}
-function camSnd(){var n=Date.now();if(n-lastCamWT<5000)return;lastCamWT=n;beep(1200,.1,.3);setTimeout(function(){beep(1400,.15,.4)},130);setTimeout(function(){beep(1600,.2,.5)},280);}
-function testSound(){initAudio();beep(660,.3,.3);setTimeout(function(){beep(880,.3,.3)},350);if(navigator.vibrate)navigator.vibrate([100,50,100]);}
-function fuelSnd(){beep(800,.12,.35);setTimeout(function(){beep(1000,.12,.35)},160);setTimeout(function(){beep(800,.12,.35)},320);if(navigator.vibrate)navigator.vibrate([80,40,80,40,80]);}
-
-// ===== SPEECH =====
-function speak(t){
-  if(!vcOn||!spSup)return;
-  var n=Date.now();if(n-lastVcT<3000)return;lastVcT=n;
-  var u=new SpeechSynthesisUtterance(t);u.lang='tr-TR';u.rate=1.1;u.volume=.8;
-  window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
-  document.getElementById('vstat').textContent='🔊 '+t;
-  document.getElementById('vstat').classList.add('vis');
-  setTimeout(function(){document.getElementById('vstat').classList.remove('vis')},3000);
-}
-function toggleVoice(){
-  vcOn=!vcOn;
-  document.getElementById('bVc').textContent=vcOn?'🔊':'🔇';
-  if(vcOn)document.getElementById('bVc').classList.add('act');
-  else document.getElementById('bVc').classList.remove('act');
-  if(vcOn)speak('Sesli asistan aktif');
-}
-
-// ===== NIGHT MODE =====
-function checkNight(){
-  var h=new Date().getHours();
-  nightOn=h<6||h>=21;
-  document.body.style.filter=nightOn?'brightness(0.7)':'';
-}
-
-// ===== SPEED LIMIT ALERT =====
-function checkAlert(){
-  if(!limOn){stopAlrt();return;}
-  var eff=spLim;
-  if(dispSpd>eff){if(!isAlrt){isAlrt=true;startAlrt();}alrtSnd();
-    if(vcOn&&!lastLimVst){speak('Hız sınırı aşıldı!');lastLimVst=true;}
-  }else if(isAlrt){stopAlrt();lastLimVst=false;}
-}
-function startAlrt(){
-  document.body.classList.add('af');document.getElementById('apill').classList.add('vis');
-  document.getElementById('spVal').classList.add('alr');
-  if(navigator.vibrate)navigator.vibrate([200,100,200,100,200]);alrtSnd();
-  if(!window._ai)window._ai=setInterval(function(){if(isAlrt){alrtSnd();if(navigator.vibrate)navigator.vibrate([200,100,200]);}},2000);
-}
-function stopAlrt(){
-  isAlrt=false;document.body.classList.remove('af');
-  document.getElementById('apill').classList.remove('vis');document.getElementById('spVal').classList.remove('alr');
-  if(navigator.vibrate)navigator.vibrate(0);
-  if(window._ai){clearInterval(window._ai);window._ai=null;}
-}
-
-// ===== DRIVE MODES =====
-function setDriveMode(m){
-  dMode=m;
-  document.getElementById('mCity').classList.toggle('act',m==='city');
-  document.getElementById('mHwy').classList.toggle('act',m==='highway');
-  document.getElementById('mSpt').classList.toggle('act',m==='sport');
-  spLim=mLims[m];
-  document.getElementById('limp').value=spLim;
-  if(vcOn)speak(m==='city'?'Şehir modu':m==='highway'?'Otoyol modu':'Spor modu');
-}
-
-// ===== ECO =====
-function updateEco(){
-  var now=Date.now();if(now-lastTmE<500)return;
-  var dt=(now-lastTmE)/1000,dv=curSpd-lastSpdE;
-  var accel=Math.abs(dv/dt),decel=dv<0?Math.abs(dv/dt):0;
-  var pen=0;
-  if(accel>2)pen+=10;if(accel>4)pen+=15;
-  if(decel>3)pen+=8;if(decel>6)pen+=12;
-  if(accel<.5&&decel<.5&&curSpd>5)pen-=3;
-  ecoS=Math.max(0,Math.min(100,ecoS-pen));
-  if(pen<=0)ecoS=Math.min(100,ecoS+.5);
-  lastSpdE=curSpd;lastTmE=now;
-  var gr=ecoS>=90?'A':ecoS>=75?'B':ecoS>=60?'C':ecoS>=40?'D':ecoS>=20?'E':'F';
-  var co={A:'#00e676',B:'#00c8ff',C:'#ffc400',D:'#ff9800',E:'#ff6e40',F:'#ff1744'};
-  var ds={A:'Mükemmel',B:'İyi',C:'Orta',D:'Geliştirilebilir',E:'Zorlu',F:'Agresif'};
-  document.getElementById('ecoG').textContent=gr;
-  document.getElementById('ecoG').style.color=co[gr];
-  document.getElementById('ecoD').textContent=ds[gr];
-}
-
-// ===== RPM ESTIMATION =====
-function updateRPM(){
-  var base={city:1200,highway:2000,sport:3000};
-  var ratio=Math.min(curSpd/(dMode==='city'?60:dMode==='highway'?140:250),1);
-  estRPM=base[dMode]+ratio*(dMode==='city'?1300:dMode==='highway'?1500:4000);
-  estRPM=Math.max(800,Math.min(8000,estRPM));
-  document.getElementById('tchV').textContent=(estRPM/1000).toFixed(1);
-}
-
-// ===== WEATHER =====
-function fetchWeather(){
-  if(!myLat)return;
-  var lat=myLat,lon=myLon;
-  fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current_weather=true&timezone=auto')
-  .then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(d){
-    wData=d.current_weather;
-    var wc=wData.weathercode;
-    var icons={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'⛈️',71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',95:'⛈️',96:'⛈️'};
-    var descs={0:'Açık',1:'Az bulutlu',2:'Parçalı bulutlu',3:'Bulutlu',45:'Sisli',48:'Sisli',51:'Hafif yağmur',53:'Yağmurlu',55:'Şiddetli yağmur',61:'Yağmurlu',63:'Yağmurlu',65:'Sağanak',71:'Hafif kar',73:'Karlı',75:'Yoğun kar',80:'Sağanak',95:'Gök gürültülü fırtına',96:'Dolu'};
-    document.getElementById('wIco').textContent=icons[wc]||'🌡️';
-    document.getElementById('wTmp').textContent=Math.round(wData.temperature)+'°C';
-    document.getElementById('wDsc').textContent=descs[wc]||'Bilinmiyor';
-    var bad=[45,48,51,53,55,61,63,65,71,73,75,80,95,96];
-    if(bad.indexOf(wc)>=0){
-      document.getElementById('wDsc').textContent+=' ⚠️';
-      document.getElementById('wDsc').style.color='#ff9800';
-      if(vcOn)speak('Dikkat! Kötü hava koşulları: '+(descs[wc]||''));
-    }
-  })
-  .catch(function(){document.getElementById('wDsc').textContent='Hata';});
-}
-
-// ===== FUEL =====
-function fetchFuel(){
-  if(!myLat)return;
-  var lat=myLat,lon=myLon;
-  var q='[out:json][timeout:15];(node["amenity"="fuel"](around:5000,'+lat+','+lon+');node["amenity"="fuel"]["brand"](around:5000,'+lat+','+lon+'););out body qt;';
-  fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q))
-  .then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(d){
-    fStations=[];
-    fuelLoaded=true;
-    if(d.elements){
-      for(var i=0;i<d.elements.length;i++){
-        var el=d.elements[i];
-        var dist=haversine(lat,lon,el.lat,el.lon)*1000;
-        var name=el.tags?(el.tags.name||el.tags.brand||el.tags.operator||'İstasyon'):'İstasyon';
-        fStations.push({lat:el.lat,lon:el.lon,dist:dist,name:name});
-      }
-      fStations.sort(function(a,b){return a.dist-b.dist;});
-    }
-    updateFuelStrip();
-    checkFuelWarn();
-  })
-  .catch(function(){
-    fuelLoaded=true;
-    document.getElementById('fDsc').textContent='Bağlantı hatası';
-    document.getElementById('fNrst').textContent='⚠️';
-  });
-}
-
-function updateFuelStrip(){
-  if(!fuelLoaded)return;
-  if(fStations.length===0){
-    document.getElementById('fNrst').textContent='0';
-    document.getElementById('fDsc').textContent='5km içinde yok';
-    return;
-  }
-  // Find nearest non-passed station
-  var nearest=null;
-  for(var i=0;i<fStations.length;i++){
-    var sid=fStations[i].lat+'_'+fStations[i].lon;
-    if(!passedStations.has(sid)){nearest=fStations[i];break;}
-  }
-  if(!nearest){
-    document.getElementById('fNrst').textContent='✓';
-    document.getElementById('fDsc').textContent='Geçildi';
-    return;
-  }
-  var nd=nearest.dist;
-  if(nd>2000){
-    document.getElementById('fNrst').textContent=(nd/1000).toFixed(1)+'km';
-    document.getElementById('fDsc').textContent=nearest.name;
-  }else if(nd<=50){
-    document.getElementById('fNrst').textContent='ULAŞILDI';
-    document.getElementById('fDsc').textContent=nearest.name;
-  }else{
-    document.getElementById('fNrst').textContent=nd<1000?Math.round(nd)+'m':(nd/1000).toFixed(1)+'km';
-    document.getElementById('fDsc').textContent=nearest.name;
-  }
-}
-
-// ===== EMERGENCY =====
-function handleEmergency(){if(confirm('Acil durum! 112 aranacak mı?'))window.location.href='tel:112';}
-
-// ===== PiP =====
-function togglePip(){
-  pipOn=!pipOn;
-  document.body.classList.toggle('pipm',pipOn);
-  document.getElementById('pbtn').textContent=pipOn?'🔲':'🔳';
-}
-
-// ===== REPORT =====
-function toggleReport(){
-  var m=document.getElementById('rmod');
-  if(!m.classList.contains('vis')){
-    var dur=drvStart?Date.now()-drvStart:0;
-    var mins=Math.floor(dur/60000),hrs=Math.floor(mins/60);
-    var tS=hrs>0?hrs+'sa '+mins%60+'dk':mins+'dk';
-    var gr=ecoS>=90?'A':ecoS>=75?'B':ecoS>=60?'C':ecoS>=40?'D':ecoS>=20?'E':'F';
-    var mS=Math.round(maxSpdV);
-    var aS=Math.round(spSum/Math.max(1,spCnt));
-    var dS=totDist.toFixed(2);
-    document.getElementById('rbody').innerHTML=
-      '<div class="rsec"><h3>Genel</h3>'+
-      '<div class="rrow"><span class="rl">Toplam Mesafe</span><span class="rv">'+dS+' km</span></div>'+
-      '<div class="rrow"><span class="rl">Sürüş Süresi</span><span class="rv">'+tS+'</span></div>'+
-      '<div class="rrow"><span class="rl">Maks Hız</span><span class="rv">'+mS+' km/s</span></div>'+
-      '<div class="rrow"><span class="rl">Ort Hız</span><span class="rv">'+aS+' km/s</span></div></div>'+
-      '<div class="rsec"><h3>Eco ve Güvenlik</h3>'+
-      '<div class="rrow"><span class="rl">Eco Skor</span><span class="rv">'+gr+' ('+Math.round(ecoS)+'/100)</span></div>'+
-      '<div class="rrow"><span class="rl">Kamera Uyarıları</span><span class="rv">'+cams.filter(function(c){return c.dist<800}).length+'</span></div></div>'+
-      '<div class="rsec"><h3>Hava</h3>'+
-      '<div class="rrow"><span class="rl">Durum</span><span class="rv">'+(wData?document.getElementById('wDsc').textContent:'N/A')+'</span></div>'+
-      '<div class="rrow"><span class="rl">Sıcaklık</span><span class="rv">'+(wData?Math.round(wData.temperature)+'°C':'N/A')+'</span></div>'+
-      '<div class="rrow"><span class="rl">Rüzgar</span><span class="rv">'+(wData?wData.windspeed+' km/s':'N/A')+'</span></div></div>';
-  }
-  m.classList.toggle('vis');
-}
-
-// ===== THEMES =====
-// Theme selection removed — default theme only
-
-
-// ===== MAP =====
-function toggleMap(){
-  var o=document.getElementById('mover');
-  if(!o.classList.contains('vis')&&myLat){
-    var url='https://www.openstreetmap.org/export/embed.html?bbox='+(myLon-.06)+','+(myLat-.04)+','+(myLon+.06)+','+(myLat+.04)+'&layer=mapnik&marker='+myLat+','+myLon;
-    if(cams.length>0)for(var i=0;i<Math.min(10,cams.length);i++)url+='&marker='+cams[i].lat+','+cams[i].lon;
-    if(fStations.length>0)for(var j=0;j<Math.min(5,fStations.length);j++)url+='&marker='+fStations[j].lat+','+fStations[j].lon;
-    document.getElementById('mframe').src=url;
-  }
-  o.classList.toggle('vis');
-}
-
-// ===== CAMERA SYSTEM =====
-var camFI2=null;
-function fetchCams(lat,lon){
-  // Comprehensive camera query - all types within 5km
-  var q='[out:json][timeout:20];('
-    // Speed cameras
-    +'node["highway"="speed_camera"](around:5000,'+lat+','+lon+');'
-    +'node["enforcement"="maxspeed"](around:5000,'+lat+','+lon+');'
-    // Red light cameras
-    +'node["enforcement"="traffic_signals"](around:5000,'+lat+','+lon+');'
-    +'node["highway"="speed_camera"]["camera_type"="red_light"](around:5000,'+lat+','+lon+');'
-    +'node["highway"="traffic_signals"]["traffic_signals"="camera"](around:5000,'+lat+','+lon+');'
-    // Mobile/speed trap cameras
-    +'node["enforcement"="maxspeed"]["camera_type"="mobile"](around:5000,'+lat+','+lon+');'
-    +'node["enforcement"="maxspeed"]["camera_type"="mobile_camera"](around:5000,'+lat+','+lon+');'
-    +'node["highway"="speed_camera"]["camera_type"="mobile"](around:5000,'+lat+','+lon+');'
-    // Fixed cameras
-    +'node["enforcement"="maxspeed"]["camera_type"="fixed"](around:5000,'+lat+','+lon+');'
-    +'node["highway"="speed_camera"]["camera_type"="fixed"](around:5000,'+lat+','+lon+');'
-    // Surveillance cameras on roads
-    +'node["man_made"="surveillance"]["surveillance:type"="camera"](around:3000,'+lat+','+lon+');'
-    +'node["man_made"="surveillance"]["surveillance"="public"](around:3000,'+lat+','+lon+');'
-    // Average speed / distance cameras (section control)
-    +'node["highway"="speed_camera"]["camera_type"="section"](around:5000,'+lat+','+lon+');'
-    +'node["enforcement"="maxspeed"]["camera_type"="section"](around:5000,'+lat+','+lon+');'
-    +'node["enforcement"="maxspeed"]["enforcement"="section_control"](around:5000,'+lat+','+lon+');'
-    // City entrance cameras
-    +'node["highway"="speed_camera"]["camera_type"="entrance"](around:5000,'+lat+','+lon+');'
-    +'node["enforcement"="maxspeed"]["camera_type"="entrance"](around:5000,'+lat+','+lon+');'
-    // Any node with enforcement tag
-    +'node["enforcement"](around:5000,'+lat+','+lon+');'
-    // Traffic signals with camera indication
-    +'node["highway"="traffic_signals"]["camera"="yes"](around:5000,'+lat+','+lon+');'
-    // Way-based speed cameras (some are mapped as ways)
-    +'way["highway"="speed_camera"](around:5000,'+lat+','+lon+');'
-    +');out body qt center;';
-  fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q))
-  .then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(d){
-    var seen=new Set();
-    cams=[];
-    if(d.elements){
-      for(var i=0;i<d.elements.length;i++){
-        var el=d.elements[i];
-        var elat=el.lat||el.center?.lat||0;
-        var elon=el.lon||el.center?.lon||0;
-        if(!elat||!elon)continue;
-        var key=elat.toFixed(5)+'_'+elon.toFixed(5);
-        if(seen.has(key))continue;
-        seen.add(key);
-        var dist=haversine(lat,lon,elat,elon)*1000;
-        var brg=getBrg(lat,lon,elat,elon);
-        var tp='Sabit Kamera',ic='📸',extra='';
-        if(el.tags){
-          var ct=el.tags.camera_type||el.tags.enforcement||'';
-          var source=el.tags.source||'';
-          // Determine type from tags
-          if(ct==='mobile'||ct==='mobile_camera'||ct==='trailer'){tp='Seyyar Kamera';ic='🚔';}
-          else if(ct==='red_light'||ct==='traffic_signals'||el.tags.enforcement==='traffic_signals'){tp='Kırmızı Işık Kamera';ic='🚦';}
-          else if(ct==='section'||el.tags.enforcement==='section_control'||ct==='average'){tp='Ortalama Hız (Mesafe)';ic='📏';}
-          else if(ct==='entrance'||ct==='city_entrance'){tp='Şehir Girişi Kamera';ic='🏛️';}
-          else if(ct==='fixed'){tp='Sabit Hız Kamera';ic='📸';}
-          else if(el.tags.man_made==='surveillance'){tp='Gözlem Kamera';ic='👁️';}
-          else if(el.tags.highway==='speed_camera'){tp='Hız Kamera';ic='📸';}
-          else if(el.tags.enforcement==='maxspeed'){tp='Hız Kamera';ic='📸';}
-          else if(el.tags.enforcement){tp=el.tags.enforcement.charAt(0).toUpperCase()+el.tags.enforcement.slice(1)+' Kamera';ic='📷';}
-          // Extra info
-          var ms=el.tags.maxspeed||el.tags['maxspeed:forward']||el.tags['maxspeed:backward']||'';
-          if(ms)extra+=ms+' ';
-          var road=el.tags['addr:street']||el.tags.name||el.tags.ref||el.tags.description||'';
-          if(road)extra+=road+' ';
-          if(el.tags.camera_direction)extra+='Yön:'+el.tags.camera_direction+' ';
-          if(el.tags['camera:direction'])extra+='Yön:'+el.tags['camera:direction']+' ';
-          if(el.tags.operator)extra+='('+el.tags.operator+') ';
-          if(source.indexOf('mobile')>=0||source.indexOf('radar')>=0){tp='Seyyar Kamera';ic='🚔';}
-        }
-        cams.push({lat:elat,lon:elon,dist:dist,brg:brg,type:tp,icon:ic,road:extra.trim(),maxSpeed:el.tags?(el.tags.maxspeed||''):'',id:key});
-      }
-      cams.sort(function(a,b){return a.dist-b.dist;});
-    }
-    renderCamList();
-  })
-  .catch(function(){
-    var list=document.getElementById('clist');
-    if(list&&cams.length===0)list.innerHTML='<div class="cemp">Kamera verisi alınamadı ⚠️</div>';
-  });
-}
-
-function renderCamList(){
-  var list=document.getElementById('clist'),cnt=document.getElementById('ccnt'),badge=document.getElementById('ccntBadge');
-  cnt.textContent=cams.length;
-  if(badge)badge.textContent=cams.length;
-  var nr=cams.filter(function(c){return c.dist<1000}).length,vn=cams.filter(function(c){return c.dist<300}).length;
-  cnt.className='cc '+(vn>0?'dg':nr>0?'dg':'sf');
-  if(badge)badge.className='cc '+(vn>0?'dg':nr>0?'dg':'sf');
-  if(!cams.length){list.innerHTML='<div class="cemp">Yakınınızda kamera yok ✓</div>';return;}
-  var h='';
-  for(var i=0;i<Math.min(10,cams.length);i++){
-    var c=cams[i];
-    var cls=c.dist<300?'vn':c.dist<1000?'nr':'';
-    var dCls=c.dist<300?'vn':c.dist<1000?'nr':'fr';
-    var dTxt=c.dist<1000?Math.round(c.dist)+'m':(c.dist/1000).toFixed(1)+'km';
-    var dir=c.brg?getDir(c.brg):'';
-    var info=c.type;
-    if(c.maxSpeed)info+=' • '+c.maxSpeed;
-    if(c.road)info+=' • '+c.road;
-    h+='<div class="citem '+cls+'"><span class="cic">'+c.icon+'</span><div class="cinf"><div class="ctp">'+c.type+'</div><div class="crd">'+(c.road||dir||'')+' '+(c.maxSpeed?c.maxSpeed:'')+'</div></div><div class="cdst '+dCls+'">'+dTxt+'</div></div>';
-  }
-  // Show type summary
-  var types={};
-  for(var j=0;j<cams.length;j++){var t=cams[j].type;if(!types[t])types[t]=0;types[t]++;}
-  var sumHtml='<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.08);font-size:10px;color:rgba(255,255,255,.4);display:flex;gap:8px;flex-wrap:wrap">';
-  for(var tk in types){sumHtml+='<span>'+cams.filter(function(c){return c.type===tk})[0].icon+' '+tk+': '+types[tk]+'</span>';}
-  sumHtml+='</div>';
-  list.innerHTML=h+sumHtml;
-}
-
-var camPopTimeout=null;
-function showCamList(){
-  var list=document.getElementById('clist');
-  var cpan=document.getElementById('cpan');
-  if(list.style.display==='none'){list.style.display='flex';cpan.style.display='block';}
-  else{list.style.display='none';}
-}
-
-function showFuelDetail(){
-  if(!fuelLoaded||fStations.length===0)return;
-  // Toggle fuel popup panel visibility
-  var fpop=document.getElementById('fuelpop');
-  if(fpop.className.indexOf('vis')>=0&&fpop.style.display!=='none'){
-    fpop.className='campop';
-  }else{
-    // Build a detailed list in the popup
-    var nearest=null;
-    for(var i=0;i<fStations.length;i++){var sid=fStations[i].lat+'_'+fStations[i].lon;if(!passedStations.has(sid)){nearest=fStations[i];break;}}
-    if(!nearest)return;
-    var nd=nearest.dist;
-    document.getElementById('fuelpop-title').textContent=nearest.name||'İstasyon';
-    document.getElementById('fuelpop-dist').textContent=nd<1000?Math.round(nd)+'m':(nd/1000).toFixed(1)+'km';
-    document.getElementById('fuelpop-dist').style.color='#00c8ff';
-    var bodyHtml='<div class="crd">'+nearest.name;
-    if(passedStations.has(nearest.lat+'_'+nearest.lon+'reached'))bodyHtml+=' ✓ ULAŞILDI';
-    bodyHtml+='</div>';
-    // Show up to 3 more nearby stations
-    var cnt=0;
-    for(var j=0;j<fStations.length&&cnt<3;j++){
-      var sid2=fStations[j].lat+'_'+fStations[j].lon;
-      if(passedStations.has(sid2)||fStations[j]===nearest)continue;
-      var d2=fStations[j].dist;
-      if(d2>5000)continue;
-      bodyHtml+='<div class="crd" style="margin-top:4px;opacity:.6">⛽ '+(fStations[j].name||'İstasyon')+' – '+(d2<1000?Math.round(d2)+'m':(d2/1000).toFixed(1)+'km')+'</div>';
-      cnt++;
-    }
-    document.getElementById('fuelpop-body').innerHTML=bodyHtml;
-    fpop.className='campop vis';
-  }
-}
-function checkCamWarn(){
-  var ban=document.getElementById('cban');
-  var popup=document.getElementById('campop');
-  if(cams.length===0){camWarnOn=false;ban.className='cb';if(camPopTimeout===null){camPopTimeout=setTimeout(function(){popup.className='campop';camPopTimeout=null;},1000);}return;}
-  // Find cameras within 1km
-  var nearCams=cams.filter(function(c){return c.dist<1000;});
-  camWarnOn=nearCams.length>0;
-  if(nearCams.length>0){
-    // Show popup with ALL nearby cameras
-    var nearest=nearCams[0];
-    var nd=nearest.dist;
-    var distTxt=nd<1000?Math.round(nd)+'m':'--';
-    document.getElementById('campop-title').textContent=nearest.type;
-    document.getElementById('campop-dist').textContent=distTxt;
-    document.getElementById('campop-dist').className='campop-dst'+(nd<300?' vn':'');
-    // Build body with all nearby cameras
-    var bodyHtml='';
-    for(var i=0;i<Math.min(5,nearCams.length);i++){
-      var c=nearCams[i];
-      var cls=c.dist<300?'color:#ff1744;font-weight:700':c.dist<500?'color:#ff9800':'color:rgba(255,255,255,.5)';
-      bodyHtml+='<div class="crd" style="'+cls+';margin-top:3px;display:flex;align-items:center;gap:6px">';
-      bodyHtml+='<span>'+c.icon+'</span>';
-      bodyHtml+='<span style="flex:1">'+c.type+(c.maxSpeed?' • '+c.maxSpeed:'')+(c.road?' • '+c.road:'')+'</span>';
-      bodyHtml+='<span style="font-weight:700;min-width:40px;text-align:right">'+(c.dist<1000?Math.round(c.dist)+'m':'')+'</span>';
-      bodyHtml+='</div>';
-    }
-    if(nearCams.length>5)bodyHtml+='<div class="crd" style="opacity:.4">+ '+(nearCams.length-5)+' kamera daha</div>';
-    document.getElementById('campop-body').innerHTML=bodyHtml;
-    
-    if(nd<300){
-      popup.className='campop vis dg';
-      ban.className='cb vis dg';ban.textContent='📸 TEHLİKE! KAMERA '+Math.round(nd)+'m';
-      // Warn for each close camera that hasn't been warned yet
-      for(var j=0;j<nearCams.length;j++){
-        if(nearCams[j].dist<500){
-          var cid=nearCams[j].id;
-          if(cid&&!warnedCams.has(cid)){warnedCams.add(cid);camSnd();if(navigator.vibrate)navigator.vibrate([100,50,100,50,100]);if(vcOn){speak(nearCams[j].type+' '+Math.round(nearCams[j].dist)+' metre ileride!');break;}}
-        }
-      }
-    }else{
-      popup.className='campop vis';
-      ban.className='cb';
-      // Warn approaching cameras
-      for(var k=0;k<nearCams.length;k++){
-        if(nearCams[k].dist<700){
-          var cid2=nearCams[k].id;
-          if(cid2&&!warnedCams.has(cid2)){warnedCams.add(cid2);if(vcOn){speak(nearCams[k].type+' yaklaşıyor');break;}}
-        }
-      }
-    }
-    clearTimeout(camPopTimeout);camPopTimeout=null;
-  }else{
-    // No cameras within 1km, hide after 3s
-    ban.className='cb';
-    if(camPopTimeout===null){
-      camPopTimeout=setTimeout(function(){popup.className='campop';camPopTimeout=null;},3000);
-    }
-  }
-}
-
-function checkFuelWarn(){
-  var fban=document.getElementById('fban');
-  var fpop=document.getElementById('fuelpop');
-  if(fStations.length===0){
-    if(fuelLoaded){fban.className='cb';fpop.className='campop';}
-    return;
-  }
-  // Find nearest station that hasn't been passed
-  var nearest=null;
-  for(var i=0;i<fStations.length;i++){
-    var sid=fStations[i].lat+'_'+fStations[i].lon;
-    if(!passedStations.has(sid)){nearest=fStations[i];break;}
-  }
-  if(!nearest){
-    // All known stations passed, hide fuel display
-    fban.className='cb';
-    fpop.className='campop';
-    activeFuelStation=null;
-    return;
-  }
-  var nd=nearest.dist;
-  var sid=nearest.lat+'_'+nearest.lon;
-  // Hide popup if beyond 2km (banner already handled in updateFuelStrip)
-  if(nd>2000){
-    fban.className='cb';
-    fpop.className='campop';
-    activeFuelStation=null;
-    return;
-  }
-  // Update popup panel
-  var distTxt=nd<1000?Math.round(nd)+'m':(nd/1000).toFixed(1)+'km';
-  var distCls=nd<250?'vn':'';
-  document.getElementById('fuelpop-title').textContent=nearest.name||'İstasyon';
-  document.getElementById('fuelpop-dist').textContent=distTxt;
-  document.getElementById('fuelpop-dist').className='campop-dst'+(distCls?' vn':'');
-  if(nd<=50){
-    document.getElementById('fuelpop-dist').textContent='ULAŞILDI';
-    document.getElementById('fuelpop-dist').style.color='#00e676';
-  }else{
-    document.getElementById('fuelpop-dist').style.color=nd<250?'#00c8ff':'#00c8ff';
-  }
-  var bodyHtml='<div class="crd">'+(nearest.name||'İstasyon');
-  bodyHtml+='</div>';
-  document.getElementById('fuelpop-body').innerHTML=bodyHtml;
-  activeFuelStation=sid;
-  // Show popup when within 2km
-  if(nd<=2000){
-    if(nd<250){
-      fpop.className='campop vis'+(nd<=50?' dg':'');
-    }else{
-      fpop.className='campop vis';
-    }
-  }
-  // 50m or less = reached
-  if(nd<=50){
-    if(!passedStations.has(sid+'reached')){
-      passedStations.add(sid+'reached');
-      fban.className='cb vis';fban.textContent='⛽ İSTASYONA ULAŞILDI!';
-      if(vcOn){speak('İstasyona ulaşıldı!');}
-    }
-    return;
-  }
-  // Passed: was reached, now 50-150m away → show briefly then hide
-  if(nd>50&&nd<=150&&passedStations.has(sid+'reached')&&!passedStations.has(sid)){
-    fban.className='cb vis';fban.textContent='⛽ İSTASYON GEÇİLDİ';
-    fpop.className='campop vis';
-    passedStations.add(sid);
-    if(fuelPopTimeout===null){
-      fuelPopTimeout=setTimeout(function(){
-        fpop.className='campop';fban.className='cb';fuelPopTimeout=null;activeFuelStation=null;
-      },3000);
-    }
-    return;
-  }
-  // Beyond 150m after reaching → fully hide
-  if(nd>150&&passedStations.has(sid+'reached')){
-    fpop.className='campop';fban.className='cb';activeFuelStation=null;return;
-  }
-  // 250m warning (new station only)
-  if(nd<250){
-    if(!warnedStations.has(sid)){
-      warnedStations.add(sid);
-      fban.className='cb vis fuelblink';fban.textContent='⛽ YAKIT İSTASYONU '+Math.round(nd)+'m';
-      fuelSnd();
-      if(vcOn){speak('Yakıt istasyonu '+Math.round(nd)+' metre ileride!');}
-      clearTimeout(fuelSndTimeout);
-      fuelSndTimeout=setTimeout(function(){fban.className='cb';},3000);
-    }else{
-      fban.className='cb vis';fban.textContent='⛽ İSTASYON '+Math.round(nd)+'m';
-    }
-  }else{
-    fban.className='cb';
-  }
-}
-
-function getBrg(a,b,c,d){
-  var dL=(c-a)*Math.PI/180,dN=(d-b)*Math.PI/180;
-  var y=Math.sin(dN)*Math.cos(c*Math.PI/180);
-  var x=Math.cos(a*Math.PI/180)*Math.sin(c*Math.PI/180)-Math.sin(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.cos(dN);
-  return(Math.atan2(y,x)*180/Math.PI+360)%360;
-}
-function getDir(d){return['K','KD','D','GD','G','GB','B','KB'][Math.round(d/45)%8];}
-
-// ===== UNIT =====
-function setUnit(u){
-  unit='kmh'; // Only km/h supported
-  document.getElementById('bKmh').classList.add('act');
-  document.getElementById('spUni').textContent='KM/S';
-  document.getElementById('lulb').textContent='km/s';
-  document.getElementById('mxU').textContent='km/s';
-  document.getElementById('avU').textContent='km/s';
-  document.getElementById('dU').textContent='km';
-}
-
-// ===== LIMIT TOGGLE =====
-function toggleLimit(){
-  limOn=!limOn;
-  var btn=document.getElementById('ltbtn');
-  btn.textContent=limOn?'AÇIK':'KAPALI';
-  if(!limOn)btn.classList.add('off');else btn.classList.remove('off');
-  if(!limOn)stopAlrt();
-}
-
-// ===== LOCATION-BASED LIMIT =====
-function fetchSpLim(lat,lon){
-  var q='[out:json];way(around:80,'+lat+','+lon+')["maxspeed"];out tags;';
-  document.getElementById('atag').style.display='inline';document.getElementById('atag').textContent='...';
-  fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q))
-  .then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(d){
-    if(d.elements&&d.elements.length>0){
-      for(var i=0;i<d.elements.length;i++){
-        var el=d.elements[i];
-        if(el.tags&&el.tags.maxspeed){
-          var ms=el.tags.maxspeed;
-          if(ms.indexOf('mph')>=0){ms=parseInt(ms);if(!isNaN(ms))ms=Math.round(ms*1.60934);}
-          else if(ms==='TR:urban'||ms==='urban')ms=50;
-          else if(ms==='TR:rural'||ms==='rural')ms=90;
-          else if(ms==='TR:motorway'||ms==='motorway')ms=120;
-          else if(ms==='TR:trunk'||ms==='trunk')ms=110;
-          else if(ms==='TR:living_street'||ms==='living_street')ms=20;
-          else ms=parseInt(ms);
-          if(!isNaN(ms)&&ms>0){
-            spLim=ms;
-            document.getElementById('limp').value=spLim;
-            document.getElementById('atag').textContent='OTO ✓';
-            document.getElementById('atag').style.background='rgba(0,230,118,.15)';
-            document.getElementById('atag').style.color='#00e676';return;
-          }
-        }
-      }
-    }
-    document.getElementById('atag').textContent='OTO –';
-  })
-  .catch(function(){document.getElementById('atag').textContent='OTO ✗';});
-}
-
-// ===== GAUGE DRAWING =====
-function drawGauge(spd){
-  var w=CW,h=CH,cX=w/2,cY=h/2,R=w*.44;
-  var st=0.75*Math.PI,en=2.25*Math.PI,sw=en-st; // 270° classic arc, bottom gap
-  var maxV=260;
-  var ratio=Math.min(spd/maxV,1);
-  var na=st+ratio*sw;
-  var eff=spLim;
-  var lR=Math.min(eff/maxV,1);
-  var lA=st+lR*sw;
-  var th=ths[curTh];
-  var ac=th.cols;
-
-  ctx.clearRect(0,0,w,h);
-
-  // Background glow per theme
-  if(th.glow){
-    ctx.save();ctx.beginPath();ctx.arc(cX,cY,R+40,0,Math.PI*2);
-    var gr=ctx.createRadialGradient(cX,cY,R*.7,cX,cY,R+40);
-    gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,th.bgGlow);
-    ctx.fillStyle=gr;ctx.fill();ctx.restore();
-  }
-
-  // Chrome ring - theme colored
-  ctx.save();ctx.beginPath();ctx.arc(cX,cY,R+12,0,Math.PI*2);
-  var chrG=ctx.createLinearGradient(cX-R,cY-R,cX+R,cY+R);
-  chrG.addColorStop(0,th.chrome[0]);chrG.addColorStop(.3,th.chrome[1]);chrG.addColorStop(.5,th.chrome[2]);chrG.addColorStop(.7,th.chrome[1]);chrG.addColorStop(1,th.chrome[0]);
-  ctx.strokeStyle=chrG;ctx.lineWidth=8;ctx.stroke();
-  ctx.beginPath();ctx.arc(cX,cY,R+4,0,Math.PI*2);
-  chrG=ctx.createLinearGradient(cX-R,cY-R,cX+R,cY+R);
-  chrG.addColorStop(0,th.chromeInner[0]);chrG.addColorStop(.4,th.chromeInner[1]);chrG.addColorStop(.6,th.chromeInner[1]);chrG.addColorStop(1,th.chromeInner[0]);
-  ctx.strokeStyle=chrG;ctx.lineWidth=4;ctx.stroke();ctx.restore();
-
-  // Face - theme colored
-  ctx.save();ctx.beginPath();ctx.arc(cX,cY,R,0,Math.PI*2);
-  var fG=ctx.createRadialGradient(cX,cY-R*.3,0,cX,cY,R);
-  fG.addColorStop(0,th.face[0]);fG.addColorStop(.7,th.face[1]);fG.addColorStop(1,th.face[2]);
-  ctx.fillStyle=fG;ctx.fill();ctx.restore();
-
-  // Red zone - use theme accent color
-  var rzColor=ac[3].replace(')',',0.08)').replace('#','');
-  // Parse hex to rgba for red zone
-  var rzHex=ac[3];
-  var rzR=parseInt(rzHex.slice(1,3),16),rzG=parseInt(rzHex.slice(3,5),16),rzB=parseInt(rzHex.slice(5,7),16);
-  ctx.beginPath();ctx.arc(cX,cY,R,st+.77*sw,en);
-  ctx.strokeStyle='rgba('+rzR+','+rzG+','+rzB+',.08)';ctx.lineWidth=R*.35;ctx.stroke();
-
-  // Back arc
-  ctx.beginPath();ctx.arc(cX,cY,R,st,en);ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=6;ctx.lineCap='butt';ctx.stroke();
-
-  // Colored arc - theme colors
-  var segs=120,filled=Math.floor(ratio*segs);
-  for(var i=0;i<=filled;i++){
-    var t=i/segs,a1=st+t*sw,a2=st+(t+1/segs)*sw;
-    var ci;t<.35?ci=0:t<.6?ci=1:t<.75?ci=2:ci=3;
-    ctx.beginPath();ctx.arc(cX,cY,R,a1,a2+.005);ctx.strokeStyle=ac[ci];ctx.lineWidth=6;ctx.lineCap='butt';ctx.stroke();
-  }
-
-  // Neon glow on arc for neon/sport themes
-  if(th.glow&&filled>0){
-    ctx.save();ctx.shadowColor=ac[Math.floor(ratio*4)%4];ctx.shadowBlur=15;
-    ctx.beginPath();ctx.arc(cX,cY,R,st,na);ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=10;ctx.stroke();
-    ctx.restore();
-  }
-
-  if(limOn){
-    var lx1=cX+Math.cos(lA)*(R-24),ly1=cY+Math.sin(lA)*(R-24);
-    var lx2=cX+Math.cos(lA)*(R+10),ly2=cY+Math.sin(lA)*(R+10);
-    ctx.beginPath();ctx.moveTo(lx1,ly1);ctx.lineTo(lx2,ly2);
-    if(isAlrt){ctx.strokeStyle='rgba(255,23,68,.9)';ctx.lineWidth=3;ctx.shadowColor='#ff1744';ctx.shadowBlur=12;}
-    else{ctx.strokeStyle=ac[2];ctx.lineWidth=2;ctx.shadowColor=ac[2];ctx.shadowBlur=6;}
-    ctx.stroke();ctx.shadowBlur=0;
-  }
-
-  if(camWarnOn&&cams.length>0){
-    var nearest=cams[0];
-    var camAng=st+(nearest.dist<300?.93:.87)*sw;
-    var camR=R+22,camX=cX+Math.cos(camAng)*camR,camY=cY+Math.sin(camAng)*camR;
-    ctx.save();ctx.font='bold '+w*.06+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    if(nearest.dist<300){ctx.shadowColor='#ff1744';ctx.shadowBlur=15;ctx.fillStyle=Math.floor(Date.now()/300)%2?'#ff1744':'rgba(255,23,68,.4)';}
-    else if(nearest.dist<500){ctx.shadowColor='#ff9800';ctx.shadowBlur=12;ctx.fillStyle=Math.floor(Date.now()/500)%2?'#ff9800':'rgba(255,152,0,.5)';}
-    else{ctx.shadowColor='#ff9800';ctx.shadowBlur=8;ctx.fillStyle='rgba(255,152,0,.6)';}
-    ctx.fillText('📸',camX,camY);ctx.restore();
-  }
-
-  // Fuel station icon on gauge when within 2km
-  if(fStations.length>0){
-    var nFuel=fStations[0];
-    // Skip passed stations for gauge icon too
-    for(var fi=0;fi<fStations.length;fi++){var fsid=fStations[fi].lat+'_'+fStations[fi].lon;if(!passedStations.has(fsid)){nFuel=fStations[fi];break;}}
-    if(nFuel.dist<2000){
-      var fuelAng=st+(nFuel.dist<300?.93:.87)*sw;
-      var fuelR=R+22,fuelX=cX+Math.cos(fuelAng)*fuelR,fuelY=cY+Math.sin(fuelAng)*fuelR;
-      ctx.save();ctx.font='bold '+w*.06+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-      if(nFuel.dist<250){ctx.shadowColor='#00c8ff';ctx.shadowBlur=15;ctx.fillStyle=Math.floor(Date.now()/300)%2?'#00c8ff':'rgba(0,200,255,.3)';}
-      else{ctx.shadowColor='#00c8ff';ctx.shadowBlur=8;ctx.fillStyle='rgba(0,200,255,.6)';}
-      ctx.fillText('⛽',fuelX,fuelY);ctx.restore();
-    }
-  }
-
-  // Ticks - theme colored
-  var totalT=52,majEv=4;
-  for(var i=0;i<=totalT;i++){
-    var t=i/totalT,ang=st+t*sw;
-    var isMaj=i%majEv===0,isMid=i%(majEv/2)===0&&!isMaj;
-    var iR=isMaj?R-30:isMid?R-18:R-12,oR=R-5;
-    ctx.beginPath();ctx.moveTo(cX+Math.cos(ang)*iR,cY+Math.sin(ang)*iR);ctx.lineTo(cX+Math.cos(ang)*oR,cY+Math.sin(ang)*oR);
-    ctx.strokeStyle=isMaj?th.tickMaj:isMid?'rgba(255,255,255,.3)':th.tickMin;
-    ctx.lineWidth=isMaj?2.5:isMid?1.5:.8;ctx.lineCap='round';ctx.stroke();
-    // Neon glow on major ticks
-    if(th.glow&&isMaj){
-      ctx.save();ctx.shadowColor=ac[0];ctx.shadowBlur=6;
-      ctx.beginPath();ctx.moveTo(cX+Math.cos(ang)*iR,cY+Math.sin(ang)*iR);ctx.lineTo(cX+Math.cos(ang)*oR,cY+Math.sin(ang)*oR);
-      ctx.strokeStyle=th.tickMaj;ctx.lineWidth=2.5;ctx.stroke();ctx.restore();
-    }
-    if(isMaj){
-      var val=Math.round(t*maxV),lR2=R-44;
-      var lx=cX+Math.cos(ang)*lR2,ly=cY+Math.sin(ang)*lR2;
-      ctx.font='600 '+w*.04+'px Segoe UI,Arial';
-      ctx.fillStyle=t>=.77?th.labelRed:th.labelNorm;
-      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(val,lx,ly);
-    }
-  }
-
-  // Needle - theme width and glow
-  var nLen=R-32,nx=cX+Math.cos(na)*nLen,ny=cY+Math.sin(na)*nLen;
-  var bAng=na+Math.PI,bLen=24;
-  var bx=cX+Math.cos(bAng)*bLen,by=cY+Math.sin(bAng)*bLen;
-  var nCol;ratio<.35?nCol=ac[0]:ratio<.6?nCol=ac[1]:ratio<.75?nCol=ac[2]:nCol=ac[3];
-  ctx.save();
-  if(th.glow){ctx.shadowColor=nCol;ctx.shadowBlur=20;}
-  else{ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=8;ctx.shadowOffsetY=2;}
-  ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(nx,ny);ctx.strokeStyle=nCol;ctx.lineWidth=th.needleW;ctx.lineCap='round';ctx.stroke();
-  if(th.glow){
-    // Double glow pass for neon
-    ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(nx,ny);ctx.strokeStyle=nCol;ctx.lineWidth=th.needleW+2;ctx.globalAlpha=.3;ctx.stroke();ctx.globalAlpha=1;
-  }
-  ctx.restore();
-  ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(cX,cY);ctx.strokeStyle='rgba(200,200,210,.6)';ctx.lineWidth=4;ctx.lineCap='round';ctx.stroke();
-
-  // Center cap - theme colored
-  if(th.needleCap){
-    ctx.beginPath();ctx.arc(cX,cY,12,0,Math.PI*2);
-    var capG=ctx.createRadialGradient(cX-2,cY-2,0,cX,cY,12);
-    capG.addColorStop(0,'#bbb');capG.addColorStop(.5,'#555');capG.addColorStop(1,'#222');
-    ctx.fillStyle=capG;ctx.fill();ctx.strokeStyle='rgba(200,200,210,.4)';ctx.lineWidth=1.5;ctx.stroke();
-  }else{
-    ctx.beginPath();ctx.arc(cX,cY,8,0,Math.PI*2);
-    ctx.fillStyle=ac[0];ctx.fill();
-    if(th.glow){ctx.shadowColor=ac[0];ctx.shadowBlur=10;}
-    ctx.beginPath();ctx.arc(cX,cY,3,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.shadowBlur=0;
-  }
-  ctx.beginPath();ctx.arc(cX,cY,4,0,Math.PI*2);ctx.fillStyle=nCol;ctx.fill();
-
-  // Drive mode indicator
-  var modeCol=dMode==='city'?ac[0]:dMode==='highway'?ac[1]:ac[2];
-  ctx.font='600 '+w*.035+'px Segoe UI,Arial';ctx.fillStyle=modeCol;
-  ctx.textAlign='center';ctx.fillText(dMode==='city'?'ŞEHİR':dMode==='highway'?'OTOYOL':'SPOR',cX,cY+R*.35);
-}
-
-// ===== DISPLAY UPDATE =====
-function updateDisplay(){
-  dispSpd+=(curSpd-dispSpd)*.12;
-  var dv=dispSpd;
-  var shown=Math.round(dv);
-  document.getElementById('spVal').textContent=shown;
-  var maxV=260;
-  var ratio=Math.min(dispSpd/maxV,1);
-  var th=ths[curTh];
-  var nc;ratio<.35?nc=th.cols[0]:ratio<.6?nc=th.cols[1]:ratio<.75?nc=th.cols[2]:nc=th.cols[3];
-  document.getElementById('spVal').style.color=isAlrt?'#ff1744':nc;
-
-  if(dispSpd>maxSpdV){maxSpdV=dispSpd;document.getElementById('mxSp').textContent=Math.round(maxSpdV);}
-  spSum+=dispSpd;spCnt++;
-  document.getElementById('avSp').textContent=Math.round(spSum/spCnt);
-  document.getElementById('dist').textContent=totDist<1?(totDist*1000).toFixed(0):totDist.toFixed(1);
-
-  if(drvStart){
-    var dur=Date.now()-drvStart;
-    var mins=Math.floor(dur/60000),secs=Math.floor((dur%60000)/1000);
-    document.getElementById('dTm').textContent=mins+':'+(secs<10?'0':'')+secs;
-  }
-
-  drawGauge(dv);checkAlert();
-  updateEco();
-  updateRPM();
-  // New features - THROTTLED
-  var now=Date.now();
-  // Fine check - throttle 500ms
-  if(now-_lastFineChk>FINE_CHK_INT){checkFine();_lastFineChk=now;}
-
-  // Camera popup - respect dismiss cooldown
-  if(myLat!==null&&cams.length>0){
-    if(now-_lastCamCalc>CAM_CALC_INT){
-      _lastCamCalc=now;
-      for(var i=0;i<cams.length;i++)cams[i].dist=haversine(myLat,myLon,cams[i].lat,cams[i].lon)*1000;
-      cams.sort(function(a,b){return a.dist-b.dist;});
-      // Update info strip camera card
-      document.getElementById('camInfo').textContent=cams.length;
-      var nrstC=cams[0];
-      document.getElementById('camNearest').textContent=nrstC.dist<1000?Math.round(nrstC.dist)+'m - '+nrstC.type:(nrstC.dist/1000).toFixed(1)+'km';
-      // Only re-render list if nearest cam changed (dirty flag)
-      var newRend=cams.length+'_'+(nrstC?Math.round(nrstC.dist):'x');
-      if(newRend!==_lastCamRender){_lastCamRender=newRend;renderCamList();}
-      if(now>camDismissUntil)checkCamWarn();
-    }
-  }else{
-    document.getElementById('camInfo').textContent='0';
-    document.getElementById('camNearest').textContent='Yok';
-  }
-  // Fuel distance calc - throttle 2s
-  if(myLat!==null&&fuelLoaded){
-    if(now-_lastFuelDistCalc>FUEL_CALC_INT){
-      _lastFuelDistCalc=now;
-      if(fStations.length>0){
-        for(var j=0;j<fStations.length;j++)fStations[j].dist=haversine(myLat,myLon,fStations[j].lat,fStations[j].lon)*1000;
-        fStations.sort(function(a,b){return a.dist-b.dist;});
-      }
-      updateFuelStrip();
-      if(now>fuelDismissUntil)checkFuelWarn();
-    }
-  }
-
-  // Location-change refetch: if moved >500m from last fetch point, refetch
-  if(myLat!==null&&lastFetchLat!==null){
-    var fetchDist=haversine(myLat,myLon,lastFetchLat,lastFetchLon)*1000;
-    if(fetchDist>FETCH_DIST_THRESH){
-      lastFetchLat=myLat;lastFetchLon=myLon;
-      fetchCams(myLat,myLon);
-      fetchFuel();
-    }
-  }
-}
-
-// ===== RESET =====
-function resetAll(){
-  maxSpdV=0;spSum=0;spCnt=0;totDist=0;lastPos=null;lastTm=null;
-  stopAlrt();curSpd=0;dispSpd=0;ecoS=100;drvStart=null;
-  fatigueStart=Date.now();fatigueWarned=false;
-  document.getElementById('mxSp').textContent='0';document.getElementById('avSp').textContent='0';
-  document.getElementById('dist').textContent='0';document.getElementById('spVal').textContent='0';
-  document.getElementById('dTm').textContent='0:00';document.getElementById('ecoG').textContent='A';
-  document.getElementById('fineBan').classList.remove('vis');
-}
-
-// ===== GPS =====
-function startGPS(){
-  if(gpsOn)return;
-  if(!navigator.geolocation){showGPSError('GPS desteklenmiyor');startSim();return;}
-  var opt={enableHighAccuracy:true,maximumAge:5000,timeout:15000};
-  updStat('y','Konum alınıyor...');
-  
-  // Try getCurrentPosition first for quick feedback
-  navigator.geolocation.getCurrentPosition(
-    function(pos){
-      gpsOn=true;updStat('g','GPS aktif');
-      myLat=pos.coords.latitude;myLon=pos.coords.longitude;
-      if(pos.coords.heading)myHdg=pos.coords.heading;
-      if(!drvStart)drvStart=Date.now();
-      if(pos.coords.speed!==null&&pos.coords.speed>=0)curSpd=pos.coords.speed*3.6;
-      
-      // Immediately fetch cameras and fuel
-      lastFetchLat=myLat;lastFetchLon=myLon;
-      fetchCams(myLat,myLon);
-      fetchSpLim(myLat,myLon);
-      if(!wData){fetchWeather();fetchFuel();}
-      // Start periodic fuel refresh
-      if(!fuelFI){fuelFI=setInterval(function(){if(myLat!==null){fetchFuel();lastFetchLat=myLat;lastFetchLon=myLon;}},90000);}
-      
-      // Then start watchPosition for continuous updates
-      watchId=navigator.geolocation.watchPosition(
-        function(pos2){
-          gpsOn=true;updStat('g','GPS aktif');
-          myLat=pos2.coords.latitude;myLon=pos2.coords.longitude;
-          if(pos2.coords.heading)myHdg=pos2.coords.heading;
-          if(!drvStart)drvStart=Date.now();
-          if(pos2.coords.speed!==null&&pos2.coords.speed>=0)curSpd=pos2.coords.speed*3.6;
-          else if(lastPos&&lastTm){
-            var d=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos2.coords.latitude,pos2.coords.longitude);
-            var dt=(pos2.timestamp-lastTm)/1000;if(dt>0)curSpd=(d/dt)*3.6;
-          }
-          if(lastPos)totDist+=haversine(lastPos.coords.latitude,lastPos.coords.longitude,pos2.coords.latitude,pos2.coords.longitude);
-          lastPos=pos2;lastTm=pos2.timestamp;
-          // Update altitude from GPS
-          if(pos2.coords.altitude!==null)myAlt=pos2.coords.altitude;
-          // Periodic camera & limit refresh
-          if(!camFI){
-            camFI=setInterval(function(){if(myLat!==null){fetchCams(myLat,myLon);lastFetchLat=myLat;lastFetchLon=myLon;}},60000);
-          }
-          if(!limChkTO&&limOn){
-            limChkTO=setTimeout(function(){fetchSpLim(myLat,myLon);limChkTO=setTimeout(function(){limChkTO=null;},30000);},30000);
-          }
-        },
-        function(err){
-          // WatchPosition error - but we already got initial position, keep GPS on
-          if(gpsOn){updStat('y','GPS sinyal zayıf');}
-          else{showGPSError('GPS hatası: '+err.message);startSim();}
-        },
-        opt
-      );
-    },
-    function(err){
-      // getCurrentPosition failed
-      var msg='GPS hatası';
-      if(err.code===1)msg='Konum izni reddedildi';
-      else if(err.code===2)msg='Konum kullanılamıyor';
-      else if(err.code===3)msg='Konum zaman aşımı';
-      showGPSError(msg);
-      startSim();
-    },
-    opt
-  );
-  
-  // Fallback timeout - if no GPS in 8 seconds, start simulation
-  setTimeout(function(){
-    if(!gpsOn&&!simOn){showGPSError('GPS zaman aşımı – simülasyon');startSim();}
-  },8000);
-}
-
-function showGPSError(msg){
-  updStat('r',msg);
-  var wbx=document.getElementById('wbx');
-  if(wbx){wbx.textContent=msg+' – simülasyon modu';wbx.style.display='block';}
-}
-
-function haversine(a,b,c,d){
-  var R=6371,dL=(c-a)*Math.PI/180,dN=(d-b)*Math.PI/180;
-  var x=Math.sin(dL/2)*Math.sin(dL/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dN/2)*Math.sin(dN/2);
-  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-}
-function updStat(c,t){document.getElementById('stat').innerHTML='<span class="dot '+c+'"></span> '+t;}
-
-// ===== SIMULATION =====
-function startSim(){
-  simOn=true;updStat('y','Simülasyon');
-  myLat=41.008;myLon=28.978;drvStart=Date.now();
-  var ss=0,tgt=80,ph='accel';
-  setInterval(function(){
-    if(ph==='accel'){ss+=Math.random()*4;if(ss>=tgt)ph='cruise';}
-    else if(ph==='cruise'){ss+=(Math.random()-.5)*3;if(Math.random()<.02){tgt=30+Math.random()*170;ph='change';}}
-    else if(ph==='change'){ss+=(tgt-ss)*.05+(Math.random()-.5);if(Math.abs(ss-tgt)<5)ph='cruise';}
-    ss=Math.max(0,Math.min(ss,250));curSpd=ss;totDist+=ss/3600;
-    myLon+=ss/3600*.0005;myLat+=Math.random()*.00005-.000025;
-  },500);
-  // Fetch cameras and fuel for Istanbul area (plenty of data there)
-  lastFetchLat=myLat;lastFetchLon=myLon;
-  setTimeout(function(){fetchCams(myLat,myLon);fetchFuel();},500);
-  camFI=setInterval(function(){if(myLat){fetchCams(myLat,myLon);lastFetchLat=myLat;lastFetchLon=myLon;}},60000);
-  fuelFI=setInterval(function(){if(myLat){fetchFuel();lastFetchLat=myLat;lastFetchLon=myLon;}},90000);
-  setTimeout(function(){fetchWeather();},2000);
-}
-
-// ===== SWIPE DISMISS =====
-function setupSwipeDismiss(el,onDismiss){
-  if(!el)return null;
-  var startX=0,startY=0,dx=0,swiping=false;
-  el.addEventListener('touchstart',function(e){
-    startX=e.touches[0].clientX;startY=e.touches[0].clientY;dx=0;swiping=true;
-    el.style.transition='none';
-  },{passive:true});
-  el.addEventListener('touchmove',function(e){
-    if(!swiping)return;
-    dx=e.touches[0].clientX-startX;
-    var dy=Math.abs(e.touches[0].clientY-startY);
-    if(dy>Math.abs(dx)&&Math.abs(dx)<10)return; // vertical scroll
-    el.style.transform='translateX('+dx+'px)';
-    el.style.opacity=Math.max(0.2,1-Math.abs(dx)/200);
-  },{passive:true});
-  el.addEventListener('touchend',function(){
-    if(!swiping)return;swiping=false;
-    el.style.transition='transform .3s ease,opacity .3s ease';
-    if(Math.abs(dx)>80){
-      // Dismissed
-      el.style.transform='translateX('+(dx>0?'110%':'-110%')+')';
-      el.style.opacity='0';
-      setTimeout(function(){if(onDismiss)onDismiss();el.style.transform='';el.style.opacity='';},350);
-    }else{
-      // Bounce back
-      el.style.transform='';el.style.opacity='';
-    }
-  },{passive:true});
-  // Mouse support for desktop
-  el.addEventListener('mousedown',function(e){
-    startX=e.clientX;startY=e.clientY;dx=0;swiping=true;
-    el.style.transition='none';e.preventDefault();
-  });
-  el.addEventListener('mousemove',function(e){
-    if(!swiping)return;
-    dx=e.clientX-startX;
-    var dy=Math.abs(e.clientY-startY);
-    if(dy>Math.abs(dx)&&Math.abs(dx)<10)return;
-    el.style.transform='translateX('+dx+'px)';
-    el.style.opacity=Math.max(0.2,1-Math.abs(dx)/200);
-  });
-  el.addEventListener('mouseup',function(){
-    if(!swiping)return;swiping=false;
-    el.style.transition='transform .3s ease,opacity .3s ease';
-    if(Math.abs(dx)>80){
-      el.style.transform='translateX('+(dx>0?'110%':'-110%')+')';
-      el.style.opacity='0';
-      setTimeout(function(){if(onDismiss)onDismiss();el.style.transform='';el.style.opacity='';},350);
-    }else{el.style.transform='';el.style.opacity='';}
-  });
-  el.addEventListener('mouseleave',function(){if(swiping){swiping=false;el.style.transition='transform .3s ease,opacity .3s ease';el.style.transform='';el.style.opacity='';}});
-  return el;
-}
-
-function initSwipeDismissAll(){
-  // Camera banner
-  setupSwipeDismiss(document.getElementById('cban'),function(){
-    document.getElementById('cban').className='cb';
-  });
-  // Fuel banner
-  setupSwipeDismiss(document.getElementById('fban'),function(){
-    document.getElementById('fban').className='cb';
-  });
-  // Camera popup
-  setupSwipeDismiss(document.getElementById('campop'),function(){
-    document.getElementById('campop').className='campop';
-    camDismissUntil=Date.now()+5000; // 5s cooldown
-  });
-  // Fuel popup
-  setupSwipeDismiss(document.getElementById('fuelpop'),function(){
-    document.getElementById('fuelpop').className='campop';
-    fuelDismissUntil=Date.now()+5000; // 5s cooldown
-  });
-  // Fine banner
-  setupSwipeDismiss(document.getElementById('fineBan'),function(){
-    document.getElementById('fineBan').classList.remove('vis');
-  });
-  // Fatigue banner
-  setupSwipeDismiss(document.getElementById('fatBan'),function(){
-    document.getElementById('fatBan').classList.remove('vis');
-  });
-}
-
-// ===== MAIN LOOP =====
-function animate(){
-  updateDisplay();
-  var now=Date.now();
-  if(now-nightCheckT>60000){checkNight();nightCheckT=now;}
-  requestAnimationFrame(animate);
-}
-
-// ===== PAGE LOAD BAR =====
 (function(){
-  var lp=document.getElementById('ldbar');
-  if(lp){
-    lp.classList.add('vis');
-    var fl=document.getElementById('ldfill');
-    if(fl){
-      fl.classList.add('go');
-      setTimeout(function(){fl.classList.add('done');
-        setTimeout(function(){lp.classList.remove('vis');fl.classList.remove('go','done');},900);
-      },1300);
+  // ---------- helpers ----------
+  const $ = (s,el=document)=>el.querySelector(s);
+  const $$ = (s,el=document)=>Array.from(el.querySelectorAll(s));
+
+  // ---------- clock ----------
+  function tickClock(){
+    const d = new Date();
+    const t = d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+    $('#railClock').textContent = t;
+    $('#clockText').textContent = t;
+  }
+  tickClock(); setInterval(tickClock, 15000);
+
+  // ---------- tab navigation ----------
+  const railBtns = $$('.rail-btn');
+  railBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      railBtns.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      $$('.view').forEach(v=>v.classList.remove('active'));
+      $('#view-'+btn.dataset.view).classList.add('active');
+    });
+  });
+
+  // ---------- RADIO ----------
+  // Gerçek Türkiye radyo istasyonları — birden fazla yedek adresli (biri düşerse diğerine geçer)
+  const stations = [
+    {f:'94.70', name:'Kral Pop', sub:'Pop Müzik Hit', src:["https://ssldyg.radyotvonline.com/smil/smil:kralpop.smil/playlist.m3u8","http://46.20.3.201/;type=mp3","https://dygmaster.radyotvonline.net/kralpop/playlist.m3u8"]},
+    {f:'98.60', name:'Kral FM', sub:'Arabesk & Fantezi Müzik', src:["https://ssldyg.radyotvonline.com/smil/smil:kralfm.smil/playlist.m3u8","http://46.20.3.204/;type=mp3","https://dygmaster.radyotvonline.net/kralfm/playlist.m3u8"]},
+    {f:'105.60', name:'Baba Radyo', sub:'İstanbul · Arabesk', src:["https://babaradyo.turkhosted.com/best/babaradyo.stream/playlist.m3u8","https://37.247.98.7/babaradyomp3","https://officialbabaradyo.radyotvonline.net/babaofficial"]},
+    {f:'99.90', name:'Kral Ferdi Tayfur', sub:'7/24 Ferdi Tayfur Şarkıları', src:["http://46.20.3.250/;stream","https://ssl4.radyotvonline.com/radyo7/radyo7_home.stream/playlist.m3u8"]},
+    {f:'94.40', name:"Efsane 4'lü", sub:'Efsane Arabesk Sanatçıları', src:["https://moondigitalmaster.radyotvonline.net/efsane4lu/playlist.m3u8","http://37.247.98.8/stream/19/"]},
+    {f:'96.90', name:'Park FM', sub:'Ankara · Arabesk & Yöresel', src:["https://s03.diazol.hu:7142/stream.mp3","http://park.netradyom.com:1345/;stream.nsv"]},
+    {f:'100.00', name:'Power FM', sub:'Yabancı Hit Pop', src:["https://listen.powerapp.com.tr/powerfm/mpeg/icecast.audio"]},
+    {f:'106.60', name:'Pal FM', sub:'Müziğin Türkçesi', src:["https://moondigitalmaster.radyotvonline.net/palfm/playlist.m3u8","https://ssl4.radyotvonline.com/radyohome/palfmhome.stream_aac/playlist.m3u8"]},
+    {f:'90.10', name:'Risalet Radyo', sub:'Diyanet · Siyer & Sohbet', src:["https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1520b2626.smil/playlist.m3u8","https://eustr76.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1520b2626.smil/playlist.m3u8"]},
+    {f:'91.60', name:'VAV Radyo', sub:"Kur'an'ın Sesi", src:["https://trkvz-radyolar.ercdn.net/radyovav/playlist.m3u8"]},
+    {f:'93.60', name:'Radyo Turkuvaz', sub:"Türkiye'nin Radyosu", src:["https://trkvz-radyolar.ercdn.net/radyoturkuvaz/playlist.m3u8","https://moondigitalmaster2.radyotvonline.net/radyoturkuvaz/playlist.m3u8"]},
+    {f:'95.30', name:'Turkuvaz Musiki', sub:'Gönülden Nağmeler · TSM', src:["https://trkvz-radyolar.ercdn.net/turkuvazmusiki/playlist.m3u8"]},
+    {f:'97.10', name:'Turkuvaz Nostalji', sub:'Zamansız Şarkılar', src:["https://trkvz-radyolar.ercdn.net/turkuvaznostalji/playlist.m3u8"]},
+    {f:'94.90', name:'Turkuvaz Efsane', sub:'Müziğin Efsanesi', src:["https://trkvz-radyolar.ercdn.net/turkuvazefsane/playlist.m3u8"]},
+    {f:'101.90', name:'Turkuvaz Romantik', sub:'Kalbinin Sesini Dinle', src:["https://trkvz-radyolar.ercdn.net/turkuvazromantik/playlist.m3u8"]},
+    {f:'103.40', name:'Turkuvaz Anadolu', sub:'Yerli ve Milli Radyo · Türküler', src:["https://trkvz-radyolar.ercdn.net/turkuvazanadolu/playlist.m3u8"]},
+    {f:'99.30', name:'Radyo Energy', sub:'Durmak Yok · Enerjik Hit Pop', src:["https://trkvz-radyolar.ercdn.net/radyoenergy/playlist.m3u8"]},
+    {f:'88.90', name:'Radyo Soft', sub:'Her Dilde Kalbin Sesi', src:["https://trkvz-radyolar.ercdn.net/radyosoft/playlist.m3u8"]},
+    {f:'95.00', name:'Joy Jazz', sub:'Caz · Jazz', src:["https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_JAZZ128AAC.aac"]},
+    {f:'98.20', name:'Joy Türk Akustik', sub:'Akustik · Slow', src:["https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_AKUSTIK128AAC.aac"]},
+    {f:'96.10', name:'Fenomen Pop', sub:'Yabancı Pop', src:["https://live.radyofenomen.com/fenomenpop/abr/playlist.m3u8"]},
+    {f:'96.40', name:'Fenomen Türk', sub:'Türkçe Hit', src:["https://live.radyofenomen.com/fenomenturk/abr/playlist.m3u8"]},
+    {f:'90.90', name:"90'lar Radyo", sub:"Nostalji 90'lar", src:["https://moondigitalmaster.radyotvonline.net/90lar/playlist.m3u8","https://moondigitaledge.radyotvonline.net/90lar/playlist.m3u8"]},
+    {f:'102.30', name:'Ankara Havaları', sub:'Türkü · Oyun Havası', src:["https://moondigitalmaster.radyotvonline.net/ankarahavalari/playlist.m3u8"]},
+    {f:'104.20', name:'Karadeniz FM', sub:'Karadeniz · Türkü', src:["https://moondigitaledge.radyotvonline.net/karadenizfm/playlist.m3u8","http://moondigitalmaster.radyotvonline.net/karadenizfm/playlist.m3u8"]},
+    {f:'101.10', name:'Alem FM', sub:'Türkçe Karışık', src:["https://alemfm.radyotvonline.net/alemfmaac","http://turkmedya.radyotvonline.net/alemfmaac"]},
+    {f:'98.40', name:'Best FM', sub:'Pop · Hit', src:["https://officialbestfm.radyotvonline.net/bestfmofficial","https://bestfm.turkhosted.com/;stream.mp3"]},
+    {f:'90.20', name:'A Haber Radyo', sub:'Haberin Radyosu', src:["https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8"]},
+    {f:'87.60', name:'A News Radio', sub:'The Channel of the New World', src:["https://trkvz-radyolar.ercdn.net/anewsradyo/playlist.m3u8"]},
+    {f:'92.40', name:'A Spor Radyo', sub:'Sporun Keyif ve Heyecanı', src:["https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8"]},
+    {f:'89.80', name:'A Para Radyo', sub:"Türkiye'nin Ekonomi Kanalı", src:["https://trkvz-radyolar.ercdn.net/apararadyo/playlist.m3u8"]},
+    {f:'--.--', name:'Kendi İstasyonum', sub:'Aşağıya gerçek yayın linkini yapıştır', src:[]}
+  ];
+  let curStation = 1;
+  let curSrcIdx = 0;
+  let playing = false;
+  const audioEl = document.getElementById('radioAudio');
+  audioEl.crossOrigin = 'anonymous';
+  audioEl.volume = 0.55;
+  let hlsInst = null;
+  function isHls(u){ return /\.m3u8(?:\?|$)/i.test(u); }
+  function stopStream(){
+    if (hlsInst){ try{ hlsInst.destroy(); }catch(e){} hlsInst = null; }
+    audioEl.pause();
+    audioEl.removeAttribute('src');
+    audioEl.load();
+  }
+
+  function renderPresets(){
+    const wrap = $('#presetList'); wrap.innerHTML = '';
+    stations.forEach((s,i)=>{
+      const el = document.createElement('div');
+      el.className = 'preset' + (i===curStation ? ' active' : '');
+      el.innerHTML = `<div>${s.f}</div><div class="pname">${s.name}</div>`;
+      el.addEventListener('click', ()=> setStation(i, true));
+      wrap.appendChild(el);
+    });
+  }
+  const streamStatus = $('#streamStatus'), streamUrlInput = $('#streamUrlInput');
+
+  function setStation(i, autoplay){
+    curStation = i;
+    curSrcIdx = 0;
+    const s = stations[i];
+    $('#freqNum').textContent = s.f;
+    $('#stationName').textContent = s.name;
+    streamUrlInput.value = (s.src && s.src[0]) || '';
+    renderPresets();
+    if (autoplay) playCurrent();
+    else {
+      $('#stationSub').textContent = s.sub;
+      streamStatus.textContent = (s.src && s.src.length) ? 'Hazır — Bağlan\'a bas' : 'Bu hafızaya kendi yayın linkini yapıştır';
     }
   }
+
+  function playCurrent(){
+    const s = stations[curStation];
+    if (!s.src || !s.src.length || !s.src[curSrcIdx]){
+      streamStatus.textContent = 'Önce geçerli bir yayın adresi gir';
+      setPlaying(false);
+      return;
+    }
+    const url = s.src[curSrcIdx];
+    stopStream();
+    streamStatus.textContent = 'Bağlanılıyor… (adres ' + (curSrcIdx+1) + '/' + s.src.length + ')';
+    $('#stationSub').textContent = 'Şimdi çalıyor · ' + s.sub;
+
+    if (isHls(url) && window.Hls && Hls.isSupported()){
+      hlsInst = new Hls({ enableWorker:true, maxBufferLength:30 });
+      hlsInst.on(Hls.Events.ERROR, (_,d)=>{ if (d && d.fatal) onSourceFail(); });
+      hlsInst.on(Hls.Events.MANIFEST_PARSED, ()=> attemptPlay());
+      hlsInst.loadSource(url);
+      hlsInst.attachMedia(audioEl);
+    } else {
+      audioEl.src = url;
+      audioEl.load();
+      attemptPlay();
+    }
+  }
+
+  function attemptPlay(){
+    audioEl.volume = volSlider.value/100;
+    const p = audioEl.play();
+    if (p && p.catch) p.catch(()=>{
+      streamStatus.textContent = 'Bu ortamda dış yayınlara erişim engellendi — dosyayı indirip normal tarayıcıda aç.';
+      setPlaying(false);
+    });
+  }
+
+  function onSourceFail(){
+    const s = stations[curStation];
+    if (curSrcIdx + 1 < s.src.length){
+      curSrcIdx++;
+      streamStatus.textContent = 'Yedek adres deneniyor…';
+      playCurrent();
+    } else {
+      streamStatus.textContent = 'Yayın adresleri cevap vermiyor — farklı bir istasyon dene ya da kendi linkini yapıştır.';
+      setPlaying(false);
+    }
+  }
+
+  $('#seekPrev').addEventListener('click', ()=> setStation((curStation-1+stations.length)%stations.length, playing));
+  $('#seekNext').addEventListener('click', ()=> setStation((curStation+1)%stations.length, playing));
+
+  const playBtn = $('#playBtn'), playIcon = $('#playIcon'), viz = $('#viz');
+  function setPlaying(v){
+    playing = v;
+    viz.classList.toggle('paused', !playing);
+    playIcon.innerHTML = playing
+      ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
+      : '<path d="M8 5v14l11-7z"/>';
+  }
+  playBtn.addEventListener('click', ()=>{
+    if (playing){
+      audioEl.pause();
+      setPlaying(false);
+      $('#stationSub').textContent = 'Duraklatıldı · ' + stations[curStation].sub;
+      streamStatus.textContent = 'Duraklatıldı';
+    } else {
+      playCurrent();
+    }
+  });
+
+  $('#applyStreamBtn').addEventListener('click', ()=>{
+    const url = streamUrlInput.value.trim();
+    stations[curStation].src = url ? [url] : [];
+    curSrcIdx = 0;
+    playCurrent();
+  });
+
+  audioEl.addEventListener('error', onSourceFail);
+  audioEl.addEventListener('waiting', ()=> streamStatus.textContent = 'Arabelleğe alınıyor…');
+  audioEl.addEventListener('playing', ()=>{ streamStatus.textContent = 'Canlı yayında ✓'; setPlaying(true); });
+  audioEl.addEventListener('pause', ()=>{ if (playing) setPlaying(false); });
+
+  const volSlider = $('#volSlider'), volVal = $('#volVal');
+  volSlider.addEventListener('input', ()=>{
+    volVal.textContent = volSlider.value;
+    audioEl.volume = volSlider.value/100;
+  });
+
+  setStation(curStation, false);
+  setPlaying(false);
+
+  // ---------- CAMERA ----------
+  const camTabs = $$('.cam-tab');
+  const camEls = { front: $('#camFront'), rear: $('#camRear'), around: $('#camAround') };
+  const camNotes = {
+    front: 'Park sensörleri: engel yaklaştıkça çubuklar kırmızıya döner. Bu görüntü, bağlı kamera modülünden gelen simülasyon akışıdır.',
+    rear: 'Geri vites takıldığında otomatik olarak açılır. Renkli izler tahmini park yörüngesini gösterir.',
+    around: '360° kuşbakışı görünüm; dört köşe kamerasının birleştirilmiş simülasyonudur.'
+  };
+  camTabs.forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      camTabs.forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      Object.values(camEls).forEach(el=> el.style.display='none');
+      camEls[tab.dataset.cam].style.display='block';
+      $('#camNote').textContent = camNotes[tab.dataset.cam];
+      $('#sensorBars').style.display = tab.dataset.cam === 'front' ? 'flex' : (tab.dataset.cam === 'rear' ? 'flex' : 'none');
+    });
+  });
+
+  // sensor bar demo animation
+  const barClasses = ['on-g','on-y','on-r'];
+  setInterval(()=>{
+    $$('#sensorBars i').forEach(bar=>{
+      if (Math.random() < 0.35){
+        barClasses.forEach(c=>bar.classList.remove(c));
+        bar.classList.add(barClasses[Math.floor(Math.random()*barClasses.length)]);
+      }
+    });
+  }, 1400);
+
+  // ---------- WARNINGS ----------
+  const warnings = [
+    {id:'speed', sev:'crit', title:'Hız Limiti Aşımı', desc:'Bölgesel limit: 70 km/s — mevcut hız 68 km/s, sınıra yakın.'},
+    {id:'lane', sev:'warn', title:'Şerit İhlali Uyarısı', desc:'Yönlendirme sinyali verilmeden şerit değişimi algılanırsa uyarır.'},
+    {id:'fatigue', sev:'warn', title:'Sürücü Yorgunluğu', desc:'Uzun süreli sabit direksiyon hareketi tespit edilirse mola önerir.'},
+    {id:'fuel', sev:'info', title:'Yakıt Seviyesi', desc:'Depo %62 dolulukta. 190 km menzil kaldı.'},
+    {id:'tire', sev:'warn', title:'Lastik Basıncı Düşük', desc:'Arka sol lastik 1.7 bar — önerilen değerin altında.'},
+    {id:'service', sev:'info', title:'Bakım Zamanı Yaklaşıyor', desc:'Periyodik bakıma 850 km kaldı.'},
+    {id:'fcw', sev:'crit', title:'Ön Çarpışma Uyarısı', desc:'Öndeki araçla mesafe kritik seviyeye indiğinde sesli ve görsel uyarır.'}
+  ];
+  const sevIcon = {
+    info: '<path d="M12 8h.01M11 12h1v5h1"/><circle cx="12" cy="12" r="9"/>',
+    warn: '<path d="M12 3l10 18H2L12 3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/>',
+    crit: '<path d="M12 3l10 18H2L12 3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/>'
+  };
+  const warnList = $('#warnList');
+  warnings.forEach(w=>{
+    const row = document.createElement('div');
+    row.className = 'warn-row';
+    row.innerHTML = `
+      <div class="warn-ic sev-${w.sev}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${sevIcon[w.sev]}</svg></div>
+      <div class="warn-body"><div class="t">${w.title}</div><div class="d">${w.desc}</div></div>
+      <div class="warn-toggle" data-id="${w.id}">Test Et</div>
+    `;
+    warnList.appendChild(row);
+  });
+  $$('.warn-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const w = warnings.find(x=>x.id===btn.dataset.id);
+      triggerAlert(w.title, w.sev);
+    });
+  });
+
+  const ticker = $('#alertTicker'), alertText = $('#alertText');
+  let alertTimer = null;
+  function triggerAlert(text, sev){
+    alertText.textContent = text;
+    ticker.style.background = sev === 'crit' ? 'var(--red-dim)' : (sev === 'warn' ? 'var(--amber-dim)' : 'var(--teal-dim)');
+    ticker.style.color = sev === 'crit' ? '#FFD6D6' : (sev === 'warn' ? '#FFE3BC' : '#CDF7F2');
+    ticker.classList.add('show');
+    clearTimeout(alertTimer);
+    alertTimer = setTimeout(()=> ticker.classList.remove('show'), 5000);
+  }
+  $('#alertClose').addEventListener('click', ()=> ticker.classList.remove('show'));
+
+  // ---------- SPEED / FUEL demo drift ----------
+  let speed = 68, fuel = 62;
+  setInterval(()=>{
+    speed = Math.max(0, Math.min(120, speed + (Math.random()*6-3)));
+    $('#speedVal').textContent = Math.round(speed);
+    if (Math.round(speed) > 72) triggerAlert('Hız Limiti Aşıldı — 70 km/s bölgesi', 'crit');
+  }, 3000);
+
+  // ---------- TRIP COMPUTER ----------
+  let tripSeconds = 0, tripKm = 0;
+  setInterval(()=>{
+    tripSeconds += 1;
+    tripKm += speed/3600;
+    const mm = String(Math.floor(tripSeconds/60)).padStart(2,'0');
+    const ss = String(tripSeconds%60).padStart(2,'0');
+    $('#tripTime').textContent = mm+':'+ss;
+    $('#tripDist').textContent = tripKm.toFixed(1)+' km';
+    const avg = tripKm / (tripSeconds/3600 || 1);
+    $('#tripAvg').textContent = Math.round(avg) + ' km/s';
+  }, 1000);
+
+  // ---------- fatigue reminder demo ----------
+  let fatigueMinutes = 0;
+  setInterval(()=>{
+    if (!$('#fatigueSwitch').classList.contains('on')) return;
+    fatigueMinutes += 1;
+    if (fatigueMinutes % 2 === 0){
+      triggerAlert('Yorgunluk Takibi: 2 saatlik sürüş — kısa bir mola önerilir', 'warn');
+    }
+  }, 60000);
+
+  // ---------- toggles ----------
+  $$('.switch').forEach(sw=>{
+    sw.addEventListener('click', ()=> sw.classList.toggle('on'));
+  });
+  $('#nightSwitch').addEventListener('click', function(){
+    const on = this.classList.contains('on');
+    document.documentElement.setAttribute('data-theme', on ? 'dark' : 'light');
+  });
+  document.documentElement.setAttribute('data-theme','dark');
+
+  // ---------- mic ----------
+  const micBtn = $('#micBtn'), micCaption = $('#micCaption');
+  let listening = false;
+  micBtn.addEventListener('click', ()=>{
+    listening = !listening;
+    micBtn.classList.toggle('listening', listening);
+    micCaption.textContent = listening ? 'Dinleniyor… “Konak’a yönlendir” diyebilirsiniz' : 'Dinlemeyi başlatmak için dokun';
+    if (listening){
+      setTimeout(()=>{
+        if (!listening) return;
+        micCaption.textContent = 'Anlaşıldı: Konak, İzmir\'e yönlendiriliyorsunuz';
+        setTimeout(()=>{
+          listening = false;
+          micBtn.classList.remove('listening');
+          micCaption.textContent = 'Dinlemeyi başlatmak için dokun';
+        }, 2200);
+      }, 2200);
+    }
+  });
+
+  // ---------- destination search demo ----------
+  $('#destInput').addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter' && e.target.value.trim()){
+      $('#destTitle').textContent = 'Varış: ' + e.target.value.trim();
+      triggerAlert('Yeni rota hesaplandı: ' + e.target.value.trim(), 'info');
+    }
+  });
+
 })();
-
-drawGauge(0);animate();
-
-// Input listener
-document.getElementById('limp').addEventListener('change',function(){spLim=parseInt(this.value)||90;});
 </script>
 </body>
 </html>
